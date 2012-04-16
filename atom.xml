@@ -4,7 +4,7 @@
   <title><![CDATA[hhhh]]></title>
   <link href="http://kkx.github.com/atom.xml" rel="self"/>
   <link href="http://kkx.github.com/"/>
-  <updated>2012-04-15T17:25:58-07:00</updated>
+  <updated>2012-04-15T17:28:49-07:00</updated>
   <id>http://kkx.github.com/</id>
   <author>
     <name><![CDATA[sdfas]]></name>
@@ -12,5 +12,14 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Hello World]]></title>
+    <link href="http://kkx.github.com/blog/2012/04/15/hello-world/"/>
+    <updated>2012-04-15T17:28:00-07:00</updated>
+    <id>http://kkx.github.com/blog/2012/04/15/hello-world</id>
+    <content type="html"><![CDATA[<p>HELLO WORLD!!!!</p>
+]]></content>
+  </entry>
   
 </feed>
