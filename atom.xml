@@ -4,7 +4,7 @@
   <title><![CDATA[hhhh]]></title>
   <link href="http://kkx.github.com/atom.xml" rel="self"/>
   <link href="http://kkx.github.com/"/>
-  <updated>2012-04-15T17:28:49-07:00</updated>
+  <updated>2012-04-20T02:48:48-07:00</updated>
   <id>http://kkx.github.com/</id>
   <author>
     <name><![CDATA[sdfas]]></name>
@@ -12,6 +12,16 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[根据bag of keypoints图片分类]]></title>
+    <link href="http://kkx.github.com/blog/2012/04/20/gen-ju-bag-of-keypointstu-pian-fen-lei/"/>
+    <updated>2012-04-20T02:41:00-07:00</updated>
+    <id>http://kkx.github.com/blog/2012/04/20/gen-ju-bag-of-keypointstu-pian-fen-lei</id>
+    <content type="html"><![CDATA[<p>最近看了一篇名叫<a href="http://www.xrce.xerox.com/index.php/content/download/16612/118527/file/willamowski.pdf">Categorizing nine visual classes using local appearance descriptors</a> 的论文，相当受启发，该论文
+<a href="http://videolectures.net/lmcv04_dance_vcbk/">作者介绍算法的视频</a></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Hello World]]></title>

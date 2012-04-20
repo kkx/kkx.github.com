@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: 分类 | hhhh]]></title>
+  <link href="http://kkx.github.com/blog/categories/分类/atom.xml" rel="self"/>
+  <link href="http://kkx.github.com/"/>
+  <updated>2012-04-20T03:24:23-07:00</updated>
+  <id>http://kkx.github.com/</id>
+  <author>
+    <name><![CDATA[sdfas]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[根据bag of keypoints图片分类]]></title>
+    <link href="http://kkx.github.com/blog/2012/04/20/gen-ju-bag-of-keypointstu-pian-fen-lei/"/>
+    <updated>2012-04-20T02:41:00-07:00</updated>
+    <id>http://kkx.github.com/blog/2012/04/20/gen-ju-bag-of-keypointstu-pian-fen-lei</id>
+    <content type="html"><![CDATA[Liquid error: invalid byte sequence in UTF-8]]></content>
+  </entry>
+  
+</feed>
