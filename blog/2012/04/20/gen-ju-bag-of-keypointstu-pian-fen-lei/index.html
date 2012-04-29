@@ -91,7 +91,7 @@
 
 
 <div class="entry-content"><p>最近看了一篇名叫<a href="http://www.xrce.xerox.com/index.php/content/download/16612/118527/file/willamowski.pdf">Categorizing nine visual classes using local appearance descriptors</a> 的论文，相当受启发，该论文以Information retrieval里<a href="http://en.wikipedia.org/wiki/Bag_of_words_model">bag of words</a>(以单词的出现的次数的矩阵来概括某篇文章)为基础,通过对图像所有的interest points用<a href="http://en.wikipedia.org/wiki/Harris_affine_region_detector">harris affine detector</a>来
-产生一个bag of keypoints 对图像进行描述。</p>
+产生一个bag of keypoints(用sift descriptor描述每个keypoints) 对图像进行描述。</p>
 
 <p>不过一套训练数据里所有的keypoints的数量是相当大的，这里论文的另外一个看点就是用k-means对所有的keypoints进行归类，每个cluster之中保含类似的keypoints，而这时，每个图像里的keypoints 在每个cluster里的出现次数将会给统计并且生成一个bag of keypoints.</p>
 
