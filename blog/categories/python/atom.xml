@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: python | 名字]]></title>
+  <link href="http://kkx.github.com/blog/categories/python/atom.xml" rel="self"/>
+  <link href="http://kkx.github.com/"/>
+  <updated>2012-04-29T01:27:48-07:00</updated>
+  <id>http://kkx.github.com/</id>
+  <author>
+    <name><![CDATA[小逸]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[用nohup后台运行,用python 发提醒邮件]]></title>
+    <link href="http://kkx.github.com/blog/2012/04/29/yong-python-fa-ti-xing-you-jian/"/>
+    <updated>2012-04-29T01:09:00-07:00</updated>
+    <id>http://kkx.github.com/blog/2012/04/29/yong-python-fa-ti-xing-you-jian</id>
+    <content type="html"><![CDATA[<p>最近在学校的n电脑上跑数据，很多时候一个run要耗费好几个小时，ssh不知道为什么连一会后会自动断开，跑到一半程序就悲剧了。
+在网上找了一会 发现一个神器:nohup, 用法超级简单: nohup comand
+这样你的程序会后台运行，并且就算你ssh断开后都能继续跑着。nohup还提供给你一个nohup.log 你程序所有的output都会放在那个log里。</p>
+
+<p>另外一个碰到的问题是，很多时候离开ssh后我都不知道程序跑完没，这里我用python搞了一个小程序:基于smtp发电子邮件。首先我用python的subprocess去跑数据程序，然后当数据程序跑完后发送一个邮件到我的邮箱里，这样我就能差不多“实时”的知道程序运行的情况了。</p>
+
+<p>这是我发送邮件的小函数：
+```</p>
+
+<h1>!/usr/bin/env python</h1>
+
+<h1>-<em>- coding: utf8 -</em>-</h1>
+
+<p>import smtplib
+from email.mime.text import MIMEText</p>
+
+<p>server = "smtp.gmail.com:587"
+user_account="pythonsmtpalert@gmail.com"
+password="密码"
+mailto_list=["我的目标邮箱.com"]
+def send_mail(to_list,sub,content):</p>
+
+<pre><code>    me="python stmp alert " +"&lt;pythonsmtpalert@gmail.com&gt;"
+    msg = MIMEText(content)
+    msg['Subject'] = sub
+    msg['From'] = me
+    msg['To'] = ";".join(mailto_list)
+    try:
+        s = smtplib.SMTP(server)
+        s.starttls()  
+        s.login(user_account,password)
+        s.sendmail(me, to_list, msg.as_string())
+        s.close()
+        return True
+    except Exception, e:
+        print str(e)
+        return False
+</code></pre>
+
+<p>if <strong>name</strong> == '<strong>main</strong>':</p>
+
+<pre><code>if send_mail(mailto_list,"Process accomplished","t你好ake a look the results!"):
+    print "发送成功"
+else:
+    print "发送失败"
+</code></pre>
+
+<p>```</p>
+
+<p>server: 服务器地址
+user_account:你的邮箱帐号
+password:邮箱密码
+mailto_list:目标邮箱
+这里你的邮箱要和你服务器地址是一个牌子的，我这里用的是gmail，换别的邮箱的话得用别得邮箱得smtp服务器</p>
+]]></content>
+  </entry>
+  
+</feed>
