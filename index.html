@@ -101,48 +101,71 @@
 
 <p>另外一个碰到的问题是，很多时候离开ssh后我都不知道程序跑完没，这里我用python搞了一个小程序:基于smtp发电子邮件。首先我用python的subprocess去跑数据程序，然后当数据程序跑完后发送一个邮件到我的邮箱里，这样我就能差不多“实时”的知道程序运行的情况了。</p>
 
-<p>这是我发送邮件的小函数：
-&#8220;</p>
+<p>这是我发送邮件的小函数：</p>
 
-<h1>!/usr/bin/env python</h1>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>#!/usr/bin/env python
+</span><span class='line'># -*- coding: utf8 -*-
+</span><span class='line'>import smtplib
+</span><span class='line'>from email.mime.text import MIMEText
+</span><span class='line'>
+</span><span class='line'>server = "smtp.gmail.com:587"
+</span><span class='line'>user_account="pythonsmtpalert@gmail.com"
+</span><span class='line'>password="密码"
+</span><span class='line'>mailto_list=["我的目标邮箱.com"]
+</span><span class='line'>def send_mail(to_list,sub,content):
+</span><span class='line'>        me="python stmp alert " +"&lt;pythonsmtpalert@gmail.com&gt;"
+</span><span class='line'>        msg = MIMEText(content)
+</span><span class='line'>        msg['Subject'] = sub
+</span><span class='line'>        msg['From'] = me
+</span><span class='line'>        msg['To'] = ";".join(mailto_list)
+</span><span class='line'>        try:
+</span><span class='line'>            s = smtplib.SMTP(server)
+</span><span class='line'>            s.starttls()  
+</span><span class='line'>            s.login(user_account,password)
+</span><span class='line'>            s.sendmail(me, to_list, msg.as_string())
+</span><span class='line'>            s.close()
+</span><span class='line'>            return True
+</span><span class='line'>        except Exception, e:
+</span><span class='line'>            print str(e)
+</span><span class='line'>            return False
+</span><span class='line'>
+</span><span class='line'>if __name__ == '__main__':
+</span><span class='line'>    if send_mail(mailto_list,"Process accomplished","t你好ake a look the results!"):
+</span><span class='line'>        print "发送成功"
+</span><span class='line'>    else:
+</span><span class='line'>        print "发送失败"</span></code></pre></td></tr></table></div></figure>
 
-<h1>-<em>- coding: utf8 -</em>-</h1>
-
-<p>import smtplib
-from email.mime.text import MIMEText</p>
-
-<p>server = &#8220;smtp.gmail.com:587&#8221;
-user_account=&#8221;pythonsmtpalert@gmail.com&#8221;
-password=&#8221;密码&#8221;
-mailto_list=[&#8220;我的目标邮箱.com&#8221;]
-def send_mail(to_list,sub,content):</p>
-
-<pre><code>    me="python stmp alert " +"&lt;pythonsmtpalert@gmail.com&gt;"
-    msg = MIMEText(content)
-    msg['Subject'] = sub
-    msg['From'] = me
-    msg['To'] = ";".join(mailto_list)
-    try:
-        s = smtplib.SMTP(server)
-        s.starttls()  
-        s.login(user_account,password)
-        s.sendmail(me, to_list, msg.as_string())
-        s.close()
-        return True
-    except Exception, e:
-        print str(e)
-        return False
-</code></pre>
-
-<p>if <strong>name</strong> == &#8217;<strong>main</strong>&#8217;:</p>
-
-<pre><code>if send_mail(mailto_list,"Process accomplished","t你好ake a look the results!"):
-    print "发送成功"
-else:
-    print "发送失败"
-</code></pre>
-
-<p>&#8220;</p>
 
 <p>server: 服务器地址
 user_account:你的邮箱帐号
