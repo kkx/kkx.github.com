@@ -5,11 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Category: scipy - 名字</title>
+  <title>在octopress中使用latex - 名字</title>
   <meta name="author" content="小逸">
 
   
-  <meta name="description" content="Category: scipy">
+  <meta name="description" content="原文在http://kqueue.org/blog/2012/01/05/hello-world/。通过MathJax, 把latex打在网页上。
+首先是在source/_includes/custom/head.html添加以下代码: &lt;script type="text/ &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +19,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://kkx.github.comblog/categories/scipy">
+  <link rel="canonical" href="http://kkx.github.com/blog/2012/05/05/zai-octopresszhong-shi-yong-latex">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -74,36 +75,129 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">Category: Scipy</h1>
+    
+      <h1 class="entry-title">在octopress中使用latex</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-05-05T13:38:00-07:00" pubdate data-updated="true">May 5<span>th</span>, 2012</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
     
   </header>
-  
-  <div id="blog-archives" class="category">
 
 
+<div class="entry-content"><p>原文在<a href="http://kqueue.org/blog/2012/01/05/hello-world/">http://kqueue.org/blog/2012/01/05/hello-world/</a>。通过MathJax, 把latex打在网页上。
+首先是在<code>source/_includes/custom/head.html</code>添加以下代码:</p>
 
-  
-  <h2>2012</h2>
+<pre><code>&lt;script type="text/javascript"
+        src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"&gt;
+&lt;/script&gt;
+</code></pre>
 
-<article>
-  
-<h1><a href="/blog/2012/05/04/numpyhe-matlabzhi-jian-de-shu-ju-jiao-hu/">numpy和matlab之间的数据交互</a></h1>
-<time datetime="2012-05-04T18:03:00-07:00" pubdate><span class='month'>May</span> <span class='day'>04</span> <span class='year'>2012</span></time>
+<p>在<code>_config.yml</code> 把markdown的引擎从<code>rdiscount</code>换成<code>kramdown</code>, 当然如果没有装的话装一下<code>gem install kramdown</code>。从现在开始就能通过 <code>$$</code>..<code> $$</code>(<code>$$</code>在单独的一行中，代码上下各留一空行)写latex啦
+原文作者说好像会出现一些杂乱字符，你可以在<code>source/_includes/custom/head.html</code>添加以下代码来解决:</p>
 
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/numpy/'>numpy</a>, <a class='category' href='/blog/categories/python/'>python</a>, <a class='category' href='/blog/categories/scipy/'>scipy</a></span>
-</footer>
+<pre><code>&lt;script type="text/x-mathjax-config"&gt;
+MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
+          MathJax.InputJax.TeX.prefilterHooks.Add(function (data) {
+                  data.math = data.math.replace(/^\s*&lt;!\[CDATA\[\s*((?:\n|.)*)\s*\]\]&gt;\s*$/m,"$1");
+                    });
+          });
+&lt;/script&gt;
+</code></pre>
 
+<p>这里是一个例子<a href="http://en.wikipedia.org/wiki/Multivariate_normal_distribution">Multivariate normal distribution</a>:</p>
 
-</article>
+<script type="math/tex; mode=display">
+f_x(x_1,...,x_k)=\frac{1}{(2\pi)^{k/2}|\Sigma|^{1/2}}exp(-\frac{1}{2}(x-\mu)^T\Sigma^{-1}(x-\mu))
+</script>
+
+<pre><code>
+$$
+f_x(x_1,...,x_k)=\frac{1}{(2\pi)^{k\/2}|\Sigma|^{1\/2}}exp(-\frac{1}{2}(x-\mu)^T\Sigma^{-1}(x-\mu))
+$$
+
+</code></pre>
 
 </div>
 
+
+  <footer>
+    <p class="meta">
+      
   
+
+<span class="byline author vcard">Posted by <span class="fn">小逸</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-05-05T13:38:00-07:00" pubdate data-updated="true">May 5<span>th</span>, 2012</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/latex/'>latex</a>, <a class='category' href='/blog/categories/octopress/'>octopress</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://kkx.github.com/blog/2012/05/05/zai-octopresszhong-shi-yong-latex/" data-via="" data-counturl="http://kkx.github.com/blog/2012/05/05/zai-octopresszhong-shi-yong-latex/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/05/04/numpyhe-matlabzhi-jian-de-shu-ju-jiao-hu/" title="Previous Post: numpy和matlab之间的数据交互">&laquo; numpy和matlab之间的数据交互</a>
+      
+      
+    </p>
+  </footer>
 </article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
 
 </div>
 
@@ -181,7 +275,10 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
       var disqus_shortname = 'kkx';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://kkx.github.com/blog/2012/05/05/zai-octopresszhong-shi-yong-latex/';
+        var disqus_url = 'http://kkx.github.com/blog/2012/05/05/zai-octopresszhong-shi-yong-latex/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

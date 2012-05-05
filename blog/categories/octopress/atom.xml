@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: octopress | 名字]]></title>
+  <link href="http://kkx.github.com/blog/categories/octopress/atom.xml" rel="self"/>
+  <link href="http://kkx.github.com/"/>
+  <updated>2012-05-05T14:14:56-07:00</updated>
+  <id>http://kkx.github.com/</id>
+  <author>
+    <name><![CDATA[小逸]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[在octopress中使用latex]]></title>
+    <link href="http://kkx.github.com/blog/2012/05/05/zai-octopresszhong-shi-yong-latex/"/>
+    <updated>2012-05-05T13:38:00-07:00</updated>
+    <id>http://kkx.github.com/blog/2012/05/05/zai-octopresszhong-shi-yong-latex</id>
+    <content type="html"><![CDATA[<p>原文在<a href="http://kqueue.org/blog/2012/01/05/hello-world/">http://kqueue.org/blog/2012/01/05/hello-world/</a>。通过MathJax, 把latex打在网页上。
+首先是在<code>source/_includes/custom/head.html</code>添加以下代码:</p>
+
+<pre><code>&lt;script type="text/javascript"
+        src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"&gt;
+&lt;/script&gt;
+</code></pre>
+
+<p>在<code>_config.yml</code> 把markdown的引擎从<code>rdiscount</code>换成<code>kramdown</code>, 当然如果没有装的话装一下<code>gem install kramdown</code>。从现在开始就能通过 <code>$$</code>..<code> $$</code>(<code>$$</code>在单独的一行中，代码上下各留一空行)写latex啦
+原文作者说好像会出现一些杂乱字符，你可以在<code>source/_includes/custom/head.html</code>添加以下代码来解决:</p>
+
+<pre><code>&lt;script type="text/x-mathjax-config"&gt;
+MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
+          MathJax.InputJax.TeX.prefilterHooks.Add(function (data) {
+                  data.math = data.math.replace(/^\s*&lt;!\[CDATA\[\s*((?:\n|.)*)\s*\]\]&gt;\s*$/m,"$1");
+                    });
+          });
+&lt;/script&gt;
+</code></pre>
+
+<p>这里是一个例子<a href="http://en.wikipedia.org/wiki/Multivariate_normal_distribution">Multivariate normal distribution</a>:</p>
+
+<script type="math/tex; mode=display">
+f_x(x_1,...,x_k)=\frac{1}{(2\pi)^{k/2}|\Sigma|^{1/2}}exp(-\frac{1}{2}(x-\mu)^T\Sigma^{-1}(x-\mu))
+</script>
+
+<pre><code>
+$$
+f_x(x_1,...,x_k)=\frac{1}{(2\pi)^{k\/2}|\Sigma|^{1\/2}}exp(-\frac{1}{2}(x-\mu)^T\Sigma^{-1}(x-\mu))
+$$
+
+</code></pre>
+
+]]></content>
+  </entry>
+  
+</feed>

@@ -30,6 +30,16 @@
   <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
 <link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 <link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<script type="text/javascript"
+        src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
+      MathJax.InputJax.TeX.prefilterHooks.Add(function (data) {
+    data.math = data.math.replace(/^\s*<!\[CDATA\[\s*((?:\n|.)*)\s*\]\]>\s*$/m,"$1");
+});
+});
+</script>
 
   
 
@@ -103,75 +113,44 @@
 
 <p>这是我发送邮件的小函数：</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>#!/usr/bin/env python
-</span><span class='line'># -*- coding: utf8 -*-
-</span><span class='line'>import smtplib
-</span><span class='line'>from email.mime.text import MIMEText
-</span><span class='line'>
-</span><span class='line'>server = "smtp.gmail.com:587"
-</span><span class='line'>user_account="pythonsmtpalert@gmail.com"
-</span><span class='line'>password="密码"
-</span><span class='line'>mailto_list=["我的目标邮箱.com"]
-</span><span class='line'>def send_mail(to_list,sub,content):
-</span><span class='line'>        me="python stmp alert " +"&lt;pythonsmtpalert@gmail.com&gt;"
-</span><span class='line'>        msg = MIMEText(content)
-</span><span class='line'>        msg['Subject'] = sub
-</span><span class='line'>        msg['From'] = me
-</span><span class='line'>        msg['To'] = ";".join(mailto_list)
-</span><span class='line'>        try:
-</span><span class='line'>            s = smtplib.SMTP(server)
-</span><span class='line'>            s.starttls()  
-</span><span class='line'>            s.login(user_account,password)
-</span><span class='line'>            s.sendmail(me, to_list, msg.as_string())
-</span><span class='line'>            s.close()
-</span><span class='line'>            return True
-</span><span class='line'>        except Exception, e:
-</span><span class='line'>            print str(e)
-</span><span class='line'>            return False
-</span><span class='line'>
-</span><span class='line'>if __name__ == '__main__':
-</span><span class='line'>    if send_mail(mailto_list,"Process accomplished","t你好ake a look the results!"):
-</span><span class='line'>        print "发送成功"
-</span><span class='line'>    else:
-</span><span class='line'>        print "发送失败"</span></code></pre></td></tr></table></div></figure>
+<pre><code>#!/usr/bin/env python
+# -*- coding: utf8 -*-
+import smtplib
+from email.mime.text import MIMEText
 
+server = "smtp.gmail.com:587"
+user_account="pythonsmtpalert@gmail.com"
+password="密码"
+mailto_list=["我的目标邮箱.com"]
+def send_mail(to_list,sub,content):
+        me="python stmp alert " +"&lt;pythonsmtpalert@gmail.com&gt;"
+        msg = MIMEText(content)
+        msg['Subject'] = sub
+        msg['From'] = me
+        msg['To'] = ";".join(mailto_list)
+        try:
+            s = smtplib.SMTP(server)
+            s.starttls()  
+            s.login(user_account,password)
+            s.sendmail(me, to_list, msg.as_string())
+            s.close()
+            return True
+        except Exception, e:
+            print str(e)
+            return False
+
+if __name__ == '__main__':
+    if send_mail(mailto_list,"Process accomplished","t你好ake a look the results!"):
+        print "发送成功"
+    else:
+        print "发送失败"
+</code></pre>
 
 <p>server: 服务器地址
 user_account:你的邮箱帐号
 password:邮箱密码
 mailto_list:目标邮箱
-这里你的邮箱要和你服务器地址是一个牌子的，我这里用的是gmail，换别的邮箱的话得用别得邮箱得smtp服务器</p>
+这里你的邮箱要和你服务器地址是一个牌子的，我这里用的是gmail，换别的邮箱的话得用别得邮箱得smtp服务器 </p>
 </div>
 
 
@@ -253,6 +232,10 @@ mailto_list:目标邮箱
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2012/05/05/zai-octopresszhong-shi-yong-latex/">在octopress中使用latex</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2012/05/04/numpyhe-matlabzhi-jian-de-shu-ju-jiao-hu/">numpy和matlab之间的数据交互</a>
       </li>
     
@@ -273,7 +256,9 @@ mailto_list:目标邮箱
 <section>
 <h1>Categories</h1>
 <ul id="categories">
+<li class='category'><a href='/categories/latex/'>latex (1)</a></li>
 <li class='category'><a href='/categories/numpy/'>numpy (1)</a></li>
+<li class='category'><a href='/categories/octopress/'>octopress (1)</a></li>
 <li class='category'><a href='/categories/python/'>python (2)</a></li>
 <li class='category'><a href='/categories/scipy/'>scipy (1)</a></li>
 <li class='category'><a href='/categories/分类/'>分类 (1)</a></li>

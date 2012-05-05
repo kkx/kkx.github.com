@@ -28,6 +28,16 @@
   <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
 <link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 <link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<script type="text/javascript"
+        src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
+      MathJax.InputJax.TeX.prefilterHooks.Add(function (data) {
+    data.math = data.math.replace(/^\s*<!\[CDATA\[\s*((?:\n|.)*)\s*\]\]>\s*$/m,"$1");
+});
+});
+</script>
 
   
 
@@ -96,15 +106,19 @@
 <div class="entry-content"><p>最近看了一篇名叫<a href="http://www.xrce.xerox.com/index.php/content/download/16612/118527/file/willamowski.pdf">Categorizing nine visual classes using local appearance descriptors</a> 的论文，相当受启发，该论文以Information retrieval里<a href="http://en.wikipedia.org/wiki/Bag_of_words_model">bag of words</a>(以单词的出现的次数的矩阵来概括某篇文章)为基础,通过对图像所有的interest points用<a href="http://en.wikipedia.org/wiki/Harris_affine_region_detector">harris affine detector</a>来
 产生一个bag of keypoints(用sift descriptor描述每个keypoints) 对图像进行描述。</p>
 
-<p>不过一套训练数据里所有的keypoints的数量是相当大的，这里论文的另外一个看点就是用k-means对所有的keypoints进行归类，每个cluster之中保含类似的keypoints，而这时，每个图像里的keypoints 在每个cluster里的出现次数将会给统计并且生成一个bag of keypoints.</p>
+<p>不过一套训练数据里所有的keypoints的数量是相当大的，这里论文的另外一个看点就是用k-means对所有的keypoints进行归类，每个cluster之中保含类似的keypoints，而这时，每个图像里的keypoints 在每个cluster里的出现次数将会给统计并且生成一个bag of keypoints. </p>
 
 <p>通过naive bayes或svm 进行训练，在论文里分类的结果还不错.
 有几个我觉得也许可以改进的地方:</p>
 
-<blockquote><p>  1 在原论文里：每种图像生成的keypoints的数量是不同的，为了避免bias作者在clustering的时候在每类图像里随机选了5000个keypoints，我觉得如果选的时候可以把stop words的概念加进去，每个class都有的keypoint去除掉的话应该能增加discrimination.</p>
+<blockquote>
+  <p>1 在原论文里：每种图像生成的keypoints的数量是不同的，为了避免bias作者在clustering的时候在每类图像里随机选了5000个keypoints，我觉得如果选的时候可以把stop words的概念加进去，每个class都有的keypoint去除掉的话应该能增加discrimination.</p>
+</blockquote>
 
-<p>  2 在测试的时候我觉得如果一个keypoint离2个以上的cluster距离都差不多的话，应该可以把它当作IR里的‘生词’一样忽略掉.
-感觉以上这两点应该能对算法有一个改进，以后有空得研究下。</p></blockquote>
+<blockquote>
+  <p>2 在测试的时候我觉得如果一个keypoint离2个以上的cluster距离都差不多的话，应该可以把它当作IR里的‘生词’一样忽略掉.
+感觉以上这两点应该能对算法有一个改进，以后有空得研究下。</p>
+</blockquote>
 
 <p>还有在论文里作者在做测试的时候没有使用no-object的图像进行训练和测试，我觉得如果加进去的话，结果应该会差一个档次。</p>
 
@@ -112,6 +126,7 @@
 http://en.wikipedia.org/wiki/Bag_of_words_model_in_computer_vision.</p>
 
 <p>这里是<a href="http://videolectures.net/lmcv04_dance_vcbk/">作者介绍算法的视频</a>,解释的相当不错，不过好像视频后半部分看不了。</p>
+
 </div>
 
 
@@ -193,6 +208,10 @@ http://en.wikipedia.org/wiki/Bag_of_words_model_in_computer_vision.</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2012/05/05/zai-octopresszhong-shi-yong-latex/">在octopress中使用latex</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2012/05/04/numpyhe-matlabzhi-jian-de-shu-ju-jiao-hu/">numpy和matlab之间的数据交互</a>
       </li>
     
@@ -213,7 +232,9 @@ http://en.wikipedia.org/wiki/Bag_of_words_model_in_computer_vision.</p>
 <section>
 <h1>Categories</h1>
 <ul id="categories">
+<li class='category'><a href='/categories/latex/'>latex (1)</a></li>
 <li class='category'><a href='/categories/numpy/'>numpy (1)</a></li>
+<li class='category'><a href='/categories/octopress/'>octopress (1)</a></li>
 <li class='category'><a href='/categories/python/'>python (2)</a></li>
 <li class='category'><a href='/categories/scipy/'>scipy (1)</a></li>
 <li class='category'><a href='/categories/分类/'>分类 (1)</a></li>
