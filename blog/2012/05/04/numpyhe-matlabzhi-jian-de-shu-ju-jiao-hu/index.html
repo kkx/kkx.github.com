@@ -5,11 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Category: python - 名字</title>
+  <title>numpy和matlab之间的数据交互 - 名字</title>
   <meta name="author" content="小逸">
 
   
-  <meta name="description" content="Category: python">
+  <meta name="description" content="要让matlab把数据倒入倒python里很简单, 我试过直接保存倒2进制的文件里，但是通过用scipy.io.loadmat 这个方法读取的时候会报错。结果职能用粗糙的办法了，把文件存放在一个可读文件里: 1
+save -ascii "your.txt" yourMatrix &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +19,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://kkx.github.comblog/categories/python">
+  <link rel="canonical" href="http://kkx.github.com/blog/2012/05/04/numpyhe-matlabzhi-jian-de-shu-ju-jiao-hu">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -63,49 +64,116 @@
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">Category: Python</h1>
+    
+      <h1 class="entry-title">Numpy和matlab之间的数据交互</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-05-04T18:03:00-07:00" pubdate data-updated="true">May 4<span>th</span>, 2012</time>
+        
+      </p>
     
   </header>
-  
-  <div id="blog-archives" class="category">
 
 
+<div class="entry-content"><p>要让matlab把数据倒入倒python里很简单, 我试过直接保存倒2进制的文件里，但是通过用scipy.io.loadmat 这个方法读取的时候会报错。结果职能用粗糙的办法了，把文件存放在一个可读文件里:</p>
 
-  
-  <h2>2012</h2>
-
-<article>
-  
-<h1><a href="/blog/2012/05/04/numpyhe-matlabzhi-jian-de-shu-ju-jiao-hu/">numpy和matlab之间的数据交互</a></h1>
-<time datetime="2012-05-04T18:03:00-07:00" pubdate><span class='month'>May</span> <span class='day'>04</span> <span class='year'>2012</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/numpy/'>numpy</a>, <a class='category' href='/blog/categories/python/'>python</a>, <a class='category' href='/blog/categories/scipy/'>scipy</a></span>
-</footer>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>save -ascii "your.txt" yourMatrix </span></code></pre></td></tr></table></div></figure>
 
 
-</article>
+<p>在python里读取的时候用genfromtxt:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>from numpy import genfromtxt
+</span><span class='line'>m = genfromtxt('your.txt') </span></code></pre></td></tr></table></div></figure>
 
 
+<p>想通过python把array寸在一个matlab能读取的文件里的方法也很简单:</p>
 
-<article>
-  
-<h1><a href="/blog/2012/04/29/yong-python-fa-ti-xing-you-jian/">用nohup后台运行,用python 发提醒邮件</a></h1>
-<time datetime="2012-04-29T01:09:00-07:00" pubdate><span class='month'>Apr</span> <span class='day'>29</span> <span class='year'>2012</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/python/'>python</a></span>
-</footer>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>from numpy import savetxt
+</span><span class='line'>savetxt("your.txt", yourArray)</span></code></pre></td></tr></table></div></figure>
 
 
-</article>
+<p>在matlab里直接load就行了:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>load -ascii your.txt newMatrixName</span></code></pre></td></tr></table></div></figure>
+
+
 
 </div>
 
+
+  <footer>
+    <p class="meta">
+      
   
+
+<span class="byline author vcard">Posted by <span class="fn">小逸</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-05-04T18:03:00-07:00" pubdate data-updated="true">May 4<span>th</span>, 2012</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/numpy/'>numpy</a>, <a class='category' href='/blog/categories/python/'>python</a>, <a class='category' href='/blog/categories/scipy/'>scipy</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://kkx.github.com/blog/2012/05/04/numpyhe-matlabzhi-jian-de-shu-ju-jiao-hu/" data-via="" data-counturl="http://kkx.github.com/blog/2012/05/04/numpyhe-matlabzhi-jian-de-shu-ju-jiao-hu/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/04/29/yong-python-fa-ti-xing-you-jian/" title="Previous Post: 用nohup后台运行,用python 发提醒邮件">&laquo; 用nohup后台运行,用python 发提醒邮件</a>
+      
+      
+    </p>
+  </footer>
 </article>
 
 </div>

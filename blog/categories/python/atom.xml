@@ -4,7 +4,7 @@
   <title><![CDATA[Category: python | 名字]]></title>
   <link href="http://kkx.github.com/blog/categories/python/atom.xml" rel="self"/>
   <link href="http://kkx.github.com/"/>
-  <updated>2012-04-29T01:29:00-07:00</updated>
+  <updated>2012-05-04T18:16:34-07:00</updated>
   <id>http://kkx.github.com/</id>
   <author>
     <name><![CDATA[小逸]]></name>
@@ -12,6 +12,36 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[numpy和matlab之间的数据交互]]></title>
+    <link href="http://kkx.github.com/blog/2012/05/04/numpyhe-matlabzhi-jian-de-shu-ju-jiao-hu/"/>
+    <updated>2012-05-04T18:03:00-07:00</updated>
+    <id>http://kkx.github.com/blog/2012/05/04/numpyhe-matlabzhi-jian-de-shu-ju-jiao-hu</id>
+    <content type="html"><![CDATA[<p>要让matlab把数据倒入倒python里很简单, 我试过直接保存倒2进制的文件里，但是通过用scipy.io.loadmat 这个方法读取的时候会报错。结果职能用粗糙的办法了，把文件存放在一个可读文件里:</p>
+
+<p><code>
+save -ascii "your.txt" yourMatrix
+</code></p>
+
+<p>在python里读取的时候用genfromtxt:</p>
+
+<p><code>
+from numpy import genfromtxt
+m = genfromtxt('your.txt')
+</code></p>
+
+<p>想通过python把array寸在一个matlab能读取的文件里的方法也很简单:
+<code>
+from numpy import savetxt
+savetxt("your.txt", yourArray)
+</code>
+在matlab里直接load就行了:
+<code>
+load -ascii your.txt newMatrixName
+</code></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[用nohup后台运行,用python 发提醒邮件]]></title>

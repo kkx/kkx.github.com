@@ -9,9 +9,8 @@
   <meta name="author" content="小逸">
 
   
-  <meta name="description" content="最近在学校的n电脑上跑数据，很多时候一个run要耗费好几个小时，ssh不知道为什么连一会后会自动断开，跑到一半程序就悲剧了。
-在网上找了一会 发现一个神器:nohup, 用法超级简单: nohup comand
-这样你的程序会后台运行，并且就算你ssh断开后都能继续跑着。 &hellip;">
+  <meta name="description" content="要让matlab把数据倒入倒python里很简单, 我试过直接保存倒2进制的文件里，但是通过用scipy.io.loadmat 这个方法读取的时候会报错。结果职能用粗糙的办法了，把文件存放在一个可读文件里: 1
+save -ascii "your.txt" yourMatrix &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -66,6 +65,70 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/05/04/numpyhe-matlabzhi-jian-de-shu-ju-jiao-hu/">Numpy和matlab之间的数据交互</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-05-04T18:03:00-07:00" pubdate data-updated="true">May 4<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>要让matlab把数据倒入倒python里很简单, 我试过直接保存倒2进制的文件里，但是通过用scipy.io.loadmat 这个方法读取的时候会报错。结果职能用粗糙的办法了，把文件存放在一个可读文件里:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>save -ascii "your.txt" yourMatrix </span></code></pre></td></tr></table></div></figure>
+
+
+<p>在python里读取的时候用genfromtxt:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>from numpy import genfromtxt
+</span><span class='line'>m = genfromtxt('your.txt') </span></code></pre></td></tr></table></div></figure>
+
+
+<p>想通过python把array寸在一个matlab能读取的文件里的方法也很简单:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>from numpy import savetxt
+</span><span class='line'>savetxt("your.txt", yourArray)</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在matlab里直接load就行了:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>load -ascii your.txt newMatrixName</span></code></pre></td></tr></table></div></figure>
+
+
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -280,6 +343,10 @@ http://en.wikipedia.org/wiki/Bag_of_words_model_in_computer_vision.</p>
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/05/04/numpyhe-matlabzhi-jian-de-shu-ju-jiao-hu/">numpy和matlab之间的数据交互</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2012/04/29/yong-python-fa-ti-xing-you-jian/">用nohup后台运行,用python 发提醒邮件</a>
