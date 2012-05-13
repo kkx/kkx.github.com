@@ -117,7 +117,7 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 
 <div class="entry-content"><p>Grammatical evolution 算法是一个遗传算法的分支，主要是通过遗传算法中的operators:crossover(杂交), mutation(变异)来查找最有解，而在grammatical evolution里最优解是以个方程或者一系列的代码块(executable program)。优秀的代码块往往能对目标解有很好的靠近。这个学术界的代表人物就要算是<a href="http://en.wikipedia.org/wiki/John_Koza">John Koza</a>, 他的<a href="http://www.genetic-programming.com/jkpdf/tr1314.pdf">Genetic Programming: A Paradigm for Genetically Breeding Populations of Computer Programs to Solve Problems</a>也是一本很好的reference。</p>
 
-<p>GE算法主要通过[BNF语法]对一个search space进行限制，这样的话能很好的对那些破坏语法规则的代码块进行剔除，大大减少了搜索空间的范围。在实际运用中，有两个主要概念: “genotype”和”phenotype。也就是基因和外貌，一个很好的例子就是你的外貌(眼睛颜色)取决语你的基因(DNA)，而通常基因和外貌是两层不一样的东西。 在GE算法里，phenotype就是我们所要的程序，而genotype是一串整数。通过这串整数的数值和他们所在的环境(也就是所有的语法规则)产生出来一系列的rules(代码)，最终这一连串的代码的就结果就是我们所在找的代码块。通过检验代码块的fitness(通常在找一个方程的时候会先行计算要找方程对于某些特定数值的预计结果，然后通过代码块和预定数值的数值结果差的大小来判断相似度, 变相的监督学习？)来决定他的’繁殖’能力，这样我们又回到了GA算法里的crossover和mutation。也就是说，在GE算法里，每个代码块是一个人口，通过不断的对一大群人口不停的结合和转变找到最优质的答案。</p>
+<p>GE算法主要通过<a href="http://en.wikipedia.org/wiki/Backus-Naur_form">BNF语法</a>对一个search space进行限制，这样的话能很好的对那些破坏语法规则的代码块进行剔除，大大减少了搜索空间的范围。在实际运用中，有两个主要概念: “genotype”和”phenotype。也就是基因和外貌，一个很好的例子就是你的外貌(眼睛颜色)取决语你的基因(DNA)，而通常基因和外貌是两层不一样的东西。 在GE算法里，phenotype就是我们所要的程序，而genotype是一串整数。通过这串整数的数值和他们所在的环境(也就是所有的语法规则)产生出来一系列的rules(代码)，最终这一连串的代码的就结果就是我们所在找的代码块。通过检验代码块的fitness(通常在找一个方程的时候会先行计算要找方程对于某些特定数值的预计结果，然后通过代码块和预定数值的数值结果差的大小来判断相似度, 变相的监督学习？)来决定他的’繁殖’能力，这样我们又回到了GA算法里的crossover和mutation。也就是说，在GE算法里，每个代码块是一个人口，通过不断的对一大群人口不停的结合和转变找到最优质的答案。</p>
 
 <p>有必要讲一下genotype转化到phenotype这一过程，在这篇Neill的文章<a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.45.3336&amp;rep=rep1&amp;type=pdf">Grammatical evolution</a>中有很好的解释。</p>
 
