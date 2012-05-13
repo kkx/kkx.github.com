@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>numpy和matlab之间的数据交互 - 名字</title>
+  <title>Grammatical evolution 文法算法 - 名字</title>
   <meta name="author" content="小逸">
 
   
-  <meta name="description" content="要让matlab把数据倒入倒python里很简单, 我试过直接保存倒2进制的文件里，但是通过用scipy.io.loadmat 这个方法读取的时候会报错。结果职能用粗糙的办法了，把文件存放在一个可读文件里: save -ascii "your.txt" yourMatrix &hellip;">
+  <meta name="description" content="Grammatical evolution 算法是一个遗传算法的分支，主要是通过遗传算法中的operators:crossover(杂交), mutation(变异)来查找最有解，而在grammatical evolution里最优解是以个方程或者一系列的代码块(executable &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://kkx.github.com/blog/2012/05/04/numpyhe-matlabzhi-jian-de-shu-ju-jiao-hu">
+  <link rel="canonical" href="http://kkx.github.com/blog/2012/05/12/grammatical-evolution-wen-fa-suan-fa">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -90,7 +90,7 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
   
   <header>
     
-      <h1 class="entry-title">Numpy和matlab之间的数据交互</h1>
+      <h1 class="entry-title">Grammatical Evolution 文法算法</h1>
     
     
       <p class="meta">
@@ -106,7 +106,7 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
   
 
 
-<time datetime="2012-05-04T18:03:00-07:00" pubdate data-updated="true">May 4<span>th</span>, 2012</time>
+<time datetime="2012-05-12T16:37:00-07:00" pubdate data-updated="true">May 12<span>th</span>, 2012</time>
         
          | <a href="#disqus_thread">Comments</a>
         
@@ -115,27 +115,14 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
   </header>
 
 
-<div class="entry-content"><p>要让matlab把数据倒入倒python里很简单, 我试过直接保存倒2进制的文件里，但是通过用scipy.io.loadmat 这个方法读取的时候会报错。结果职能用粗糙的办法了，把文件存放在一个可读文件里:</p>
+<div class="entry-content"><p>Grammatical evolution 算法是一个遗传算法的分支，主要是通过遗传算法中的operators:crossover(杂交), mutation(变异)来查找最有解，而在grammatical evolution里最优解是以个方程或者一系列的代码块(executable program)。优秀的代码块往往能对目标解有很好的靠近。这个学术界的代表人物就要算是<a href="http://en.wikipedia.org/wiki/John_Koza">John Koza</a>, 他的<a href="http://www.genetic-programming.com/jkpdf/tr1314.pdf">Genetic Programming: A Paradigm for Genetically Breeding Populations of Computer Programs to Solve Problems</a>也是一本很好的reference。</p>
 
-<pre><code>save -ascii "your.txt" yourMatrix 
-</code></pre>
+<p>GE算法主要通过[BNF语法]对一个search space进行限制，这样的话能很好的对那些破坏语法规则的代码块进行剔除，大大减少了搜索空间的范围。在实际运用中，有两个主要概念: “genotype”和”phenotype。也就是基因和外貌，一个很好的例子就是你的外貌(眼睛颜色)取决语你的基因(DNA)，而通常基因和外貌是两层不一样的东西。 在GE算法里，phenotype就是我们所要的程序，而genotype是一串整数。通过这串整数的数值和他们所在的环境(也就是所有的语法规则)产生出来一系列的rules(代码)，最终这一连串的代码的就结果就是我们所在找的代码块。通过检验代码块的fitness(通常在找一个方程的时候会先行计算要找方程对于某些特定数值的预计结果，然后通过代码块和预定数值的数值结果差的大小来判断相似度, 变相的监督学习？)来决定他的’繁殖’能力，这样我们又回到了GA算法里的crossover和mutation。也就是说，在GE算法里，每个代码块是一个人口，通过不断的对一大群人口不停的结合和转变找到最优质的答案。</p>
 
-<p>在python里读取的时候用genfromtxt:</p>
+<p>有必要讲一下genotype转化到phenotype这一过程，在这篇Neill的文章<a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.45.3336&amp;rep=rep1&amp;type=pdf">Grammatical evolution</a>中有很好的解释。</p>
 
-<pre><code>from numpy import genfromtxt
-m = genfromtxt('your.txt') 
-</code></pre>
-
-<p>想通过python把array寸在一个matlab能读取的文件里的方法也很简单:</p>
-
-<pre><code>from numpy import savetxt
-savetxt("your.txt", yourArray)
-</code></pre>
-
-<p>在matlab里直接load就行了:</p>
-
-<pre><code>load -ascii your.txt newMatrixName
-</code></pre>
+<p>同个这个idea很多GE算法的变种也相继出来了，<a href="http://arantxa.ii.uam.es/~alfonsec/docs/confint/iwinac05.pdf">Attribute Grammar Evolution</a>和[Christiansen Grammar Evolution: grammatical 
+evolution with semantics](我老师写的¬¬) 都是对GE的改进，通过对语法上下文和语义的限制和检查加快了搜索的速度和搜索的结果。不过太多的限制也会是算法的效能下降哦。</p>
 
 </div>
 
@@ -159,12 +146,12 @@ savetxt("your.txt", yourArray)
   
 
 
-<time datetime="2012-05-04T18:03:00-07:00" pubdate data-updated="true">May 4<span>th</span>, 2012</time>
+<time datetime="2012-05-12T16:37:00-07:00" pubdate data-updated="true">May 12<span>th</span>, 2012</time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/numpy/'>numpy</a>, <a class='category' href='/blog/categories/python/'>python</a>, <a class='category' href='/blog/categories/scipy/'>scipy</a>
+    <a class='category' href='/blog/categories/grammatical-evolution/'>Grammatical evolution</a>
   
 </span>
 
@@ -173,7 +160,7 @@ savetxt("your.txt", yourArray)
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://kkx.github.com/blog/2012/05/04/numpyhe-matlabzhi-jian-de-shu-ju-jiao-hu/" data-via="" data-counturl="http://kkx.github.com/blog/2012/05/04/numpyhe-matlabzhi-jian-de-shu-ju-jiao-hu/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://kkx.github.com/blog/2012/05/12/grammatical-evolution-wen-fa-suan-fa/" data-via="" data-counturl="http://kkx.github.com/blog/2012/05/12/grammatical-evolution-wen-fa-suan-fa/" >Tweet</a>
   
   
   <div class="g-plusone" data-size="medium"></div>
@@ -186,10 +173,8 @@ savetxt("your.txt", yourArray)
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2012/04/29/yong-python-fa-ti-xing-you-jian/" title="Previous Post: 用nohup后台运行,用python 发提醒邮件">&laquo; 用nohup后台运行,用python 发提醒邮件</a>
+        <a class="basic-alignment left" href="/blog/2012/05/05/zai-octopresszhong-shi-yong-latex/" title="Previous Post: 在octopress中使用latex">&laquo; 在octopress中使用latex</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2012/05/05/zai-octopresszhong-shi-yong-latex/" title="Next Post: 在octopress中使用latex">在octopress中使用latex &raquo;</a>
       
     </p>
   </footer>
@@ -272,8 +257,8 @@ savetxt("your.txt", yourArray)
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://kkx.github.com/blog/2012/05/04/numpyhe-matlabzhi-jian-de-shu-ju-jiao-hu/';
-        var disqus_url = 'http://kkx.github.com/blog/2012/05/04/numpyhe-matlabzhi-jian-de-shu-ju-jiao-hu/';
+        var disqus_identifier = 'http://kkx.github.com/blog/2012/05/12/grammatical-evolution-wen-fa-suan-fa/';
+        var disqus_url = 'http://kkx.github.com/blog/2012/05/12/grammatical-evolution-wen-fa-suan-fa/';
         var disqus_script = 'embed.js';
       
     (function () {
