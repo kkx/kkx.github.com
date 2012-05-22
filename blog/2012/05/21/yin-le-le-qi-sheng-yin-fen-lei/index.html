@@ -201,7 +201,7 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 <p><br />
 测试的时候每个类有20个case，从结果上来看，钢琴和吉他的识别不是很高，而且他们彼此有着很高互指。其实很大的原因是:当我们用codebook的时候，会对数据进行压缩，很多时候这个压缩会让比较discriminant的数据丢失。在这个实验中，钢琴和吉他的声音是比较相似的。</p>
 
-<p><img class="center" src="http://localhost:4000/images/histogram1.png" width="650" height="850" />
+<p><img class="center" src="http://kkx.github.com/images/histogram1.png" width="650" height="850" />
 上面这个图是个histogram的分布图，通过随机选取每个类里的某一个训练的音频段生成的分布图，从途中可以看出，实际上通过codebook之后，吉他和钢琴的数据分布是非常耦合和相似的。所以，实验中对钢琴和吉他的分别度不高也有了依据。</p>
 
 <h2 id="naive-bayes-nearest-neighbornbnn">Naive Bayes Nearest Neighbor(NBNN)</h2>
@@ -215,7 +215,7 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
   <li><script type="math/tex">C = arg min_c\sum_{i=1}^n</script> <script type="math/tex">\left \|d_i - NN_c(d_i)\right \|^2  </script></li>
 </ol>
 
-<p><img class="right" src="http://localhost:4000/images/kd_tree.png" width="200" height="250" title="kt-tree" />
+<p><img class="right" src="http://kkx.hithub.com/images/kd_tree.png" width="200" height="250" title="kt-tree" />
 还有一点要说的是，在寻找最近邻居的时候，计算需求是相当高的，在原文里，作者用的是<a href="http://en.wikipedia.org/wiki/K-d_tree">kd-tree</a>,这样的能很快的找到最近的邻居。在这个实验的时候我用的scipy里kd-tree效率非常慢，后来才发现原来原作者是用的approximate kd-tree. </p>
 
 <p>这个算法虽然简单，但是结果是惊人的不错:
