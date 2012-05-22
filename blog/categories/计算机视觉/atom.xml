@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 计算机视觉 | 名字]]></title>
   <link href="http://kkx.github.com/blog/categories/计算机视觉/atom.xml" rel="self"/>
   <link href="http://kkx.github.com/"/>
-  <updated>2012-05-22T02:28:19-07:00</updated>
+  <updated>2012-05-22T02:29:18-07:00</updated>
   <id>http://kkx.github.com/</id>
   <author>
     <name><![CDATA[小逸]]></name>
@@ -118,7 +118,7 @@
   <li><script type="math/tex">C = arg min_c\sum_{i=1}^n</script> <script type="math/tex">\left \|d_i - NN_c(d_i)\right \|^2  </script></li>
 </ol>
 
-<p><img class="right" src="http://kkx.hithub.com/images/kd_tree.png" width="200" height="250" title="kt-tree" >
+<p><img class="right" src="http://kkx.github.com/images/kd_tree.png" width="200" height="250" title="kt-tree" >
 还有一点要说的是，在寻找最近邻居的时候，计算需求是相当高的，在原文里，作者用的是<a href="http://en.wikipedia.org/wiki/K-d_tree">kd-tree</a>,这样的能很快的找到最近的邻居。在这个实验的时候我用的scipy里kd-tree效率非常慢，后来才发现原来原作者是用的approximate kd-tree. </p>
 
 <p>这个算法虽然简单，但是结果是惊人的不错:
