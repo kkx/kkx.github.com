@@ -4,7 +4,7 @@
   <title><![CDATA[名字]]></title>
   <link href="http://kkx.github.com/atom.xml" rel="self"/>
   <link href="http://kkx.github.com/"/>
-  <updated>2012-05-15T21:21:00-07:00</updated>
+  <updated>2012-05-22T02:26:46-07:00</updated>
   <id>http://kkx.github.com/</id>
   <author>
     <name><![CDATA[小逸]]></name>
@@ -12,6 +12,321 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[音乐乐器声音分类]]></title>
+    <link href="http://kkx.github.com/blog/2012/05/21/yin-le-le-qi-sheng-yin-fen-lei/"/>
+    <updated>2012-05-21T23:07:00-07:00</updated>
+    <id>http://kkx.github.com/blog/2012/05/21/yin-le-le-qi-sheng-yin-fen-lei</id>
+    <content type="html"><![CDATA[<p>音乐分类其实很早就有人做了，这些天在kaggle上有个<a href="http://www.kaggle.com/c/msdchallenge">Million Song Dataset Challenge</a> 非常火，上面有大量的数据可以让选手们通过底层，高层的和基于用户协作推荐的等等手段来对歌曲进行推荐. 这里我做的音乐声音分类是底层的, 而且我觉得一般的音乐文件要处理的东西太多了，节奏，速度什么的，在这里我只对4种乐器的声音进行分类: 钢琴，吉他，口琴，小提琴。</p>
+
+<p>一般底层的声音，语音分类，speech recognition 使用无外乎<a href="MFCC">Mel-frequency cepstrum</a> 和 lpc analysis。 第二是个比较老的方法，而MFCC是我所用到的。可以把MFCCs对于好分类和识别的家伙们来说可以理解为对一段声音文件的descriptor，重点是这个descriptor非常discriminant. 在实验中，使用了matlab的voicebox里的melcepst函数，可以生成长度为12的数组，每个数组一般是一很小段声音的description，由于取样和设置的问题，MFCC所包含的声音长度是不一样的，在我的实验中，差不多连续1000个MFCC差不多是6秒钟的音频。 那4种声音来源分别是verycd上名家solo哈，不过要吐槽的是找了好多title是solo的，但是其实是是几种乐器和音的。每个类里取了6首左右的歌曲(20分钟左右)作为训练数据，提取出500k的MFCCs。</p>
+
+<p>在实验中我使用了两个方法, 一种是在学校里老师讲的”常规”方法, 还有一种是用于图像分类的。总觉得在做底层分类的时候，图像识别和声音识别的步骤是差不多的。</p>
+
+<ul>
+  <li>Binary-split, SVM</li>
+  <li>Naive Bayes Nearest Neighbor </li>
+</ul>
+
+<h2 id="binary-split--svm">Binary-split + SVM</h2>
+
+<p>500k+的数据直接用来使用的话那就太夸张了，Binary-split+SVM这方法简单的来说是通过binary-split把500k的MFCC压缩成1000到2000个clusters，通过binary-split类似的数据会在一个小组里面。这种clustering算法里最有名的是k-means，不过k-means 速度实在是太悲剧了，虽然压缩损耗度要比binary-split少一些。 </p>
+
+<p>通过binary-split数据给压缩到少许clusters里，这所有的clusters其实就是所谓的<a href="http://en.wikipedia.org/wiki/Codebook">codebook</a>。codebook在通讯里面非常用,往往在数据通讯里，特别是声音传输中，需要用到codebook把传输数据进行压缩，在接受点的那一端，通过decode来还原原始数据。像一般的手机通讯就是用到这个概念，所以说很多时候人们发现电话里的声音总不是特别像某个人，原因就是因为声音信息在传输的时候多少给损耗掉了。在实验中，每个声音段(通常是1000个MFCCs也就是6秒左右的声音)用codebook可以生成一个一个histogram: 把每个MFCC在binary-split树里跑一下，找到最相近的cluster，通过统计所有cluster里一个声音段落里不同的MFCCs所出现的次数来生成Histogram。</p>
+
+<p>每个声音段所产生的histrogram就是所要用到用来训练SVM的数据。这里的svm是one-vs-all，所以说将有4个svm会训练出来，每个svm会应对每个类，而每个svm会长生出一个概率值，是只一个声音段是它所对应类的可能性。在测试中往往选取最高的可能性作为音频的class。</p>
+
+<p>在测试中，以上的步骤都差不多，只是，不需要生成codebook，直接使用了就可以。这里要说的是，测试的音频长度不一定需要和训练的音频长度一样，只要每次生成的histogram是归一化的就行了。</p>
+
+<table border="1" cellspacing="30" cellpadding="100">
+    <tr>
+    <th />
+    <th />
+    <th> Piano|</th>
+    <th>          </th>
+    <th> Guitar| </th>
+    <th>          </th>
+    <th> Violin| </th>
+    <th />
+    <th> Harmonica| </th>
+    </tr>
+
+    <tr>
+    <th>Piano|</th>
+    <th />
+    <th>16</th>
+    <th />
+    <th>8</th>
+    <th />
+    <th>0</th>
+    <th />
+    <th>0</th>
+    </tr>
+
+    <tr>
+    <th>Guitar|</th>
+    <th />
+    <th>4</th>
+    <th />
+    <th>12</th>
+    <th />
+    <th>20</th>
+    <th />
+    <th>4</th>
+    </tr>
+    
+    <tr>
+    <th>Violin|</th>
+    <th />
+    <th>0</th>
+    <th />
+    <th>0</th>
+    <th />
+    <th>20</th>
+    <th />
+    <th>4</th>
+    </tr>
+
+    <tr>
+    <th>Harmonica|</th>
+    <th />
+    <th>0</th>
+    <th />
+    <th>0</th>
+    <th />
+    <th>0</th>
+    <th />
+    <th>16</th>
+    </tr>
+</table>
+
+<p><br />
+测试的时候每个类有20个case，从结果上来看，钢琴和吉他的识别不是很高，而且他们彼此有着很高互指。其实很大的原因是:当我们用codebook的时候，会对数据进行压缩，很多时候这个压缩会让比较discriminant的数据丢失。在这个实验中，钢琴和吉他的声音是比较相似的。</p>
+
+<p><img class="center" src="http://localhost:4000/images/histogram1.png" width="650" height="850" />
+上面这个图是个histogram的分布图，通过随机选取每个类里的某一个训练的音频段生成的分布图，从途中可以看出，实际上通过codebook之后，吉他和钢琴的数据分布是非常耦合和相似的。所以，实验中对钢琴和吉他的分别度不高也有了依据。</p>
+
+<h2 id="naive-bayes-nearest-neighbornbnn">Naive Bayes Nearest Neighbor(NBNN)</h2>
+<p>实际上，在图像识别中，很多时候也是运用到了上面所讲的方法，通过codebook对图像所提取的key-points进行clusterization，之后通过第二层的分类器把codebook产出的histogram数组进行分类。所以我觉得NBNN应该也能运用到声音分类中来。 NBNN是最近以篇叫<a href="http://www.google.es/url?sa=t&amp;rct=j&amp;q=&amp;esrc=s&amp;source=web&amp;cd=1&amp;ved=0CFMQFjAA&amp;url=http%3A%2F%2Fwww.wisdom.weizmann.ac.il%2F~irani%2FPAPERS%2FInDefenceOfNN_CVPR08.pdf&amp;ei=d7G6T6yCKaOu0QX5_cD0Aw&amp;usg=AFQjCNGWk0lo_L6AEjgco6PPMUZ0YE-zOQ&amp;sig2=ZvwoYRICPitYbrkseMV8Bw">In Defense of Nearest-Neighbor Based Image Classification</a>的论文中看到的，该论文着重指出，codebook对数据损耗在无训练模型中的影响。 NBNN就是无训练模型(也叫no parametric?)， 优点就是不需要训练。。。还有一个优点是在分类里，NBNN用的是image-class距离，而不是image-image距离，这样的话，intravariance很高的类对它的影响不大。</p>
+
+<p>在论文中如果我们使用的邻近邻居是1的话，算法简化成以下:</p>
+
+<ol>
+  <li>Compute MFCCs <script type="math/tex">d_i,...,d_n</script> of the query audio</li>
+  <li><script type="math/tex">\forall d_i \forall C</script> compute the NN of <script type="math/tex">d_i</script> in <script type="math/tex">C</script>: <script type="math/tex">NN_C(d_i)</script></li>
+  <li><script type="math/tex">C = arg min_c\sum_{i=1}^n</script> <script type="math/tex">\left \|d_i - NN_c(d_i)\right \|^2  </script></li>
+</ol>
+
+<p><img class="right" src="http://localhost:4000/images/kd_tree.png" width="200" height="250" title="kt-tree" />
+还有一点要说的是，在寻找最近邻居的时候，计算需求是相当高的，在原文里，作者用的是<a href="http://en.wikipedia.org/wiki/K-d_tree">kd-tree</a>,这样的能很快的找到最近的邻居。在这个实验的时候我用的scipy里kd-tree效率非常慢，后来才发现原来原作者是用的approximate kd-tree. </p>
+
+<p>这个算法虽然简单，但是结果是惊人的不错:
+使用所有的训练数据里的mfcc，每个测试音频有2000个MFCC，测试过程相当慢(好几个小时,如果使用approximate kd-tree的话应该能快好几个数量级)</p>
+
+<table border="1" cellspacing="30" cellpadding="100">
+    <tr>
+    <th />
+    <th />
+    <th> Piano|</th>
+    <th>          </th>
+    <th> Guitar| </th>
+    <th>          </th>
+    <th> Violin| </th>
+    <th />
+    <th> Harmonica| </th>
+    </tr>
+
+    <tr>
+    <th>Piano|</th>
+    <th />
+    <th>20</th>
+    <th />
+    <th>0</th>
+    <th />
+    <th>0</th>
+    <th />
+    <th>0</th>
+    </tr>
+
+    <tr>
+    <th>Guitar|</th>
+    <th />
+    <th>0</th>
+    <th />
+    <th>20</th>
+    <th />
+    <th>1</th>
+    <th />
+    <th>0</th>
+    </tr>
+    
+    <tr>
+    <th>Violin|</th>
+    <th />
+    <th>0</th>
+    <th />
+    <th>0</th>
+    <th />
+    <th>19</th>
+    <th />
+    <th>0</th>
+    </tr>
+
+    <tr>
+    <th>Harmonica|</th>
+    <th />
+    <th>0</th>
+    <th />
+    <th>0</th>
+    <th />
+    <th>0</th>
+    <th />
+    <th>20</th>
+    </tr>
+</table>
+
+<p><br />
+从数据集里随机在每个类中获取500个MFCC，每个音频400个MFCC</p>
+
+<table border="1" cellspacing="30" cellpadding="100">
+    <tr>
+    <th />
+    <th />
+    <th> Piano|</th>
+    <th>          </th>
+    <th> Guitar| </th>
+    <th>          </th>
+    <th> Violin| </th>
+    <th />
+    <th> Harmonica| </th>
+    </tr>
+
+    <tr>
+    <th>Piano|</th>
+    <th />
+    <th>20</th>
+    <th />
+    <th>0</th>
+    <th />
+    <th>0</th>
+    <th />
+    <th>0</th>
+    </tr>
+
+    <tr>
+    <th>Guitar|</th>
+    <th />
+    <th>0</th>
+    <th />
+    <th>20</th>
+    <th />
+    <th>3</th>
+    <th />
+    <th>0</th>
+    </tr>
+    
+    <tr>
+    <th>Violin|</th>
+    <th />
+    <th>0</th>
+    <th />
+    <th>0</th>
+    <th />
+    <th>17</th>
+    <th />
+    <th>0</th>
+    </tr>
+
+    <tr>
+    <th>Harmonica|</th>
+    <th />
+    <th>0</th>
+    <th />
+    <th>0</th>
+    <th />
+    <th>0</th>
+    <th />
+    <th>20</th>
+    </tr>
+</table>
+
+<p><br />
+最后是从每个类的训练数据中随机抽取30个MFCCs，每200个MFCC做音频测试数据的长度,测试数据是每个类40个，总使用的时间几秒而已</p>
+
+<table border="1" cellspacing="30" cellpadding="100">
+    <tr>
+    <th />
+    <th />
+    <th> Piano|</th>
+    <th>          </th>
+    <th> Guitar| </th>
+    <th>          </th>
+    <th> Violin| </th>
+    <th />
+    <th> Harmonica| </th>
+    </tr>
+
+    <tr>
+    <th>Piano|</th>
+    <th />
+    <th>35</th>
+    <th />
+    <th>5</th>
+    <th />
+    <th>2</th>
+    <th />
+    <th>0</th>
+    </tr>
+
+    <tr>
+    <th>Guitar|</th>
+    <th />
+    <th>4</th>
+    <th />
+    <th>35</th>
+    <th />
+    <th>1</th>
+    <th />
+    <th>0</th>
+    </tr>
+    
+    <tr>
+    <th>Violin|</th>
+    <th />
+    <th>1</th>
+    <th />
+    <th>0</th>
+    <th />
+    <th>37</th>
+    <th />
+    <th>0</th>
+    </tr>
+
+    <tr>
+    <th>Harmonica|</th>
+    <th />
+    <th>0</th>
+    <th />
+    <th>0</th>
+    <th />
+    <th>0</th>
+    <th />
+    <th>20</th>
+    </tr>
+</table>
+<p><br /> 
+结果很显然易见，NBNN在声音分类方面还是很厉害的。更证明了声音分类和图像分类的相似之处。 
+以后有时间的话，可以试试以下的东西:</p>
+
+<ul>
+  <li>可以在NBNN里不随机选取MFCC，而是选取更有代表性的</li>
+  <li>使用 approximate kd-tree</li>
+  <li>用图像分类里的 random forests算法试试看</li>
+</ul>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Grammatical evolution 文法算法]]></title>
