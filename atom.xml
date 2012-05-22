@@ -4,7 +4,7 @@
   <title><![CDATA[名字]]></title>
   <link href="http://kkx.github.com/atom.xml" rel="self"/>
   <link href="http://kkx.github.com/"/>
-  <updated>2012-05-22T02:29:18-07:00</updated>
+  <updated>2012-05-22T02:31:48-07:00</updated>
   <id>http://kkx.github.com/</id>
   <author>
     <name><![CDATA[小逸]]></name>
@@ -322,7 +322,7 @@
 <ul>
   <li>可以在NBNN里不随机选取MFCC，而是选取更有代表性的</li>
   <li>使用 approximate kd-tree</li>
-  <li>用图像分类里的 random forests算法试试看</li>
+  <li>用图像分类里的 random forest算法试试看</li>
 </ul>
 
 ]]></content>
