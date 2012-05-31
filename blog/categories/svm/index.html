@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>根据bag of keypoints图片分类 - 名字</title>
+  <title>Category: SVM - 名字</title>
   <meta name="author" content="小逸">
 
   
-  <meta name="description" content="最近看了一篇名叫Categorizing nine visual classes using local appearance descriptors 的论文，相当受启发，该论文以Information retrieval里bag of words(以单词的出现的次数的矩阵来概括某篇文章)为基础, &hellip;">
+  <meta name="description" content="Category: SVM">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://kkx.github.com/blog/2012/04/20/gen-ju-bag-of-keypointstu-pian-fen-lei">
+  <link rel="canonical" href="http://kkx.github.comblog/categories/svm">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -86,122 +86,36 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
   <div id="main">
     <div id="content">
       <div>
-<article class="hentry" role="article">
+<article role="article">
   
   <header>
-    
-      <h1 class="entry-title">根据bag of Keypoints图片分类</h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-04-20T02:41:00-07:00" pubdate data-updated="true">Apr 20<span>th</span>, 2012</time>
-        
-         | <a href="#disqus_thread">Comments</a>
-        
-      </p>
+    <h1 class="entry-title">Category: SVM</h1>
     
   </header>
-
-
-<div class="entry-content"><p>最近看了一篇名叫<a href="http://www.xrce.xerox.com/index.php/content/download/16612/118527/file/willamowski.pdf">Categorizing nine visual classes using local appearance descriptors</a> 的论文，相当受启发，该论文以Information retrieval里<a href="http://en.wikipedia.org/wiki/Bag_of_words_model">bag of words</a>(以单词的出现的次数的矩阵来概括某篇文章)为基础,通过对图像所有的interest points用<a href="http://en.wikipedia.org/wiki/Harris_affine_region_detector">harris affine detector</a>来
-产生一个bag of keypoints(用sift descriptor描述每个keypoints) 对图像进行描述。</p>
-
-<p>不过一套训练数据里所有的keypoints的数量是相当大的，这里论文的另外一个看点就是用k-means对所有的keypoints进行归类，每个cluster之中保含类似的keypoints，而这时，每个图像里的keypoints 在每个cluster里的出现次数将会给统计并且生成一个bag of keypoints. </p>
-
-<p>通过naive bayes或svm 进行训练，在论文里分类的结果还不错.
-有几个我觉得也许可以改进的地方:</p>
-
-<blockquote>
-  <p>1 在原论文里：每种图像生成的keypoints的数量是不同的，为了避免bias作者在clustering的时候在每类图像里随机选了5000个keypoints，我觉得如果选的时候可以把stop words的概念加进去，每个class都有的keypoint去除掉的话应该能增加discrimination.</p>
-</blockquote>
-
-<blockquote>
-  <p>2 在测试的时候我觉得如果一个keypoint离2个以上的cluster距离都差不多的话，应该可以把它当作IR里的‘生词’一样忽略掉.
-感觉以上这两点应该能对算法有一个改进，以后有空得研究下。</p>
-</blockquote>
-
-<p>还有在论文里作者在做测试的时候没有使用no-object的图像进行训练和测试，我觉得如果加进去的话，结果应该会差一个档次。</p>
-
-<p>参考:
-http://en.wikipedia.org/wiki/Bag_of_words_model_in_computer_vision.</p>
-
-<p>这里是<a href="http://videolectures.net/lmcv04_dance_vcbk/">作者介绍算法的视频</a>,解释的相当不错，不过好像视频后半部分看不了。</p>
-
-</div>
-
-
-  <footer>
-    <p class="meta">
-      
   
-
-<span class="byline author vcard">Posted by <span class="fn">小逸</span></span>
-
-      
-
-
-
-
-
+  <div id="blog-archives" class="category">
 
 
 
   
+  <h2>2012</h2>
+
+<article>
+  
+<h1><a href="/blog/2012/05/30/shu-ju-ji-bu-ping-heng-wen-ti/">数据集不平衡问题</a></h1>
+<time datetime="2012-05-30T18:06:00-07:00" pubdate><span class='month'>May</span> <span class='day'>30</span> <span class='year'>2012</span></time>
+
+<footer>
+  <span class="categories">posted in <a class='category' href='/blog/categories/svm/'>SVM</a>, <a class='category' href='/blog/categories/weka/'>WEKA</a>, <a class='category' href='/blog/categories/不平衡数据集/'>不平衡数据集</a>, <a class='category' href='/blog/categories/分类/'>分类</a></span>
+</footer>
 
 
-<time datetime="2012-04-20T02:41:00-07:00" pubdate data-updated="true">Apr 20<span>th</span>, 2012</time>
-      
-
-<span class="categories">
-  
-    <a class='category' href='/blog/categories/分类/'>分类</a>, <a class='category' href='/blog/categories/图像/'>图像</a>, <a class='category' href='/blog/categories/计算机视觉/'>计算机视觉</a>
-  
-</span>
-
-
-    </p>
-    
-      <div class="sharing">
-  
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://kkx.github.com/blog/2012/04/20/gen-ju-bag-of-keypointstu-pian-fen-lei/" data-via="" data-counturl="http://kkx.github.com/blog/2012/04/20/gen-ju-bag-of-keypointstu-pian-fen-lei/" >Tweet</a>
-  
-  
-  <div class="g-plusone" data-size="medium"></div>
-  
-  
-    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
-  
-</div>
-
-    
-    <p class="meta">
-      
-        <a class="basic-alignment left" href="/blog/2012/04/15/hello-world/" title="Previous Post: Hello World">&laquo; Hello World</a>
-      
-      
-        <a class="basic-alignment right" href="/blog/2012/04/29/yong-python-fa-ti-xing-you-jian/" title="Next Post: 用nohup后台运行,用python 发提醒邮件">用nohup后台运行,用python 发提醒邮件 &raquo;</a>
-      
-    </p>
-  </footer>
 </article>
 
-  <section>
-    <h1>Comments</h1>
-    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 </div>
-  </section>
+
+  
+</article>
 
 </div>
 
@@ -280,10 +194,7 @@ my Last.fm
       var disqus_shortname = 'kkx';
       
         
-        // var disqus_developer = 1;
-        var disqus_identifier = 'http://kkx.github.com/blog/2012/04/20/gen-ju-bag-of-keypointstu-pian-fen-lei/';
-        var disqus_url = 'http://kkx.github.com/blog/2012/04/20/gen-ju-bag-of-keypointstu-pian-fen-lei/';
-        var disqus_script = 'embed.js';
+        var disqus_script = 'count.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

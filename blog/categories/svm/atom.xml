@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: SVM | 名字]]></title>
+  <link href="http://kkx.github.com/blog/categories/svm/atom.xml" rel="self"/>
+  <link href="http://kkx.github.com/"/>
+  <updated>2012-05-30T20:02:51-07:00</updated>
+  <id>http://kkx.github.com/</id>
+  <author>
+    <name><![CDATA[小逸]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[数据集不平衡问题]]></title>
+    <link href="http://kkx.github.com/blog/2012/05/30/shu-ju-ji-bu-ping-heng-wen-ti/"/>
+    <updated>2012-05-30T18:06:00-07:00</updated>
+    <id>http://kkx.github.com/blog/2012/05/30/shu-ju-ji-bu-ping-heng-wen-ti</id>
+    <content type="html"><![CDATA[<p>期末的另外一个大作业是对一个数据进行分类和研究。数据集是和保险行业相关的。94%的negative cases和6%的positive cases。 如此不平衡的数据往往你能通过使用最简单的分类器<a href="http://chem-eng.utoronto.ca/~datamining/dmc/zeror.htm">zeroR</a>来获得较高的准确率(94%). 在实际应用中，这样是非常不靠谱的。因为往往那些positive cases的忽略产生的影响是比较大的([FRR]的惩罚)。</p>
+
+<p>同样，直接使用不平衡数据会带来另外一个影响是: 往往分类器模型追求的是高准确率，自然而然的将会给高概率的类影响，结果将会是一个和<a href="http://chem-eng.utoronto.ca/~datamining/dmc/zeror.htm">zeroR</a>一样的分类器。在不同的测试之后，发现这个现象非常明显。</p>
+
+<p>那怎么样可以让分类器”学会一点实在的东西”, 而不是只追求”富贵(高准确率)”，或者两者皆之呢。有一种方法就是通过resampling，人为的让训练数据集的分布更平衡一些，通过这样的方法，训练出来的模型会更靠谱一些。但是同样的，这个模型在实际环境中的预测结果不会是很好的，因为我们改变了分布，不同分布下的同一个模型会导致结果的不同。怎么解决这类问题呢? 通常需要一个calibration，让模型试用于实际环境中的数据分布。在这篇<a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.58.3311&amp;rep=rep1&amp;type=pdf">Dealing with Unknown Priors in Supervised Classification</a>作者解释了怎么通过贝叶斯概率来做这个校准。在试验中，这样的校准对我的实验结果没有什么影响，主要的原因是像下面所谈到的，我的模型的结果是一个概率值，我需要选出概率最高的那些，而这个校验是<a href="http://en.wikipedia.org/wiki/Monotonic_function">Monotonic</a>的，对概率排序不产生影响。如果是组合不同的分类器的话，这个办法应该还是有用的。另外我还觉得，就算有组合不同的分类器，如果实际环境中数据分布差值在这么大结果也会一样不理想。</p>
+
+<p>期末的这个作业其实是让我们训练出某个模型，并让模型的结果是一个positive cases的概率值，我们需要在测试数据中，选出10%的数据，而这些数据中的positive cases的比重要尽可能的多。这里我介绍两个办法。</p>
+
+<h2 id="random-forest">Random Forest</h2>
+<p>比较正规，完全是跟着老师说的也就是上面说的那些办法来做。 碰到这样的数据集，往往分类器倒不是最重要的部分。很多preprocessing将会是一样的重要。数据拿来首先要自己分析一下哪些attributes是不需要的，一般会用information gain来看一些，某些gain特别高的也不一定是好feature，也许这些feature是些”事后”feature，对预测没有任何帮助。然后呢，会用一些<a href="http://en.wikipedia.org/wiki/Dimension_reduction">dimension reduction</a>的方法比如PCA，LDA，mRMR(这里我用的)对数据进行降维。</p>
+
+<p>降为之后，使用了upsampling 对训练数据集的分布进行更改，upsampling是把少的那部分复制起来，听说结果要比downsampling好。 然后呢，就是不同的测每个模型。最后我的模型是一个cost-sensitive + random forest. </p>
+
+<p>这里是我使用WEKA做分析的流程图:
+<img class="center" src="http://kkx.github.com/images/weka.png" width="650" height="850"></p>
+
+<p>我的最终结果是在10%的数据里，有12.56%的positive cases。 </p>
+
+<h2 id="svm">SVM</h2>
+<p>在做这个作业的事后在resys发过帖子问过，幸运的是有个浙江大学的牛人和我专门讨论了这个问题，当时他给了我一个方法就是通过SVM来做模型，这里的变化就是，通过soft margin，对每个类的给出不同的惩罚值C，这样的话，多数的那类的C会很小，而烧的那类C值会很大。当时一说就觉得非常靠谱，但是项目已经快deadline 也就没事间测试了。</p>
+
+<p>C的方程:
+*       <script type="math/tex">C\sum_{i=1}^l\epsilon_i = C_+\sum_{i\inI_+}\xi_i + C_-\sum_{i\inI_-}\xi_i</script></p>
+
+<p>巧的是，班上有个专门研究SVM牛人用这个方法做了，貌似用的是libsvm，也许libsvm能够对每个c值进行修改吧。结果是16%的positive cases！灰常之高，更证明了soft-margin 的svm对这类问题的好处。
+而且用SVM有个好处就是你不用使用什么resampling了，反正对svm的影响不大，因为svm 是基于support vectors做判断的。</p>
+
+]]></content>
+  </entry>
+  
+</feed>
