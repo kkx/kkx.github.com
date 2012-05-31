@@ -4,7 +4,7 @@
   <title><![CDATA[名字]]></title>
   <link href="http://kkx.github.com/atom.xml" rel="self"/>
   <link href="http://kkx.github.com/"/>
-  <updated>2012-05-30T20:10:08-07:00</updated>
+  <updated>2012-05-30T22:29:40-07:00</updated>
   <id>http://kkx.github.com/</id>
   <author>
     <name><![CDATA[小逸]]></name>
@@ -34,7 +34,8 @@
 <p>这里是我使用WEKA做分析的流程图:
 <img class="center" src="http://kkx.github.com/images/weka.png" width="650" height="850" /></p>
 
-<p>我的最终结果是在10%的数据里，有12.56%的positive cases。 </p>
+<p>我的最终结果是在10%的数据里，有12.56%的positive cases。下面是precision-recall的结果:
+<img class="center" src="http://kkx.github.com/images/precision-recall.png" width="650" height="850" /></p>
 
 <h2 id="svm">SVM</h2>
 <p>在做这个作业的事后在resys发过帖子问过，幸运的是有个浙江大学的牛人和我专门讨论了这个问题，当时他给了我一个方法就是通过SVM来做模型，这里的变化就是，通过soft margin，对每个类的给出不同的惩罚值C，这样的话，多数的那类的C会很小，而烧的那类C值会很大。当时一说就觉得非常靠谱，但是项目已经快deadline 也就没事间测试了。</p>
