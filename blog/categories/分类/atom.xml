@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 分类 | 名字]]></title>
   <link href="http://kkx.github.com/blog/categories/分类/atom.xml" rel="self"/>
   <link href="http://kkx.github.com/"/>
-  <updated>2012-05-30T20:07:59-07:00</updated>
+  <updated>2012-05-30T20:08:46-07:00</updated>
   <id>http://kkx.github.com/</id>
   <author>
     <name><![CDATA[小逸]]></name>
@@ -39,13 +39,7 @@
 <h2 id="svm">SVM</h2>
 <p>在做这个作业的事后在resys发过帖子问过，幸运的是有个浙江大学的牛人和我专门讨论了这个问题，当时他给了我一个方法就是通过SVM来做模型，这里的变化就是，通过soft margin，对每个类的给出不同的惩罚值C，这样的话，多数的那类的C会很小，而烧的那类C值会很大。当时一说就觉得非常靠谱，但是项目已经快deadline 也就没事间测试了。</p>
 
-<p>C的方程:</p>
-
-<ul>
-  <li>
-<script type="math/tex; mode=display">C\sum_{i=1}^l\epsilon_i = C_+\sum_{i\in I_+}\xi_i + C_-\sum_{i\in I_-}\xi_i</script>
-  </li>
-</ul>
+<p>C的方程: <script type="math/tex">C\sum_{i=1}^l\epsilon_i = C_+\sum_{i\in I_+}\xi_i + C_-\sum_{i\in I_-}\xi_i</script></p>
 
 <p>巧的是，班上有个专门研究SVM牛人用这个方法做了，貌似用的是libsvm，也许libsvm能够对每个c值进行修改吧。结果是16%的positive cases！灰常之高，更证明了soft-margin 的svm对这类问题的好处。
 而且用SVM有个好处就是你不用使用什么resampling了，反正对svm的影响不大，因为svm 是基于support vectors做判断的。</p>
