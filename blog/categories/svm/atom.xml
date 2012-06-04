@@ -4,7 +4,7 @@
   <title><![CDATA[Category: SVM | 名字]]></title>
   <link href="http://kkx.github.com/blog/categories/svm/atom.xml" rel="self"/>
   <link href="http://kkx.github.com/"/>
-  <updated>2012-06-03T19:52:45-07:00</updated>
+  <updated>2012-06-03T19:54:58-07:00</updated>
   <id>http://kkx.github.com/</id>
   <author>
     <name><![CDATA[小逸]]></name>
@@ -22,7 +22,7 @@
 
 <p>同样，直接使用不平衡数据会带来另外一个影响是: 往往分类器模型追求的是高准确率，自然而然的将会给高概率的类影响，结果将会是一个和<a href="http://chem-eng.utoronto.ca/~datamining/dmc/zeror.htm">zeroR</a>一样的分类器。在不同的测试之后，发现这个现象非常明显。</p>
 
-<p>那怎么样可以让分类器”学会一点实在的东西”, 而不是只追求”富贵(高准确率)”，或者两者皆之呢。有一种方法就是通过resampling，人为的让训练数据集的分布更平衡一些，通过这样的方法，训练出来的模型会更靠谱一些。但是同样的，这个模型在实际环境中的预测结果不会是很好的，因为我们改变了分布，不同分布下的同一个模型会导致结果的不同。怎么解决这类问题呢? 通常需要一个calibration，让模型试用于实际环境中的数据分布。在这篇<a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.58.3311&amp;rep=rep1&amp;type=pdf">Dealing with Unknown Priors in Supervised Classification</a>作者解释了怎么通过贝叶斯概率来做这个校准。在试验中，这样的校准对我的实验结果没有什么影响，主要的原因是像下面所谈到的，我的模型的结果是一个概率值，我需要选出概率最高的那些，而这个校验是<a href="http://en.wikipedia.org/wiki/Monotonic_function">Monotonic</a>的，对概率排序不产生影响。如果是组合不同的分类器的话，这个办法应该还是有用的。另外我还觉得，就算有组合不同的分类器，如果实际环境中数据分布差值在这么大结果也会一样不理想。</p>
+<p>那怎么样可以让分类器”学会一点实在的东西”, 而不是只追求”富贵(高准确率)”，或者两者皆之呢。有一种方法就是通过resampling，人为的让训练数据集的分布更平衡一些，通过这样的方法，训练出来的模型会更靠谱一些。但是同样的，这个模型在实际环境中的预测结果不会是很好的，因为我们改变了分布，不同分布下的同一个模型会导致结果的不同。怎么解决这类问题呢? 通常需要一个calibration，让模型试用于实际环境中的数据分布。在这篇<a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.58.3311&amp;rep=rep1&amp;type=pdf">Dealing with Unknown Priors in Supervised Classification</a>作者解释了怎么通过贝叶斯概率来做这个校准。在试验中，这样的校准对我的实验结果没有什么影响，主要的原因是像下面所谈到的，我的模型的结果是一个概率值，我需要选出概率最高的那些，而这个校准是<a href="http://en.wikipedia.org/wiki/Monotonic_function">Monotonic</a>的，对概率排序不产生影响。如果是组合不同的分类器的话，这个办法应该还是有用的。另外我还觉得，就算有组合不同的分类器，如果实际环境中数据分布差值在这么大结果也会一样不理想。</p>
 
 <p>期末的这个作业其实是让我们训练出某个模型，并让模型的结果是一个positive cases的概率值，我们需要在测试数据中，选出10%的数据，而这些数据中的positive cases的比重要尽可能的多。这里我介绍两个办法。</p>
 
