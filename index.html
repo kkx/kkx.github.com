@@ -125,31 +125,30 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 
 <p>首先是一个中文字符集编码的生成函数</p>
 
-<p>~~~~~~~~~</p>
+<p>~~~~~~~~~
+    def generate_ch():
+        #Function which generate all chinese gb2312 characters </p>
 
-<p>def generate_ch():
-    #Function which generate all chinese gb2312 characters </p>
-
-<pre><code>body = random.randint(0xA, 0xA)
-tail = random.randint(0, 0xF)
-chars = []
-
-heads = range(0xB0, 0xF8)
-bodys = range(0xA, 0xF+1)
-tails = range(0, 0xF+1)
-for head in heads:
-    for body in bodys:
-        for tail in tails:
-            val = ( head &lt;&lt; 0x8 ) | (body &lt;&lt; 0x4 ) | tail
-            #print "%x"%head,"%x"%body,"%x"%tail,"%x"%val
-            str = "%x" % val
-            if str.endswith("ff") or str.endswith("a0"):
-                continue
-            #special cases no characters with these codecs
-            if str == "d7fa" or str == "d7fb" or str == "d7fc" or str == "d7fd" or str == "d7fe" or str == "d7ff" :
-                continue
-            chars.append(str.decode('hex').decode('gb2312'))
-return chars
+<pre><code>    body = random.randint(0xA, 0xA)
+    tail = random.randint(0, 0xF)
+    chars = []
+    
+    heads = range(0xB0, 0xF8)
+    bodys = range(0xA, 0xF+1)
+    tails = range(0, 0xF+1)
+    for head in heads:
+        for body in bodys:
+            for tail in tails:
+                val = ( head &lt;&lt; 0x8 ) | (body &lt;&lt; 0x4 ) | tail
+                #print "%x"%head,"%x"%body,"%x"%tail,"%x"%val
+                str = "%x" % val
+                if str.endswith("ff") or str.endswith("a0"):
+                    continue
+                #special cases no characters with these codecs
+                if str == "d7fa" or str == "d7fb" or str == "d7fc" or str == "d7fd" or str == "d7fe" or str == "d7ff" :
+                    continue
+                chars.append(str.decode('hex').decode('gb2312'))
+    return chars
 </code></pre>
 
 <pre><code>
@@ -158,12 +157,13 @@ return chars
 
 </code></pre>
 
-<h1 id="coding-utf-8---">-<em>- coding: utf-8 -</em>-</h1>
-<p>import pygame
+<pre><code># -*- coding: utf-8 -*-
+import pygame
  pygame.init()
-font = pygame.font.Font(os.path.join(“fonts”, “simfang.ttf”), 64)
-rtext = font.render(““.join(“b1a1”.decode(‘hex’).decode(‘gb2312’)), True, (0, 0, 0), (255, 255, 255))
-pygame.image.save(rtext,”t.jpg” )</p>
+font = pygame.font.Font(os.path.join("fonts", "simfang.ttf"), 64)
+rtext = font.render("".join("b1a1".decode('hex').decode('gb2312')), True, (0, 0, 0), (255, 255, 255))
+pygame.image.save(rtext,"t.jpg" )
+</code></pre>
 
 <p>~~~~~~~~</p>
 
