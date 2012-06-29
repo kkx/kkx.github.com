@@ -4,7 +4,7 @@
   <title><![CDATA[名字]]></title>
   <link href="http://kkx.github.com/atom.xml" rel="self"/>
   <link href="http://kkx.github.com/"/>
-  <updated>2012-06-28T17:52:38-07:00</updated>
+  <updated>2012-06-28T18:00:24-07:00</updated>
   <id>http://kkx.github.com/</id>
   <author>
     <name><![CDATA[小逸]]></name>
@@ -62,12 +62,13 @@
 
 <p>通过改变theta这个角度值可以获得不同角度比划的信息。</p>
 
-<p>~~~~~~~~~~ 
-I = imread(‘~/Desktop/11.png’)
+<pre><code>
+I = imread('~/Desktop/11.png')
 J = rgb2gray(I);
 K = imresize(J,[64,64])
 gb=gabor_fn(64,64,1.2,theta,5,0,1)
-~~~~~~~~~~ </p>
+
+</code></pre>
 
 <p>这里的theta分别是pi/2, pi/4, pi和 3*pi/4 这个四个值，他们可以分别抓取中文字比划的那8个方向。
 下面就是这个函数能产生的效果</p>
