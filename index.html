@@ -10,7 +10,8 @@
 
   
   <meta name="description" content="最近在做一个中文ocr，感觉是个不可完成任务。不管怎么样还是得试试。
-首先要做的就是获得训练数据。中文的数据不比英文，量大而且没有地方下载，唯一能做的就是自己生成，在网上找了写函数自己改改就成了下面的脚本了 ">
+首先要做的就是获得训练数据。中文的数据不比英文，量大而且没有地方下载，唯一能做的就是自己生成，在网上找了写函数自己改改就成了下面的脚本了 首先是一个中文字符集生成的函数
+~~~~~~~~~ def generate_ch &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -123,9 +124,50 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
   <div class="entry-content"><p>最近在做一个中文ocr，感觉是个不可完成任务。不管怎么样还是得试试。
 首先要做的就是获得训练数据。中文的数据不比英文，量大而且没有地方下载，唯一能做的就是自己生成，在网上找了写函数自己改改就成了下面的脚本了</p>
 
-<pre><code>
+<p>首先是一个中文字符集生成的函数
+~~~~~~~~~</p>
+
+<p>def generate_ch():
+    “””
+    Function which generate all chinese gb2312 characters 
+    “””
+    body = random.randint(0xA, 0xA)
+    tail = random.randint(0, 0xF)
+    chars = []</p>
+
+<pre><code>heads = range(0xB0, 0xF8)
+bodys = range(0xA, 0xF+1)
+tails = range(0, 0xF+1)
+for head in heads:
+    for body in bodys:
+        for tail in tails:
+            val = ( head &lt;&lt; 0x8 ) | (body &lt;&lt; 0x4 ) | tail
+            #print "%x"%head,"%x"%body,"%x"%tail,"%x"%val
+            str = "%x" % val
+            if str.endswith("ff") or str.endswith("a0"):
+                continue
+            #special cases no characters with these codecs
+            if str == "d7fa" or str == "d7fb" or str == "d7fc" or str == "d7fd" or str == "d7fe" or str == "d7ff" :
+                continue
+            chars.append(str.decode('hex').decode('gb2312'))
+return chars
 </code></pre>
 
+<p>如果要生成中文字符图片，有很多办法</p>
+
+<pre><code>
+# -*- coding: utf-8 -*-
+import pygame
+ pygame.init()
+font = pygame.font.Font(os.path.join("fonts", "simfang.ttf"), 64)
+rtext = font.render("".join("b1a1".decode('hex').decode('gb2312')), True, (0, 0, 0), (255, 255, 255))
+pygame.image.save(rtext,"t.jpg" )
+
+</code></pre>
+
+<p>然后中文字符图片就出来了</p>
+
+<p><img class="center" src="http://kkx.github.com/images/character.jpg" width="300" height="300" title="原图" /></p>
 </div>
   
   
