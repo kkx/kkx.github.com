@@ -9,7 +9,8 @@
   <meta name="author" content="小逸">
 
   
-  <meta name="description" content="期末的另外一个大作业是对一个数据进行分类和研究。数据集是和保险行业相关的。94%的negative cases和6%的positive cases。 如此不平衡的数据往往你能通过使用最简单的分类器zeroR来获得较高的准确率(94%). 在实际应用中，这样是非常不靠谱的。 &hellip;">
+  <meta name="description" content="最近在做一个中文ocr，感觉是个不可完成任务。不管怎么样还是得试试。
+首先要做的就是获得训练数据。中文的数据不比英文，量大而且没有地方下载，唯一能做的就是自己生成，在网上找了写函数自己改改就成了下面的脚本了 ">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -88,6 +89,131 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/06/28/sheng-cheng-zhong-wen-zi-tu-pian/">生成中文字图片</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-06-28T17:17:00-07:00" pubdate data-updated="true">Jun 28<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/06/28/sheng-cheng-zhong-wen-zi-tu-pian/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>最近在做一个中文ocr，感觉是个不可完成任务。不管怎么样还是得试试。
+首先要做的就是获得训练数据。中文的数据不比英文，量大而且没有地方下载，唯一能做的就是自己生成，在网上找了写函数自己改改就成了下面的脚本了</p>
+
+<pre><code>
+</code></pre>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/06/28/gabor-filtersdui-zhong-wen-zi-tu-pian-de-te-zheng-ti-qu/">Gabor Filters对中文字图片的特征提取</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-06-28T16:52:00-07:00" pubdate data-updated="true">Jun 28<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/06/28/gabor-filtersdui-zhong-wen-zi-tu-pian-de-te-zheng-ti-qu/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>中文字ocr是个比较讨厌的事情，主要是因为中文字繁多，光简体字就有6000多个以上，虽然其中大部分简体字是不常用的。对于这么一个这么大的，种类繁多的数据集，在分类的时候真心头疼，看了很多paper后，发现现在的state of the art是基于gabor filters，通过这个过滤器，对一个中文字的不同角度的比划进行过滤，然后在每个subregion里的每个角度的比划进行统计之后生成一个histogram，和bag of words一样，histogram可以用来对每个字进行分类或者用来寻找最近邻。</p>
+
+<p>gabor filters 是个复杂的东西，网上的方程各种各样的，数学不好的小白就很难明白。在网上找了好多现成的函数之后，最后找到一个能用的matlab函数:</p>
+
+<pre><code>function gb=gabor_fn(rows,cols,sigma,theta,lambda,psi,gamma)
+     
+    sigma_x = sigma;
+    sigma_y = sigma/gamma;
+     
+    % Bounding box
+    nstds = 3;
+    xmax = max(abs(nstds*sigma_x*cos(theta)),abs(nstds*sigma_y*sin(theta)));
+    xmax = ceil(max(1,xmax));
+    ymax = max(abs(nstds*sigma_x*sin(theta)),abs(nstds*sigma_y*cos(theta)));
+    ymax = ceil(max(1,ymax));
+    xmin = -xmax; ymin = -ymax;
+
+    [x,y] = meshgrid(xmin:xmax,ymin:ymax);
+    %[x,y] = meshgrid(-rows/2:rows/2-1,-cols/2:cols/2-1);
+
+    % Rotation 
+    x_theta=x*cos(theta)+y*sin(theta);
+    y_theta=-x*sin(theta)+y*cos(theta);
+    gb= exp(-.5*(x_theta.^2/sigma_x^2+y_theta.^2/sigma_y^2)).*cos(2*pi/lambda*x_theta+psi);
+</code></pre>
+
+<p>rows和cols是图片的大小, sigma是gauss的那个sigma，越大的话周围的pixels影响越大,theta要提取的比划的角度，lambda这个貌似是什么的长度(不明白啊),psi这里没用,gamma生成y_sigma。</p>
+
+<p>通过改变theta这个角度值可以获得不同角度比划的信息。</p>
+
+<p>~~~~~~~~~~ 
+I = imread(‘~/Desktop/11.png’)
+J = rgb2gray(I);
+K = imresize(J,[64,64])
+gb=gabor_fn(64,64,1.2,theta,5,0,1)
+~~~~~~~~~~ </p>
+
+<p>这里的theta分别是pi/2, pi/4, pi和 3*pi/4 这个四个值，他们可以分别抓取中文字比划的那8个方向。
+下面就是这个函数能产生的效果</p>
+
+<p><img class="center" src="http://kkx.github.com/images/gabor.png" width="100" height="100" title="原图" />
+<img class="center" src="http://kkx.github.com/images/gabor45.png" width="100" height="100" title="45º" />
+<img class="center" src="http://kkx.github.com/images/gabor90.png" width="100" height="100" title="90º" />
+<img class="center" src="http://kkx.github.com/images/gabor135.png" width="100" height="100" title="135º" />
+<img class="center" src="http://kkx.github.com/images/gabor180.png" width="100" height="100" title="180º" /></p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -880,6 +1006,14 @@ http://en.wikipedia.org/wiki/Bag_of_words_model_in_computer_vision.</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2012/06/28/sheng-cheng-zhong-wen-zi-tu-pian/">生成中文字图片</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/06/28/gabor-filtersdui-zhong-wen-zi-tu-pian-de-te-zheng-ti-qu/">Gabor filters对中文字图片的特征提取</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2012/05/30/shu-ju-ji-bu-ping-heng-wen-ti/">数据集不平衡问题</a>
       </li>
     
@@ -891,20 +1025,12 @@ http://en.wikipedia.org/wiki/Bag_of_words_model_in_computer_vision.</p>
         <a href="/blog/2012/05/12/grammatical-evolution-wen-fa-suan-fa/">Grammatical evolution 文法算法</a>
       </li>
     
-      <li class="post">
-        <a href="/blog/2012/05/05/zai-octopresszhong-shi-yong-latex/">在octopress中使用latex</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/05/04/numpyhe-matlabzhi-jian-de-shu-ju-jiao-hu/">numpy和matlab之间的数据交互</a>
-      </li>
-    
   </ul>
 </section>
 
 <section>
   <h1>Categories</h1>
-      <ul id="category-list"><li><a href='/blog/categories/grammatical-evolution'>Grammatical evolution (1)</a></li><li><a href='/blog/categories/latex'>Latex (1)</a></li><li><a href='/blog/categories/numpy'>Numpy (1)</a></li><li><a href='/blog/categories/octopress'>Octopress (1)</a></li><li><a href='/blog/categories/python'>Python (2)</a></li><li><a href='/blog/categories/scipy'>Scipy (1)</a></li><li><a href='/blog/categories/svm'>Svm (1)</a></li><li><a href='/blog/categories/weka'>Weka (1)</a></li><li><a href='/blog/categories/不平衡数据集'>不平衡数据集 (1)</a></li><li><a href='/blog/categories/分类'>分类 (3)</a></li><li><a href='/blog/categories/图像'>图像 (1)</a></li><li><a href='/blog/categories/计算机视觉'>计算机视觉 (2)</a></li><li><a href='/blog/categories/音乐'>音乐 (1)</a></li></ul>
+      <ul id="category-list"><li><a href='/blog/categories/-gabor'>&#8216;gabor (1)</a></li><li><a href='/blog/categories/filters-'>Filters&#8217; (1)</a></li><li><a href='/blog/categories/grammatical-evolution'>Grammatical evolution (1)</a></li><li><a href='/blog/categories/latex'>Latex (1)</a></li><li><a href='/blog/categories/numpy'>Numpy (1)</a></li><li><a href='/blog/categories/ocr'>Ocr (2)</a></li><li><a href='/blog/categories/octopress'>Octopress (1)</a></li><li><a href='/blog/categories/python'>Python (2)</a></li><li><a href='/blog/categories/scipy'>Scipy (1)</a></li><li><a href='/blog/categories/svm'>Svm (1)</a></li><li><a href='/blog/categories/weka'>Weka (1)</a></li><li><a href='/blog/categories/不平衡数据集'>不平衡数据集 (1)</a></li><li><a href='/blog/categories/中文字图片生成'>中文字图片生成 (1)</a></li><li><a href='/blog/categories/中文字特征提取'>中文字特征提取 (1)</a></li><li><a href='/blog/categories/分类'>分类 (3)</a></li><li><a href='/blog/categories/图像'>图像 (1)</a></li><li><a href='/blog/categories/计算机视觉'>计算机视觉 (2)</a></li><li><a href='/blog/categories/音乐'>音乐 (1)</a></li></ul>
       </section>
 <section>
 最近读的书

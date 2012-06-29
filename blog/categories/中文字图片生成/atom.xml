@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: 中文字图片生成 | 名字]]></title>
+  <link href="http://kkx.github.com/blog/categories/中文字图片生成/atom.xml" rel="self"/>
+  <link href="http://kkx.github.com/"/>
+  <updated>2012-06-28T17:52:38-07:00</updated>
+  <id>http://kkx.github.com/</id>
+  <author>
+    <name><![CDATA[小逸]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[生成中文字图片]]></title>
+    <link href="http://kkx.github.com/blog/2012/06/28/sheng-cheng-zhong-wen-zi-tu-pian/"/>
+    <updated>2012-06-28T17:17:00-07:00</updated>
+    <id>http://kkx.github.com/blog/2012/06/28/sheng-cheng-zhong-wen-zi-tu-pian</id>
+    <content type="html"><![CDATA[<p>最近在做一个中文ocr，感觉是个不可完成任务。不管怎么样还是得试试。
+首先要做的就是获得训练数据。中文的数据不比英文，量大而且没有地方下载，唯一能做的就是自己生成，在网上找了写函数自己改改就成了下面的脚本了</p>
+
+<pre><code>
+</code></pre>
+
+]]></content>
+  </entry>
+  
+</feed>
