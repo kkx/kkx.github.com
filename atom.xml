@@ -4,7 +4,7 @@
   <title><![CDATA[名字]]></title>
   <link href="http://kkx.github.com/atom.xml" rel="self"/>
   <link href="http://kkx.github.com/"/>
-  <updated>2012-06-28T18:00:24-07:00</updated>
+  <updated>2012-06-28T18:12:14-07:00</updated>
   <id>http://kkx.github.com/</id>
   <author>
     <name><![CDATA[小逸]]></name>
@@ -78,6 +78,10 @@ gb=gabor_fn(64,64,1.2,theta,5,0,1)
 <img class="center" src="http://kkx.github.com/images/gabor90.png" width="100" height="100" title="90º" />
 <img class="center" src="http://kkx.github.com/images/gabor135.png" width="100" height="100" title="135º" />
 <img class="center" src="http://kkx.github.com/images/gabor180.png" width="100" height="100" title="180º" /></p>
+
+<p>冲上面的图就能看出这个过滤器的威力，过滤图片之后，我们可以对每个图片其中某个的区域的点阵进行统计，这样生成一个histogram，通过histogram可以有效的对每个字进行区分。</p>
+
+<p>在我的试验中，我用了16个16<em>16大小的方格作为第一次层histogram数组，然后在它的上面又叠加了9个16</em>16的数组，总共是一个长(16+9)*4 = 100的数组。这么长的数组以后还的进行pca或者lda什么。实验在进行中。。。</p>
 ]]></content>
   </entry>
   
