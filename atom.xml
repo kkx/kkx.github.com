@@ -4,7 +4,7 @@
   <title><![CDATA[名字]]></title>
   <link href="http://kkx.github.com/atom.xml" rel="self"/>
   <link href="http://kkx.github.com/"/>
-  <updated>2012-06-28T19:30:28-07:00</updated>
+  <updated>2012-06-28T19:32:13-07:00</updated>
   <id>http://kkx.github.com/</id>
   <author>
     <name><![CDATA[小逸]]></name>
@@ -79,7 +79,8 @@ pygame.image.save(rtext,"t.jpg" )
 
 <p>gabor filters 是个复杂的东西，网上的方程各种各样的，数学不好的小白就很难明白。在网上找了好多现成的函数之后，最后找到一个能用的matlab函数:</p>
 
-<pre><code>function gb=gabor_fn(rows,cols,sigma,theta,lambda,psi,gamma)
+<pre><code>
+function gb=gabor_fn(rows,cols,sigma,theta,lambda,psi,gamma)
      
     sigma_x = sigma;
     sigma_y = sigma/gamma;
