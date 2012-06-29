@@ -149,17 +149,20 @@ for head in heads:
 return chars
 </code></pre>
 
-<p>如果要生成中文字符图片，有很多办法，这里我用pygame打印每个字符</p>
-
 <pre><code>
-# -*- coding: utf-8 -*-
-import pygame
- pygame.init()
-font = pygame.font.Font(os.path.join("fonts", "simfang.ttf"), 64)
-rtext = font.render("".join("b1a1".decode('hex').decode('gb2312')), True, (0, 0, 0), (255, 255, 255))
-pygame.image.save(rtext,"t.jpg" )
+
+如果要生成中文字符图片，有很多办法，这里我用pygame打印每个字符
 
 </code></pre>
+
+<h1 id="coding-utf-8---">-<em>- coding: utf-8 -</em>-</h1>
+<p>import pygame
+ pygame.init()
+font = pygame.font.Font(os.path.join(“fonts”, “simfang.ttf”), 64)
+rtext = font.render(““.join(“b1a1”.decode(‘hex’).decode(‘gb2312’)), True, (0, 0, 0), (255, 255, 255))
+pygame.image.save(rtext,”t.jpg” )</p>
+
+<p>~~~~~~~~</p>
 
 <p>然后中文字符图片就出来了
 <img class="center" src="http://kkx.github.com/images/character.jpg" width="300" height="300" title="原图" /></p>
