@@ -4,7 +4,7 @@
   <title><![CDATA[Category: ocr | 名字]]></title>
   <link href="http://kkx.github.com/blog/categories/ocr/atom.xml" rel="self"/>
   <link href="http://kkx.github.com/"/>
-  <updated>2012-06-28T19:37:07-07:00</updated>
+  <updated>2012-06-28T19:39:30-07:00</updated>
   <id>http://kkx.github.com/</id>
   <author>
     <name><![CDATA[小逸]]></name>
@@ -21,32 +21,33 @@
     <content type="html"><![CDATA[<p>最近在做一个中文ocr，感觉是个不可完成任务。不管怎么样还是得试试。
 首先要做的就是获得训练数据。中文的数据不比英文，量大而且没有地方下载，唯一能做的就是自己生成，在网上找了写函数自己改改就成了下面的脚本了</p>
 
-<p>首先是一个中文字符集编码的生成函数</p>
+<p>首先是一个中文字符集编码的生成函数:</p>
 
-<p>~~~~~~~~~
+<pre><code>
     def generate_ch():
-        #Function which generate all chinese gb2312 characters </p>
+        #Function which generate all chinese gb2312 characters 
+        
+        body = random.randint(0xA, 0xA)
+        tail = random.randint(0, 0xF)
+        chars = []
+        
+        heads = range(0xB0, 0xF8)
+        bodys = range(0xA, 0xF+1)
+        tails = range(0, 0xF+1)
+        for head in heads:
+            for body in bodys:
+                for tail in tails:
+                    val = ( head &lt;&lt; 0x8 ) | (body &lt;&lt; 0x4 ) | tail
+                    #print "%x"%head,"%x"%body,"%x"%tail,"%x"%val
+                    str = "%x" % val
+                    if str.endswith("ff") or str.endswith("a0"):
+                        continue
+                    #special cases no characters with these codecs
+                    if str == "d7fa" or str == "d7fb" or str == "d7fc" or str == "d7fd" or str == "d7fe" or str == "d7ff" :
+                        continue
+                    chars.append(str.decode('hex').decode('gb2312'))
+        return chars
 
-<pre><code>    body = random.randint(0xA, 0xA)
-    tail = random.randint(0, 0xF)
-    chars = []
-    
-    heads = range(0xB0, 0xF8)
-    bodys = range(0xA, 0xF+1)
-    tails = range(0, 0xF+1)
-    for head in heads:
-        for body in bodys:
-            for tail in tails:
-                val = ( head &lt;&lt; 0x8 ) | (body &lt;&lt; 0x4 ) | tail
-                #print "%x"%head,"%x"%body,"%x"%tail,"%x"%val
-                str = "%x" % val
-                if str.endswith("ff") or str.endswith("a0"):
-                    continue
-                #special cases no characters with these codecs
-                if str == "d7fa" or str == "d7fb" or str == "d7fc" or str == "d7fd" or str == "d7fe" or str == "d7ff" :
-                    continue
-                chars.append(str.decode('hex').decode('gb2312'))
-    return chars ~~~~~~~~
 </code></pre>
 
 <p>如果要生成中文字符图片，有很多办法，这里我用pygame打印每个字符</p>
