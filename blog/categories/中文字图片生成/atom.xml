@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 中文字图片生成 | 名字]]></title>
   <link href="http://kkx.github.com/blog/categories/中文字图片生成/atom.xml" rel="self"/>
   <link href="http://kkx.github.com/"/>
-  <updated>2012-06-28T19:28:35-07:00</updated>
+  <updated>2012-06-28T19:30:28-07:00</updated>
   <id>http://kkx.github.com/</id>
   <author>
     <name><![CDATA[小逸]]></name>
@@ -21,8 +21,9 @@
     <content type="html"><![CDATA[<p>最近在做一个中文ocr，感觉是个不可完成任务。不管怎么样还是得试试。
 首先要做的就是获得训练数据。中文的数据不比英文，量大而且没有地方下载，唯一能做的就是自己生成，在网上找了写函数自己改改就成了下面的脚本了</p>
 
-<p>首先是一个中文字符集编码的生成函数
-~~~~~~~~~</p>
+<p>首先是一个中文字符集编码的生成函数</p>
+
+<p>~~~~~~~~~</p>
 
 <p>def generate_ch():
     #Function which generate all chinese gb2312 characters </p>
@@ -61,11 +62,11 @@ pygame.image.save(rtext,"t.jpg" )
 
 </code></pre>
 
-<p>然后中文字符图片就出来了</p>
+<p>然后中文字符图片就出来了
+<img class="center" src="http://kkx.github.com/images/character.jpg" width="300" height="300" title="原图" ></p>
 
 <p>要打印字符，需要至少一个ttf,也就是字体的文件。这里是用的simfang.ttf</p>
 
-<p><img class="center" src="http://kkx.github.com/images/character.jpg" width="300" height="300" title="原图" ></p>
 ]]></content>
   </entry>
   
