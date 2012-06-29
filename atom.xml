@@ -4,7 +4,7 @@
   <title><![CDATA[名字]]></title>
   <link href="http://kkx.github.com/atom.xml" rel="self"/>
   <link href="http://kkx.github.com/"/>
-  <updated>2012-06-28T19:21:48-07:00</updated>
+  <updated>2012-06-28T19:23:21-07:00</updated>
   <id>http://kkx.github.com/</id>
   <author>
     <name><![CDATA[小逸]]></name>
@@ -25,14 +25,13 @@
 ~~~~~~~~~</p>
 
 <p>def generate_ch():
-    “””
-    Function which generate all chinese gb2312 characters 
-    “””
-    body = random.randint(0xA, 0xA)
-    tail = random.randint(0, 0xF)
-    chars = []</p>
+    #Function which generate all chinese gb2312 characters </p>
 
-<pre><code>heads = range(0xB0, 0xF8)
+<pre><code>body = random.randint(0xA, 0xA)
+tail = random.randint(0, 0xF)
+chars = []
+
+heads = range(0xB0, 0xF8)
 bodys = range(0xA, 0xF+1)
 tails = range(0, 0xF+1)
 for head in heads:
