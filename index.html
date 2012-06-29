@@ -148,24 +148,18 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
                 if str == "d7fa" or str == "d7fb" or str == "d7fc" or str == "d7fd" or str == "d7fe" or str == "d7ff" :
                     continue
                 chars.append(str.decode('hex').decode('gb2312'))
-    return chars
+    return chars ~~~~~~~~
 </code></pre>
 
-<pre><code>
+<p>如果要生成中文字符图片，有很多办法，这里我用pygame打印每个字符</p>
 
-如果要生成中文字符图片，有很多办法，这里我用pygame打印每个字符
-
+<pre><code>    # -*- coding: utf-8 -*-
+    import pygame
+     pygame.init()
+    font = pygame.font.Font(os.path.join("fonts", "simfang.ttf"), 64)
+    rtext = font.render("".join("b1a1".decode('hex').decode('gb2312')), True, (0, 0, 0), (255, 255, 255))
+    pygame.image.save(rtext,"t.jpg" )
 </code></pre>
-
-<pre><code># -*- coding: utf-8 -*-
-import pygame
- pygame.init()
-font = pygame.font.Font(os.path.join("fonts", "simfang.ttf"), 64)
-rtext = font.render("".join("b1a1".decode('hex').decode('gb2312')), True, (0, 0, 0), (255, 255, 255))
-pygame.image.save(rtext,"t.jpg" )
-</code></pre>
-
-<p>~~~~~~~~</p>
 
 <p>然后中文字符图片就出来了
 <img class="center" src="http://kkx.github.com/images/character.jpg" width="300" height="300" title="原图" /></p>
