@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 中文字图片生成 | 名字]]></title>
   <link href="http://kkx.github.com/blog/categories/中文字图片生成/atom.xml" rel="self"/>
   <link href="http://kkx.github.com/"/>
-  <updated>2012-06-28T19:39:30-07:00</updated>
+  <updated>2012-07-08T04:23:52-07:00</updated>
   <id>http://kkx.github.com/</id>
   <author>
     <name><![CDATA[小逸]]></name>
@@ -25,6 +25,7 @@
 
 <pre><code>
     def generate_ch():
+
         #Function which generate all chinese gb2312 characters 
         
         body = random.randint(0xA, 0xA)

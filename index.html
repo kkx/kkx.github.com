@@ -9,8 +9,7 @@
   <meta name="author" content="小逸">
 
   
-  <meta name="description" content="最近在做一个中文ocr，感觉是个不可完成任务。不管怎么样还是得试试。
-首先要做的就是获得训练数据。中文的数据不比英文，量大而且没有地方下载，唯一能做的就是自己生成，在网上找了写函数自己改改就成了下面的脚本了 首先是一个中文字符集编码的生成函数: def generate_ch(): # &hellip;">
+  <meta name="description" content="在做这个ocr项目的时候，首先想到的是用一些开源的项目，通过比较，只有google对中文的支持度算是有好的，通过测试，它的识别度也还是可以。但是会面临到好几个问题,可以察觉到2个主要问题 中文字相比英语字符，识别速度低了好几倍 中文字符有时候会整行出现大面积的错误，而且非常离谱，甚至有乱码的出现 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -95,6 +94,60 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
       
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2012/07/08/tesseract-ocr-zhong-wen-zi-fu-shi-bie-su-du-man-de-wen-ti/">Tesseract-ocr 中文字符识别速度慢的问题</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-07-08T04:01:00-07:00" pubdate data-updated="true">Jul 8<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/07/08/tesseract-ocr-zhong-wen-zi-fu-shi-bie-su-du-man-de-wen-ti/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>在做这个ocr项目的时候，首先想到的是用一些开源的项目，通过比较，只有google对中文的支持度算是有好的，通过测试，它的识别度也还是可以。但是会面临到好几个问题,可以察觉到2个主要问题</p>
+
+<ul>
+  <li>中文字相比英语字符，识别速度低了好几倍</li>
+  <li>中文字符有时候会整行出现大面积的错误，而且非常离谱，甚至有乱码的出现。</li>
+</ul>
+
+<p>通过这篇<a href="http://static.googleusercontent.com/external_content/untrusted_dlcp/research.google.com/en/us/pubs/archive/35248.pdf">Adapting the Tesseract Open Source OCR Engine for Multilingual OCR</a>的论文里看，这个项目的框架为了能让各种不同语言的文字进行识别，把中文文字识别以一行句子为切分单位，以文字部首为最基本的识别单位(使用了connected components analysis切分所有不连在一起的部首(也可以用项目的图形debug界面http://code.google.com/p/tesseract-ocr/wiki/ViewerDebugging，能看到中文字是给切分开的)。识别之后，通过best first search对中文字符进行匹配。结果就是，文字识别速度较慢，大部分计算的开销用在了匹配的时候。由于用到了best-first 不能保证全局最优解，往往图像稍微有一些噪音就会会出现大面积的错误的情况，一开始的几个字也许和原本字符相似度还可以，句子后半部的字符就不是了。</p>
+
+<p>这个方法完全是按英语的识别方法，通过以英语单词为基本匹配单位，匹配每个字母成为最有可能的单词。这样的一个方法可以让语言的semantic运用到识别了，大大提高的每个单词的识别度。但是这个方法的本身是特别适合语英语，每个单词的长度不是很大，单词和单词之间有一个明显的空格，可以很好的切分。 但是运用到中文字符识别的时候确出现了以下几个问题:</p>
+
+<ul>
+  <li>以google那些人的看法，中文字符之间空隙是很小的，甚至很多时候是字和字之间是连在一起。其实印刷体的中文字符之间的空隙还是很明显的。</li>
+  <li>中文句子长度一般都很长，往往匹配的时候需要很多开销</li>
+  <li>中文识别的时候，我试过，就算把文本字符之间的空隙分的很大，还是会把一个字的之间的部首分开，在匹配的时候不会记住字符之间的空隙。</li>
+</ul>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2012/06/28/sheng-cheng-zhong-wen-zi-tu-pian/">生成中文字图片</a></h1>
     
     
@@ -127,6 +180,7 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 
 <pre><code>
     def generate_ch():
+
         #Function which generate all chinese gb2312 characters 
         
         body = random.randint(0xA, 0xA)
@@ -994,45 +1048,9 @@ http://en.wikipedia.org/wiki/Bag_of_words_model_in_computer_vision.</p>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/04/15/hello-world/">Hello World</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-04-15T17:28:00-07:00" pubdate data-updated="true">Apr 15<span>th</span>, 2012</time>
-        
-         | <a href="/blog/2012/04/15/hello-world/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>HELLO WORLD!!!!</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
+    
+      <a class="prev" href="/blog/page/2/">&larr; Older</a>
     
     <a href="/blog/archives">Blog Archives</a>
     
@@ -1053,6 +1071,10 @@ http://en.wikipedia.org/wiki/Bag_of_words_model_in_computer_vision.</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2012/07/08/tesseract-ocr-zhong-wen-zi-fu-shi-bie-su-du-man-de-wen-ti/">tesseract-ocr 中文字符识别速度慢的问题</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2012/06/28/sheng-cheng-zhong-wen-zi-tu-pian/">生成中文字图片</a>
       </li>
     
@@ -1068,16 +1090,12 @@ http://en.wikipedia.org/wiki/Bag_of_words_model_in_computer_vision.</p>
         <a href="/blog/2012/05/21/yin-le-le-qi-sheng-yin-fen-lei/">音乐乐器声音分类</a>
       </li>
     
-      <li class="post">
-        <a href="/blog/2012/05/12/grammatical-evolution-wen-fa-suan-fa/">Grammatical evolution 文法算法</a>
-      </li>
-    
   </ul>
 </section>
 
 <section>
   <h1>Categories</h1>
-      <ul id="category-list"><li><a href='/blog/categories/-gabor'>&#8216;gabor (1)</a></li><li><a href='/blog/categories/filters-'>Filters&#8217; (1)</a></li><li><a href='/blog/categories/grammatical-evolution'>Grammatical evolution (1)</a></li><li><a href='/blog/categories/latex'>Latex (1)</a></li><li><a href='/blog/categories/numpy'>Numpy (1)</a></li><li><a href='/blog/categories/ocr'>Ocr (2)</a></li><li><a href='/blog/categories/octopress'>Octopress (1)</a></li><li><a href='/blog/categories/python'>Python (2)</a></li><li><a href='/blog/categories/scipy'>Scipy (1)</a></li><li><a href='/blog/categories/svm'>Svm (1)</a></li><li><a href='/blog/categories/weka'>Weka (1)</a></li><li><a href='/blog/categories/不平衡数据集'>不平衡数据集 (1)</a></li><li><a href='/blog/categories/中文字图片生成'>中文字图片生成 (1)</a></li><li><a href='/blog/categories/中文字特征提取'>中文字特征提取 (1)</a></li><li><a href='/blog/categories/分类'>分类 (3)</a></li><li><a href='/blog/categories/图像'>图像 (1)</a></li><li><a href='/blog/categories/计算机视觉'>计算机视觉 (2)</a></li><li><a href='/blog/categories/音乐'>音乐 (1)</a></li></ul>
+      <ul id="category-list"><li><a href='/blog/categories/-gabor'>[gabor (1)</a></li><li><a href='/blog/categories/filters-'>Filters] (1)</a></li><li><a href='/blog/categories/google'>Google (1)</a></li><li><a href='/blog/categories/grammatical-evolution'>Grammatical evolution (1)</a></li><li><a href='/blog/categories/latex'>Latex (1)</a></li><li><a href='/blog/categories/numpy'>Numpy (1)</a></li><li><a href='/blog/categories/ocr'>Ocr (3)</a></li><li><a href='/blog/categories/octopress'>Octopress (1)</a></li><li><a href='/blog/categories/python'>Python (2)</a></li><li><a href='/blog/categories/scipy'>Scipy (1)</a></li><li><a href='/blog/categories/svm'>Svm (1)</a></li><li><a href='/blog/categories/weka'>Weka (1)</a></li><li><a href='/blog/categories/不平衡数据集'>不平衡数据集 (1)</a></li><li><a href='/blog/categories/中文字图片生成'>中文字图片生成 (1)</a></li><li><a href='/blog/categories/中文字特征提取'>中文字特征提取 (1)</a></li><li><a href='/blog/categories/中文字符识别'>中文字符识别 (1)</a></li><li><a href='/blog/categories/分类'>分类 (3)</a></li><li><a href='/blog/categories/图像'>图像 (1)</a></li><li><a href='/blog/categories/计算机视觉'>计算机视觉 (2)</a></li><li><a href='/blog/categories/音乐'>音乐 (1)</a></li></ul>
       </section>
 <section>
 最近读的书
