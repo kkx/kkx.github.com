@@ -5,11 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Category: 分类 - 名字</title>
+  <title>高度相似图片检测: 1颜色直方图差 - 名字</title>
   <meta name="author" content="小逸">
 
   
-  <meta name="description" content="Category: 分类">
+  <meta name="description" content="对于颜色直方图差的比对能很好的检测出图片之间的色差变化，那对于两张环境，光线，角度长不错的图片，能很好的检测出他们的相似度。
+这是一个很老的方法，简单粗暴，非常使用。原理在这篇博客里很清楚的讲解了。 算法很简单: 把两张图片缩放到统一的大小，这里可以是256x256， 并且统一成rgb模式。 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +19,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://kkx.github.comblog/categories/分类">
+  <link rel="canonical" href="http://kkx.github.com/blog/2012/09/08/gao-du-xiang-si-tu-pian-jian-ce-1yan-se-zhi-fang-tu-chai">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -87,64 +88,144 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">Category: 分类</h1>
+    
+      <h1 class="entry-title">高度相似图片检测: 1颜色直方图差</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-09-08T15:30:00-07:00" pubdate data-updated="true">Sep 8<span>th</span>, 2012</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
     
   </header>
-  
-  <div id="blog-archives" class="category">
+
+
+<div class="entry-content"><p>对于颜色直方图差的比对能很好的检测出图片之间的色差变化，那对于两张环境，光线，角度长不错的图片，能很好的检测出他们的相似度。
+这是一个很老的方法，简单粗暴，非常使用。原理在这篇<a href="http://blog.csdn.net/lanphaday/article/details/2325027">博客</a>里很清楚的讲解了。 算法很简单:</p>
+
+<ul>
+  <li>把两张图片缩放到统一的大小，这里可以是256x256， 并且统一成rgb模式。</li>
+  <li>统计每张图片的每个颜色的出现次数。那这里因为是rgb模式，有3*256=768 种颜色，生成直方图</li>
+  <li>对两张图片的直方图进行比对。如果统计结果一致的话，相似度+1</li>
+</ul>
+
+<p>这里有个问题就是对空间信息的丢失，原作者通过把图片分割成16个小方格来解决这个问题。(split_image函数)</p>
+
+<p>具体代码如下:</p>
+
+<pre><code>from PIL import Image
+import sys
+def normalize(img, size = (256, 256)):
+    return img.resize(size).convert('RGB')
+
+def sim_hist(hist1, hist2):
+    assert len(hist1) == len(hist2)
+    return sum(1 - (0 if hist1 == hist2 else float(abs(hist1 - hist2))/max(hist1, hist2)) for hist1, hist2 in zip(hist1, hist2))/len(hist1)
+
+
+def calc_similar_by_path(path_img1, path_img2):
+    li = normalize(Image.open(path_img1))
+    ri = normalize(Image.open(path_img2))
+    return sum(sim_hist(l.histogram(), r.histogram()) for l, r in zip(split_image(li), split_image(ri))) / 16.0
 
 
 
-  
-  <h2>2012</h2>
+def split_image(img, part_size = (64, 64)):
+    w, h = img.size
+    pw, ph = part_size
+    assert w % pw == h % ph == 0
+    return [img.crop((i, j, i+pw, j+ph)).copy() \
+        for i in xrange(0, w, pw) \
+        for j in xrange(0, h, ph)]
 
-<article>
-  
-<h1><a href="/blog/2012/05/30/shu-ju-ji-bu-ping-heng-wen-ti/">数据集不平衡问题</a></h1>
-<time datetime="2012-05-30T18:06:00-07:00" pubdate><span class='month'>May</span> <span class='day'>30</span> <span class='year'>2012</span></time>
+if __name__ == "__main__":
+    print calc_similar_by_path(sys.argv[1],sys.argv[2])
+</code></pre>
 
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/svm/'>SVM</a>, <a class='category' href='/blog/categories/weka/'>WEKA</a>, <a class='category' href='/blog/categories/不平衡数据集/'>不平衡数据集</a>, <a class='category' href='/blog/categories/分类/'>分类</a></span>
-</footer>
+<p>这里的fingerprint就是每个图片的直方图。 这个指纹的信息量的话应该挺大的(至少有2^768) 理论上来讲应该false positive的可能性很小，但是这个结论应该是错的，因为在图片里很多颜色是出现的概率是很小的，大部分颜色都集中于某些值中。</p>
 
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2012/05/21/yin-le-le-qi-sheng-yin-fen-lei/">音乐乐器声音分类</a></h1>
-<time datetime="2012-05-21T23:07:00-07:00" pubdate><span class='month'>May</span> <span class='day'>21</span> <span class='year'>2012</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/分类/'>分类</a>, <a class='category' href='/blog/categories/计算机视觉/'>计算机视觉</a>, <a class='category' href='/blog/categories/音乐/'>音乐</a></span>
-</footer>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2012/04/20/gen-ju-bag-of-keypointstu-pian-fen-lei/">根据bag of keypoints图片分类</a></h1>
-<time datetime="2012-04-20T02:41:00-07:00" pubdate><span class='month'>Apr</span> <span class='day'>20</span> <span class='year'>2012</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/分类/'>分类</a>, <a class='category' href='/blog/categories/图像/'>图像</a>, <a class='category' href='/blog/categories/计算机视觉/'>计算机视觉</a></span>
-</footer>
-
-
-</article>
+<p>代码和原作者的差不多，实验结果是不错的，很简单，但是这个算法有个致命的问题就是对颜色的过分依赖。对于图片角度的变化的容忍度挺高，但是如果颜色或者图片光线变化稍大就不能很好的检测出相似度了，会把相似的图片判断为不同的。最简单的方法就是弄个灰度图，这方法基于rgb的，就无解了。还有个小问题就是，false positive，我觉得如果两张白底黑字的文字图片，不管字是多么不一样，但是他们的相似度应该很高(在有的应用上，这个结果是很希望的)</p>
 
 </div>
 
+
+  <footer>
+    <p class="meta">
+      
   
+
+<span class="byline author vcard">Posted by <span class="fn">小逸</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-09-08T15:30:00-07:00" pubdate data-updated="true">Sep 8<span>th</span>, 2012</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/图像/'>图像</a>, <a class='category' href='/blog/categories/相似性/'>相似性</a>, <a class='category' href='/blog/categories/计算机视觉/'>计算机视觉</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://kkx.github.com/blog/2012/09/08/gao-du-xiang-si-tu-pian-jian-ce-1yan-se-zhi-fang-tu-chai/" data-via="" data-counturl="http://kkx.github.com/blog/2012/09/08/gao-du-xiang-si-tu-pian-jian-ce-1yan-se-zhi-fang-tu-chai/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/09/08/gao-du-xiang-si-tu-pian-jian-ce-introduction/" title="Previous Post: 高度相似图片检测: Introduction">&laquo; 高度相似图片检测: Introduction</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2012/09/09/gao-du-xiang-si-tu-pian-jian-ce-2tu-pian-suo-xiao-zhi-wen/" title="Next Post: 高度相似图片检测: 2图片缩小指纹">高度相似图片检测: 2图片缩小指纹 &raquo;</a>
+      
+    </p>
+  </footer>
 </article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
 
 </div>
 
@@ -223,7 +304,10 @@ my Last.fm
       var disqus_shortname = 'kkx';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://kkx.github.com/blog/2012/09/08/gao-du-xiang-si-tu-pian-jian-ce-1yan-se-zhi-fang-tu-chai/';
+        var disqus_url = 'http://kkx.github.com/blog/2012/09/08/gao-du-xiang-si-tu-pian-jian-ce-1yan-se-zhi-fang-tu-chai/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

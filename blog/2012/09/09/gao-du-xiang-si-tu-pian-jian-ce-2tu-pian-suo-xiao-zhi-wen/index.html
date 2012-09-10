@@ -5,11 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Category: 分类 - 名字</title>
+  <title>高度相似图片检测: 2图片缩小指纹 - 名字</title>
   <meta name="author" content="小逸">
 
   
-  <meta name="description" content="Category: 分类">
+  <meta name="description" content="图片缩小之后其实保留个部分图片的信息，可以用来当做图片的指纹，在查找相关资料的时候发现了一个很不错的博客
+在这个博客里，几乎所有的和图片相似性计算的算法都在了(除了基于语义的)。超级不错。里面的很多算法的实现是用pearl的，而本身抱着学习的态度我决定重新用python对其中的某些算法实现一遍。 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +19,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://kkx.github.comblog/categories/分类">
+  <link rel="canonical" href="http://kkx.github.com/blog/2012/09/09/gao-du-xiang-si-tu-pian-jian-ce-2tu-pian-suo-xiao-zhi-wen">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -87,64 +88,162 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">Category: 分类</h1>
+    
+      <h1 class="entry-title">高度相似图片检测: 2图片缩小指纹</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-09-09T00:09:00-07:00" pubdate data-updated="true">Sep 9<span>th</span>, 2012</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
     
   </header>
-  
-  <div id="blog-archives" class="category">
 
 
+<div class="entry-content"><p>图片缩小之后其实保留个部分图片的信息，可以用来当做图片的指纹，在查找相关资料的时候发现了一个很不错的<a href="http://hackerlabs.org/blog/2012/07/30/organizing-photos-with-duplicate-and-similarity-checking/">博客</a>
+在这个博客里，几乎所有的和图片相似性计算的算法都在了(除了基于语义的)。超级不错。里面的很多算法的实现是用pearl的，而本身抱着学习的态度我决定重新用python对其中的某些算法实现一遍。</p>
 
-  
-  <h2>2012</h2>
+<p>这里是图片缩小指纹的算法:</p>
 
-<article>
-  
-<h1><a href="/blog/2012/05/30/shu-ju-ji-bu-ping-heng-wen-ti/">数据集不平衡问题</a></h1>
-<time datetime="2012-05-30T18:06:00-07:00" pubdate><span class='month'>May</span> <span class='day'>30</span> <span class='year'>2012</span></time>
+<ul>
+  <li>缩放到160x160的图片</li>
+  <li>灰值化</li>
+  <li>模糊图片，把噪音去除掉</li>
+  <li>equalize，让图片反差更大</li>
+  <li>计算图片平均值</li>
+  <li>缩放到16x16的图，并且降到2维，更具图片pixel值:大于平均值的为1，反之为0</li>
+</ul>
 
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/svm/'>SVM</a>, <a class='category' href='/blog/categories/weka/'>WEKA</a>, <a class='category' href='/blog/categories/不平衡数据集/'>不平衡数据集</a>, <a class='category' href='/blog/categories/分类/'>分类</a></span>
-</footer>
+<p>这样就生成了图片的指纹，信息总量有2^256, 哈希冲撞应该不大。
+计算的图片相似度的时候直接使用xor。公式可以是这样: 1 - xor(p1,p2)/256</p>
 
+<p>具体python实现代码如下:</p>
 
-</article>
+<pre><code>from PIL import Image
+import sys
+import ImageFilter
+import ImageOps 
+import numpy as np
 
+def normalize(img, size = (160, 160)):
+    return ImageOps.equalize(img.resize(size).convert('L').filter(ImageFilter.BLUR))
 
+def calculate_fingerprint(img):
+    img = normalize(img)
+    mean_value = np.mean(np.array(img.getdata()))
+    img = img.resize((16,16))
+    return np.array(img.getdata())&gt;mean_value
 
-<article>
-  
-<h1><a href="/blog/2012/05/21/yin-le-le-qi-sheng-yin-fen-lei/">音乐乐器声音分类</a></h1>
-<time datetime="2012-05-21T23:07:00-07:00" pubdate><span class='month'>May</span> <span class='day'>21</span> <span class='year'>2012</span></time>
+def calculate_simility_by_path(img_path1, img_path2):
+    img1 = Image.open(img_path1)
+    img2 = Image.open(img_path2)
+    fingerprint1 = calculate_fingerprint(img1) 
+    fingerprint2 = calculate_fingerprint(img2) 
+    return 1 - (0.0+np.sum(np.logical_xor(fingerprint1, fingerprint2)))/fingerprint1.size
 
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/分类/'>分类</a>, <a class='category' href='/blog/categories/计算机视觉/'>计算机视觉</a>, <a class='category' href='/blog/categories/音乐/'>音乐</a></span>
-</footer>
+if __name__ == "__main__":
+    print calculate_simility_by_path(sys.argv[1],sys.argv[2])
+</code></pre>
 
+<p>更好的implementation可以在这个<a href="http://www.ostertag.name/HowTo/findimagedupes.pl">链接</a>找到，虽然做法上不一样，但是原理应该都差不多。在代码的注释里，能看到这个类算法的优点和缺点，如果图片相似度较高的话，识别起来没什么问题。最大的缺点是，很多false positive，如果图片是一张大海的话 会出现一下情况</p>
 
-</article>
+<pre><code>1111111111111111
+1111111111111111
+1111111111111111
+1111111111111111
+1111111111111111
+1111111111111111
+1111111111111111
+1111111111111111
+0000000000000000
+0000000000000000
+0000000000000000
+0000000000000000
+0000000000000000
+0000000000000000
+0000000000000000
+0000000000000000
+</code></pre>
 
-
-
-<article>
-  
-<h1><a href="/blog/2012/04/20/gen-ju-bag-of-keypointstu-pian-fen-lei/">根据bag of keypoints图片分类</a></h1>
-<time datetime="2012-04-20T02:41:00-07:00" pubdate><span class='month'>Apr</span> <span class='day'>20</span> <span class='year'>2012</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/分类/'>分类</a>, <a class='category' href='/blog/categories/图像/'>图像</a>, <a class='category' href='/blog/categories/计算机视觉/'>计算机视觉</a></span>
-</footer>
-
-
-</article>
-
+<p>作者还说到对于大规模数据的话，性能会降低很多。但是貌似这个能用bloomfilter解决，现在先不管他</p>
 </div>
 
+
+  <footer>
+    <p class="meta">
+      
   
+
+<span class="byline author vcard">Posted by <span class="fn">小逸</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-09-09T00:09:00-07:00" pubdate data-updated="true">Sep 9<span>th</span>, 2012</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/图像/'>图像</a>, <a class='category' href='/blog/categories/相似性/'>相似性</a>, <a class='category' href='/blog/categories/计算机视觉/'>计算机视觉</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://kkx.github.com/blog/2012/09/09/gao-du-xiang-si-tu-pian-jian-ce-2tu-pian-suo-xiao-zhi-wen/" data-via="" data-counturl="http://kkx.github.com/blog/2012/09/09/gao-du-xiang-si-tu-pian-jian-ce-2tu-pian-suo-xiao-zhi-wen/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/09/08/gao-du-xiang-si-tu-pian-jian-ce-1yan-se-zhi-fang-tu-chai/" title="Previous Post: 高度相似图片检测: 1颜色直方图差">&laquo; 高度相似图片检测: 1颜色直方图差</a>
+      
+      
+    </p>
+  </footer>
 </article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
 
 </div>
 
@@ -223,7 +322,10 @@ my Last.fm
       var disqus_shortname = 'kkx';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://kkx.github.com/blog/2012/09/09/gao-du-xiang-si-tu-pian-jian-ce-2tu-pian-suo-xiao-zhi-wen/';
+        var disqus_url = 'http://kkx.github.com/blog/2012/09/09/gao-du-xiang-si-tu-pian-jian-ce-2tu-pian-suo-xiao-zhi-wen/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

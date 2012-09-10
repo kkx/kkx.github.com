@@ -9,8 +9,7 @@
   <meta name="author" content="小逸">
 
   
-  <meta name="description" content="HELLO WORLD!!!!
-">
+  <meta name="description" content="要让matlab把数据倒入倒python里很简单, 我试过直接保存倒2进制的文件里，但是通过用scipy.io.loadmat 这个方法读取的时候会报错。结果职能用粗糙的办法了，把文件存放在一个可读文件里: save -ascii "your.txt" yourMatrix &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -95,6 +94,209 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
       
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2012/05/04/numpyhe-matlabzhi-jian-de-shu-ju-jiao-hu/">Numpy和matlab之间的数据交互</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-05-04T18:03:00-07:00" pubdate data-updated="true">May 4<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/05/04/numpyhe-matlabzhi-jian-de-shu-ju-jiao-hu/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>要让matlab把数据倒入倒python里很简单, 我试过直接保存倒2进制的文件里，但是通过用scipy.io.loadmat 这个方法读取的时候会报错。结果职能用粗糙的办法了，把文件存放在一个可读文件里:</p>
+
+<pre><code>save -ascii "your.txt" yourMatrix 
+</code></pre>
+
+<p>在python里读取的时候用genfromtxt:</p>
+
+<pre><code>from numpy import genfromtxt
+m = genfromtxt('your.txt') 
+</code></pre>
+
+<p>想通过python把array寸在一个matlab能读取的文件里的方法也很简单:</p>
+
+<pre><code>from numpy import savetxt
+savetxt("your.txt", yourArray)
+</code></pre>
+
+<p>在matlab里直接load就行了:</p>
+
+<pre><code>load -ascii your.txt newMatrixName
+</code></pre>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/04/29/yong-python-fa-ti-xing-you-jian/">用nohup后台运行,用python 发提醒邮件</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-04-29T01:09:00-07:00" pubdate data-updated="true">Apr 29<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/04/29/yong-python-fa-ti-xing-you-jian/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>最近在学校的n电脑上跑数据，很多时候一个run要耗费好几个小时，ssh不知道为什么连一会后会自动断开，跑到一半程序就悲剧了。
+在网上找了一会 发现一个神器:nohup, 用法超级简单: nohup comand
+这样你的程序会后台运行，并且就算你ssh断开后都能继续跑着。nohup还提供给你一个nohup.log 你程序所有的output都会放在那个log里。</p>
+
+<p>另外一个碰到的问题是，很多时候离开ssh后我都不知道程序跑完没，这里我用python搞了一个小程序:基于smtp发电子邮件。首先我用python的subprocess去跑数据程序，然后当数据程序跑完后发送一个邮件到我的邮箱里，这样我就能差不多“实时”的知道程序运行的情况了。</p>
+
+<p>这是我发送邮件的小函数：</p>
+
+<pre><code>#!/usr/bin/env python
+# -*- coding: utf8 -*-
+import smtplib
+from email.mime.text import MIMEText
+
+server = "smtp.gmail.com:587"
+user_account="pythonsmtpalert@gmail.com"
+password="密码"
+mailto_list=["我的目标邮箱.com"]
+def send_mail(to_list,sub,content):
+        me="python stmp alert " +"&lt;pythonsmtpalert@gmail.com&gt;"
+        msg = MIMEText(content)
+        msg['Subject'] = sub
+        msg['From'] = me
+        msg['To'] = ";".join(mailto_list)
+        try:
+            s = smtplib.SMTP(server)
+            s.starttls()  
+            s.login(user_account,password)
+            s.sendmail(me, to_list, msg.as_string())
+            s.close()
+            return True
+        except Exception, e:
+            print str(e)
+            return False
+
+if __name__ == '__main__':
+    if send_mail(mailto_list,"Process accomplished","t你好ake a look the results!"):
+        print "发送成功"
+    else:
+        print "发送失败"
+</code></pre>
+
+<p>server: 服务器地址
+user_account:你的邮箱帐号
+password:邮箱密码
+mailto_list:目标邮箱
+这里你的邮箱要和你服务器地址是一个牌子的，我这里用的是gmail，换别的邮箱的话得用别得邮箱得smtp服务器 </p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/04/20/gen-ju-bag-of-keypointstu-pian-fen-lei/">根据bag of Keypoints图片分类</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-04-20T02:41:00-07:00" pubdate data-updated="true">Apr 20<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/04/20/gen-ju-bag-of-keypointstu-pian-fen-lei/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>最近看了一篇名叫<a href="http://www.xrce.xerox.com/index.php/content/download/16612/118527/file/willamowski.pdf">Categorizing nine visual classes using local appearance descriptors</a> 的论文，相当受启发，该论文以Information retrieval里<a href="http://en.wikipedia.org/wiki/Bag_of_words_model">bag of words</a>(以单词的出现的次数的矩阵来概括某篇文章)为基础,通过对图像所有的interest points用<a href="http://en.wikipedia.org/wiki/Harris_affine_region_detector">harris affine detector</a>来
+产生一个bag of keypoints(用sift descriptor描述每个keypoints) 对图像进行描述。</p>
+
+<p>不过一套训练数据里所有的keypoints的数量是相当大的，这里论文的另外一个看点就是用k-means对所有的keypoints进行归类，每个cluster之中保含类似的keypoints，而这时，每个图像里的keypoints 在每个cluster里的出现次数将会给统计并且生成一个bag of keypoints. </p>
+
+<p>通过naive bayes或svm 进行训练，在论文里分类的结果还不错.
+有几个我觉得也许可以改进的地方:</p>
+
+<blockquote>
+  <p>1 在原论文里：每种图像生成的keypoints的数量是不同的，为了避免bias作者在clustering的时候在每类图像里随机选了5000个keypoints，我觉得如果选的时候可以把stop words的概念加进去，每个class都有的keypoint去除掉的话应该能增加discrimination.</p>
+</blockquote>
+
+<blockquote>
+  <p>2 在测试的时候我觉得如果一个keypoint离2个以上的cluster距离都差不多的话，应该可以把它当作IR里的‘生词’一样忽略掉.
+感觉以上这两点应该能对算法有一个改进，以后有空得研究下。</p>
+</blockquote>
+
+<p>还有在论文里作者在做测试的时候没有使用no-object的图像进行训练和测试，我觉得如果加进去的话，结果应该会差一个档次。</p>
+
+<p>参考:
+http://en.wikipedia.org/wiki/Bag_of_words_model_in_computer_vision.</p>
+
+<p>这里是<a href="http://videolectures.net/lmcv04_dance_vcbk/">作者介绍算法的视频</a>,解释的相当不错，不过好像视频后半部分看不了。</p>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2012/04/15/hello-world/">Hello World</a></h1>
     
     
@@ -151,6 +353,18 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2012/09/09/gao-du-xiang-si-tu-pian-jian-ce-2tu-pian-suo-xiao-zhi-wen/">高度相似图片检测: 2图片缩小指纹</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/09/08/gao-du-xiang-si-tu-pian-jian-ce-1yan-se-zhi-fang-tu-chai/">高度相似图片检测: 1颜色直方图差</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/09/08/gao-du-xiang-si-tu-pian-jian-ce-introduction/">高度相似图片检测: Introduction</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2012/07/08/tesseract-ocr-zhong-wen-zi-fu-shi-bie-su-du-man-de-wen-ti/">tesseract-ocr 中文字符识别速度慢的问题</a>
       </li>
     
@@ -158,24 +372,12 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
         <a href="/blog/2012/06/28/sheng-cheng-zhong-wen-zi-tu-pian/">生成中文字图片</a>
       </li>
     
-      <li class="post">
-        <a href="/blog/2012/06/28/gabor-filtersdui-zhong-wen-zi-tu-pian-de-te-zheng-ti-qu/">Gabor filters对中文字图片的特征提取</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/05/30/shu-ju-ji-bu-ping-heng-wen-ti/">数据集不平衡问题</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/05/21/yin-le-le-qi-sheng-yin-fen-lei/">音乐乐器声音分类</a>
-      </li>
-    
   </ul>
 </section>
 
 <section>
   <h1>Categories</h1>
-      <ul id="category-list"><li><a href='/blog/categories/-gabor'>[gabor (1)</a></li><li><a href='/blog/categories/filters-'>Filters] (1)</a></li><li><a href='/blog/categories/google'>Google (1)</a></li><li><a href='/blog/categories/grammatical-evolution'>Grammatical evolution (1)</a></li><li><a href='/blog/categories/latex'>Latex (1)</a></li><li><a href='/blog/categories/numpy'>Numpy (1)</a></li><li><a href='/blog/categories/ocr'>Ocr (3)</a></li><li><a href='/blog/categories/octopress'>Octopress (1)</a></li><li><a href='/blog/categories/python'>Python (2)</a></li><li><a href='/blog/categories/scipy'>Scipy (1)</a></li><li><a href='/blog/categories/svm'>Svm (1)</a></li><li><a href='/blog/categories/weka'>Weka (1)</a></li><li><a href='/blog/categories/不平衡数据集'>不平衡数据集 (1)</a></li><li><a href='/blog/categories/中文字图片生成'>中文字图片生成 (1)</a></li><li><a href='/blog/categories/中文字特征提取'>中文字特征提取 (1)</a></li><li><a href='/blog/categories/中文字符识别'>中文字符识别 (1)</a></li><li><a href='/blog/categories/分类'>分类 (3)</a></li><li><a href='/blog/categories/图像'>图像 (1)</a></li><li><a href='/blog/categories/计算机视觉'>计算机视觉 (2)</a></li><li><a href='/blog/categories/音乐'>音乐 (1)</a></li></ul>
+      <ul id="category-list"><li><a href='/blog/categories/gabor-filters'>Gabor filters (1)</a></li><li><a href='/blog/categories/google'>Google (1)</a></li><li><a href='/blog/categories/grammatical-evolution'>Grammatical evolution (1)</a></li><li><a href='/blog/categories/latex'>Latex (1)</a></li><li><a href='/blog/categories/numpy'>Numpy (1)</a></li><li><a href='/blog/categories/ocr'>Ocr (3)</a></li><li><a href='/blog/categories/octopress'>Octopress (1)</a></li><li><a href='/blog/categories/python'>Python (2)</a></li><li><a href='/blog/categories/scipy'>Scipy (1)</a></li><li><a href='/blog/categories/svm'>Svm (1)</a></li><li><a href='/blog/categories/weka'>Weka (1)</a></li><li><a href='/blog/categories/不平衡数据集'>不平衡数据集 (1)</a></li><li><a href='/blog/categories/中文字图片生成'>中文字图片生成 (1)</a></li><li><a href='/blog/categories/中文字特征提取'>中文字特征提取 (1)</a></li><li><a href='/blog/categories/中文字符识别'>中文字符识别 (1)</a></li><li><a href='/blog/categories/分类'>分类 (3)</a></li><li><a href='/blog/categories/图像'>图像 (4)</a></li><li><a href='/blog/categories/相似性'>相似性 (3)</a></li><li><a href='/blog/categories/计算机视觉'>计算机视觉 (5)</a></li><li><a href='/blog/categories/音乐'>音乐 (1)</a></li></ul>
       </section>
 <section>
 最近读的书
