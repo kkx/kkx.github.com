@@ -9,8 +9,7 @@
   <meta name="author" content="小逸">
 
   
-  <meta name="description" content="图片缩小之后其实保留个部分图片的信息，可以用来当做图片的指纹，在查找相关资料的时候发现了一个很不错的博客
-在这个博客里，几乎所有的和图片相似性计算的算法都在了(除了基于语义的)。超级不错。里面的很多算法的实现是用pearl的，而本身抱着学习的态度我决定重新用python对其中的某些算法实现一遍。 &hellip;">
+  <meta name="description" content="最后一个要介绍的不基于语义的图片指纹生成方法: pHash, 这里是pHash算法简要: 图片指纹灰值化 图片缩放到32x32 计算机视觉每个图片的Discrete Cosine Transform (DCT, type II)。 只保留最左上部的8x8的DCT系数(有32x32大)， &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -89,6 +88,72 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/09/10/gao-du-xiang-si-tu-pian-jian-ce-3perceptual-hash-phash-tu-pian-zhi-wen/">高度相似图片检测: 3 Perceptual Hash(phash) 图片指纹</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-09-10T17:03:00-07:00" pubdate data-updated="true">Sep 10<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/09/10/gao-du-xiang-si-tu-pian-jian-ce-3perceptual-hash-phash-tu-pian-zhi-wen/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>最后一个要介绍的不基于语义的图片指纹生成方法: pHash, 这里是pHash算法简要:</p>
+
+<ul>
+  <li>图片指纹灰值化</li>
+  <li>图片缩放到32x32</li>
+  <li>计算机视觉每个图片的Discrete Cosine Transform (DCT, type II)。</li>
+  <li>只保留最左上部的8x8的DCT系数(有32x32大)，这样保存了频率最低的那部分(图片信息的大部分)</li>
+  <li>计算中值</li>
+  <li>生成64维2维码，0表示系数小于中值，反之为1.</li>
+</ul>
+
+<p>说到DCT，其实就想傅里叶转换一样的，把信号转换成很多不同频率和振幅的正玄曲线相加的结果。但是DCT只是用cosine函数。这样的话图片高频率部分会给擦去，只保留低频率部分。因为在给图片操作的时候，往往低频率的DCT系数会给保留，而且大部分图片的信息会给保留在这些低频率DCT系数里。(JPEG压缩也用这个方法来对图片进行压缩)。
+DCT 会生成8x8的系数表，那最左上方的表示最低频率的元素，也是最重要的，越往右下的表示相对频率稍高的元素(好多信号出来的东西啊，头好大)
+反正到最后能生成一个图片指纹，从别的作者的实验结果来看，效果是相对较好的。在这个网站上<a href="http://phash.org">phash.org</a>能下到开源的代码，在网站的demo上可以可以试试看计算图片的相似性，通过测试，只有DCT比较靠谱，另外两个的结果非常糟糕。相同的，这个算法的信息量为2^64，冲撞率应该不高，吧？</p>
+
+<p><a href="http://phash.org">phash.org</a>网站上是用c/c++写的代码，没有python的binding，在<a href="https://github.com/polachok/py-phash/">https://github.com/polachok/py-phash/</a>可以找到一个简陋的python bingding，里面有我们需要的DCT的计算方法，调用一个函数就能直接获得指纹数值。测试了几下，效果还不错。不过还是需要很大量的图片用语测试false positive的概率。
+在github上能看到作者写的使用方法说明，我这里具体的代码如下:</p>
+
+<pre><code>
+import pHash
+import sys
+
+if __name__ == "__main__":
+    hash1 = pHash.imagehash(sys.argv[1])
+    hash2 = pHash.imagehash(sys.argv[2])
+    print 'Hamming distance: %d (%08x / %08x)' % ( pHash.hamming_distance( hash1, hash2 ), hash1, hash2 )
+
+</code></pre>
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1015,76 +1080,6 @@ gb=gabor_fn(64,64,1.2,theta,5,0,1)
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/05/05/zai-octopresszhong-shi-yong-latex/">在octopress中使用latex</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-05-05T13:38:00-07:00" pubdate data-updated="true">May 5<span>th</span>, 2012</time>
-        
-         | <a href="/blog/2012/05/05/zai-octopresszhong-shi-yong-latex/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>原文在<a href="http://kqueue.org/blog/2012/01/05/hello-world/">http://kqueue.org/blog/2012/01/05/hello-world/</a>。通过MathJax, 把latex打在网页上。
-首先是在<code>source/_includes/custom/head.html</code>添加以下代码:</p>
-
-<pre><code>&lt;script type="text/javascript"
-        src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"&gt;
-&lt;/script&gt;
-</code></pre>
-
-<p>在<code>_config.yml</code> 把markdown的引擎从<code>rdiscount</code>换成<code>kramdown</code>, 当然如果没有装的话装一下<code>gem install kramdown</code>。从现在开始就能通过 <code>$$</code>..<code> $$</code>(<code>$$</code>在单独的一行中，代码上下各留一空行)写latex啦
-原文作者说好像会出现一些杂乱字符，你可以在<code>source/_includes/custom/head.html</code>添加以下代码来解决:</p>
-
-<pre><code>&lt;script type="text/x-mathjax-config"&gt;
-MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
-          MathJax.InputJax.TeX.prefilterHooks.Add(function (data) {
-                  data.math = data.math.replace(/^\s*&lt;!\[CDATA\[\s*((?:\n|.)*)\s*\]\]&gt;\s*$/m,"$1");
-                    });
-          });
-&lt;/script&gt;
-</code></pre>
-
-<p>这里是一个例子<a href="http://en.wikipedia.org/wiki/Multivariate_normal_distribution">Multivariate normal distribution</a>:</p>
-
-<script type="math/tex; mode=display">
-f_x(x_1,...,x_k)=\frac{1}{(2\pi)^{k/2}|\Sigma|^{1/2}}exp(-\frac{1}{2}(x-\mu)^T\Sigma^{-1}(x-\mu))
-</script>
-
-<pre><code>
-$$
-f_x(x_1,...,x_k)=\frac{1}{(2\pi)^{k\/2}|\Sigma|^{1\/2}}exp(-\frac{1}{2}(x-\mu)^T\Sigma^{-1}(x-\mu))
-$$
-
-</code></pre>
-
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -1108,6 +1103,10 @@ $$
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2012/09/10/gao-du-xiang-si-tu-pian-jian-ce-3perceptual-hash-phash-tu-pian-zhi-wen/">高度相似图片检测: 3 Perceptual Hash(phash) 图片指纹</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2012/09/09/gao-du-xiang-si-tu-pian-jian-ce-2tu-pian-suo-xiao-zhi-wen/">高度相似图片检测: 2图片缩小指纹</a>
       </li>
     
@@ -1123,16 +1122,12 @@ $$
         <a href="/blog/2012/07/08/tesseract-ocr-zhong-wen-zi-fu-shi-bie-su-du-man-de-wen-ti/">tesseract-ocr 中文字符识别速度慢的问题</a>
       </li>
     
-      <li class="post">
-        <a href="/blog/2012/06/28/sheng-cheng-zhong-wen-zi-tu-pian/">生成中文字图片</a>
-      </li>
-    
   </ul>
 </section>
 
 <section>
   <h1>Categories</h1>
-      <ul id="category-list"><li><a href='/blog/categories/gabor-filters'>Gabor filters (1)</a></li><li><a href='/blog/categories/google'>Google (1)</a></li><li><a href='/blog/categories/grammatical-evolution'>Grammatical evolution (1)</a></li><li><a href='/blog/categories/latex'>Latex (1)</a></li><li><a href='/blog/categories/numpy'>Numpy (1)</a></li><li><a href='/blog/categories/ocr'>Ocr (3)</a></li><li><a href='/blog/categories/octopress'>Octopress (1)</a></li><li><a href='/blog/categories/python'>Python (2)</a></li><li><a href='/blog/categories/scipy'>Scipy (1)</a></li><li><a href='/blog/categories/svm'>Svm (1)</a></li><li><a href='/blog/categories/weka'>Weka (1)</a></li><li><a href='/blog/categories/不平衡数据集'>不平衡数据集 (1)</a></li><li><a href='/blog/categories/中文字图片生成'>中文字图片生成 (1)</a></li><li><a href='/blog/categories/中文字特征提取'>中文字特征提取 (1)</a></li><li><a href='/blog/categories/中文字符识别'>中文字符识别 (1)</a></li><li><a href='/blog/categories/分类'>分类 (3)</a></li><li><a href='/blog/categories/图像'>图像 (4)</a></li><li><a href='/blog/categories/相似性'>相似性 (3)</a></li><li><a href='/blog/categories/计算机视觉'>计算机视觉 (5)</a></li><li><a href='/blog/categories/音乐'>音乐 (1)</a></li></ul>
+      <ul id="category-list"><li><a href='/blog/categories/gabor-filters'>Gabor filters (1)</a></li><li><a href='/blog/categories/google'>Google (1)</a></li><li><a href='/blog/categories/grammatical-evolution'>Grammatical evolution (1)</a></li><li><a href='/blog/categories/latex'>Latex (1)</a></li><li><a href='/blog/categories/numpy'>Numpy (1)</a></li><li><a href='/blog/categories/ocr'>Ocr (3)</a></li><li><a href='/blog/categories/octopress'>Octopress (1)</a></li><li><a href='/blog/categories/python'>Python (2)</a></li><li><a href='/blog/categories/scipy'>Scipy (1)</a></li><li><a href='/blog/categories/svm'>Svm (1)</a></li><li><a href='/blog/categories/weka'>Weka (1)</a></li><li><a href='/blog/categories/不平衡数据集'>不平衡数据集 (1)</a></li><li><a href='/blog/categories/中文字图片生成'>中文字图片生成 (1)</a></li><li><a href='/blog/categories/中文字特征提取'>中文字特征提取 (1)</a></li><li><a href='/blog/categories/中文字符识别'>中文字符识别 (1)</a></li><li><a href='/blog/categories/分类'>分类 (3)</a></li><li><a href='/blog/categories/图像'>图像 (5)</a></li><li><a href='/blog/categories/相似性'>相似性 (4)</a></li><li><a href='/blog/categories/计算机视觉'>计算机视觉 (6)</a></li><li><a href='/blog/categories/音乐'>音乐 (1)</a></li></ul>
       </section>
 <section>
 最近读的书
