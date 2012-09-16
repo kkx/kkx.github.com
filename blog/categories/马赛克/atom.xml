@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: 马赛克 | 名字]]></title>
+  <link href="http://kkx.github.com/blog/categories/马赛克/atom.xml" rel="self"/>
+  <link href="http://kkx.github.com/"/>
+  <updated>2012-09-16T13:45:06-07:00</updated>
+  <id>http://kkx.github.com/</id>
+  <author>
+    <name><![CDATA[小逸]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[马赛克图片拼接]]></title>
+    <link href="http://kkx.github.com/blog/2012/09/16/ma-sai-ke-tu-pian-pin-jie/"/>
+    <updated>2012-09-16T13:21:00-07:00</updated>
+    <id>http://kkx.github.com/blog/2012/09/16/ma-sai-ke-tu-pian-pin-jie</id>
+    <content type="html"><![CDATA[<p>以前就想做一个马赛克合成的图片了，最近不务正业，就写了一个
+方法很简单:</p>
+
+<ul>
+  <li>抓取一组图片的并缩放到统一大小</li>
+  <li>计算每张图片的rgb值的中值</li>
+  <li>所有的图片中值生成kd-tree</li>
+  <li>加载目标图片，并缩放到想要的结果图片的大小，然后创建结果图片(np.zeros)</li>
+  <li>每一小格结果图片的大小和抓取的小图大小一样,计算目标图片每小格的rgb 中值</li>
+  <li>查找最想进的小图，并用小图的rgb值填充到结果图片里</li>
+  <li>生成结果图片</li>
+</ul>
+
+<p>马赛克图片生成代码:</p>
+
+<pre><code>import Image
+import os
+import numpy as np
+from scipy.spatial import KDTree
+from scipy import spatial
+
+#calculate a mean rgb of an image
+def meanRGB(img):
+    rgb = np.array(img.getdata())
+        mean_r = np.mean(rgb[:,0])
+        mean_g = np.mean(rgb[:,1]) 
+        mean_b = np.mean(rgb[:,2])
+        return [mean_r, mean_g, mean_b]
+
+if __name__ == "__main__":
+    #grid size
+    mosaic_img_size = (20, 20)
+    #size of target image to generated
+    target_img_size = (1000, 1000)
+    target_img = Image.open("./VanGogh-starry_night_ballance1.jpg")
+    target_img = target_img.resize(target_img_size)
+    #grid images directory
+    directory = "./icons/"
+    listing = os.listdir(directory)
+    img_list = []
+    color_list = []
+    #load images and calculate mean rgb
+    for infile in listing:
+        if infile.endswith("jpg"):
+            img = Image.open(directory+infile)
+            img = img.resize(mosaic_img_size, Image.ANTIALIAS)
+            img_list.append(img)
+            color_list.append(meanRGB(img))
+
+    #create kdt for future pnn query
+    data = np.array(color_list)
+    tree = spatial.KDTree(data, leafsize=5)
+
+    count_x = 0
+    count_y = 0
+    new_image = np.zeros((target_img_size[0],target_img_size[1],3), dtype=np.uint8)
+    target_img_data = np.reshape(np.array(target_img.getdata()), (target_img_size[0],target_img_size[1],3))
+    length = mosaic_img_size[0]*mosaic_img_size[1]
+
+    #calculate mean rgb of each grid in the target image, search a nearest neighbor and fill the new image with
+    #the rgb values of the grid image
+    while count_x+mosaic_img_size[0] &lt; target_img_size[0]:
+        count_y = 0
+        while count_y+mosaic_img_size[1] &lt; target_img_size[1]:
+            mean_r = np.mean(target_img_data[count_x:count_x+mosaic_img_size[0],count_y:count_y+mosaic_img_size[1],0])
+            mean_g = np.mean(target_img_data[count_x:count_x+mosaic_img_size[0],count_y:count_y+mosaic_img_size[1],1])
+            mean_b = np.mean(target_img_data[count_x:count_x+mosaic_img_size[0],count_y:count_y+mosaic_img_size[1],2])
+            img_index = tree.query(np.array([mean_r,mean_g,mean_b]))[1]
+            new_image[count_x:count_x+mosaic_img_size[0],count_y:count_y+mosaic_img_size[1],:] = np.reshape(np.array(img_list[img_index].getdata()), (mosaic_img_size[0],mosaic_img_size[1],3))
+
+            count_y += mosaic_img_size[1]
+        count_x += mosaic_img_size[0]
+    
+    #image created
+    im = Image.fromarray(new_image)
+    im.show()
+    im.save("./1VanGogh-starry_night_ballance1.jpg")
+</code></pre>
+
+<p>里面有些小bug，但不影响使用，譬如最右最下有一圈黑色的，是代码中某个逻辑没写好，没有填充进去，但是不管它了- -</p>
+
+<p>结果:
+<img class="center" src="http://kkx.github.com/images/1VanGogh-starry_night_ballance1.jpg" width="300" height="300" title="原图" >
+<img class="center" src="http://kkx.github.com/images/VanGogh-starry_night_ballance1.jpg" width="300" height="300" title="原图" >
+768的向量空间，图片量一定要大一些，要不然的结果会是，颜色很单一，拼出来的马赛克效果不好。自己的友邻太少了，可能结果会不理想，所以这里我抓了豆瓣活动上的豆友,570多位。。</p>
+]]></content>
+  </entry>
+  
+</feed>

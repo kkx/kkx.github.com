@@ -9,8 +9,7 @@
   <meta name="author" content="小逸">
 
   
-  <meta name="description" content="原文在http://kqueue.org/blog/2012/01/05/hello-world/。通过MathJax, 把latex打在网页上。
-首先是在source/_includes/custom/head.html添加以下代码: &lt;script type="text/ &hellip;">
+  <meta name="description" content="Grammatical evolution 算法是一个遗传算法的分支，主要是通过遗传算法中的operators:crossover(杂交), mutation(变异)来查找最有解，而在grammatical evolution里最优解是以个方程或者一系列的代码块(executable &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -89,6 +88,51 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/05/12/grammatical-evolution-wen-fa-suan-fa/">Grammatical Evolution 文法算法</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-05-12T16:37:00-07:00" pubdate data-updated="true">May 12<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/05/12/grammatical-evolution-wen-fa-suan-fa/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Grammatical evolution 算法是一个遗传算法的分支，主要是通过遗传算法中的operators:crossover(杂交), mutation(变异)来查找最有解，而在grammatical evolution里最优解是以个方程或者一系列的代码块(executable program)。优秀的代码块往往能对目标解有很好的靠近。这个学术界的代表人物就要算是<a href="http://en.wikipedia.org/wiki/John_Koza">John Koza</a>, 他的<a href="http://www.genetic-programming.com/jkpdf/tr1314.pdf">Genetic Programming: A Paradigm for Genetically Breeding Populations of Computer Programs to Solve Problems</a>也是一本很好的reference。</p>
+
+<p>GE算法主要通过<a href="http://en.wikipedia.org/wiki/Backus-Naur_form">BNF语法</a>对一个search space进行限制，这样的话能很好的对那些破坏语法规则的代码块进行剔除，大大减少了搜索空间的范围。在实际运用中，有两个主要概念: “genotype”和”phenotype。也就是基因和外貌，一个很好的例子就是你的外貌(眼睛颜色)取决语你的基因(DNA)，而通常基因和外貌是两层不一样的东西。 在GE算法里，phenotype就是我们所要的程序，而genotype是一串整数。通过这串整数的数值和他们所在的环境(也就是所有的语法规则)产生出来一系列的rules(代码)，最终这一连串的代码的就结果就是我们所在找的代码块。通过检验代码块的fitness(通常在找一个方程的时候会先行计算要找方程对于某些特定数值的预计结果，然后通过代码块和预定数值的数值结果差的大小来判断相似度, 变相的监督学习？)来决定他的’繁殖’能力，这样我们又回到了GA算法里的crossover和mutation。也就是说，在GE算法里，每个代码块是一个人口，通过不断的对一大群人口不停的结合和转变找到最优质的答案。</p>
+
+<p>有必要讲一下genotype转化到phenotype这一过程，在这篇Neill的文章<a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.45.3336&amp;rep=rep1&amp;type=pdf">Grammatical evolution</a>中有很好的解释。</p>
+
+<p>同个这个idea很多GE算法的变种也相继出来了，<a href="http://arantxa.ii.uam.es/~alfonsec/docs/confint/iwinac05.pdf">Attribute Grammar Evolution</a>和<a href="http://www.cs.bham.ac.uk/~wbl/biblio/cache/http___arantxa.ii.uam.es__alfonsec_artint_ieeetec.pdf">Christiansen Grammar Evolution: grammatical evolution with semantics</a>(我老师写的¬¬) 都是对GE的改进，通过对语法上下文和语义的限制和检查加快了搜索的速度和搜索的结果。不过太多的限制也会是算法的效能下降哦。</p>
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -424,6 +468,10 @@ http://en.wikipedia.org/wiki/Bag_of_words_model_in_computer_vision.</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2012/09/16/ma-sai-ke-tu-pian-pin-jie/">马赛克图片拼接</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2012/09/10/gao-du-xiang-si-tu-pian-jian-ce-3perceptual-hash-phash-tu-pian-zhi-wen/">高度相似图片检测: 3 Perceptual Hash(phash) 图片指纹</a>
       </li>
     
@@ -439,16 +487,12 @@ http://en.wikipedia.org/wiki/Bag_of_words_model_in_computer_vision.</p>
         <a href="/blog/2012/09/08/gao-du-xiang-si-tu-pian-jian-ce-introduction/">高度相似图片检测: Introduction</a>
       </li>
     
-      <li class="post">
-        <a href="/blog/2012/07/08/tesseract-ocr-zhong-wen-zi-fu-shi-bie-su-du-man-de-wen-ti/">tesseract-ocr 中文字符识别速度慢的问题</a>
-      </li>
-    
   </ul>
 </section>
 
 <section>
   <h1>Categories</h1>
-      <ul id="category-list"><li><a href='/blog/categories/gabor-filters'>Gabor filters (1)</a></li><li><a href='/blog/categories/google'>Google (1)</a></li><li><a href='/blog/categories/grammatical-evolution'>Grammatical evolution (1)</a></li><li><a href='/blog/categories/latex'>Latex (1)</a></li><li><a href='/blog/categories/numpy'>Numpy (1)</a></li><li><a href='/blog/categories/ocr'>Ocr (3)</a></li><li><a href='/blog/categories/octopress'>Octopress (1)</a></li><li><a href='/blog/categories/python'>Python (2)</a></li><li><a href='/blog/categories/scipy'>Scipy (1)</a></li><li><a href='/blog/categories/svm'>Svm (1)</a></li><li><a href='/blog/categories/weka'>Weka (1)</a></li><li><a href='/blog/categories/不平衡数据集'>不平衡数据集 (1)</a></li><li><a href='/blog/categories/中文字图片生成'>中文字图片生成 (1)</a></li><li><a href='/blog/categories/中文字特征提取'>中文字特征提取 (1)</a></li><li><a href='/blog/categories/中文字符识别'>中文字符识别 (1)</a></li><li><a href='/blog/categories/分类'>分类 (3)</a></li><li><a href='/blog/categories/图像'>图像 (5)</a></li><li><a href='/blog/categories/相似性'>相似性 (4)</a></li><li><a href='/blog/categories/计算机视觉'>计算机视觉 (6)</a></li><li><a href='/blog/categories/音乐'>音乐 (1)</a></li></ul>
+      <ul id="category-list"><li><a href='/blog/categories/gabor-filters'>Gabor filters (1)</a></li><li><a href='/blog/categories/google'>Google (1)</a></li><li><a href='/blog/categories/grammatical-evolution'>Grammatical evolution (1)</a></li><li><a href='/blog/categories/latex'>Latex (1)</a></li><li><a href='/blog/categories/numpy'>Numpy (1)</a></li><li><a href='/blog/categories/ocr'>Ocr (3)</a></li><li><a href='/blog/categories/octopress'>Octopress (1)</a></li><li><a href='/blog/categories/python'>Python (2)</a></li><li><a href='/blog/categories/scipy'>Scipy (1)</a></li><li><a href='/blog/categories/svm'>Svm (1)</a></li><li><a href='/blog/categories/weka'>Weka (1)</a></li><li><a href='/blog/categories/不平衡数据集'>不平衡数据集 (1)</a></li><li><a href='/blog/categories/中文字图片生成'>中文字图片生成 (1)</a></li><li><a href='/blog/categories/中文字特征提取'>中文字特征提取 (1)</a></li><li><a href='/blog/categories/中文字符识别'>中文字符识别 (1)</a></li><li><a href='/blog/categories/分类'>分类 (3)</a></li><li><a href='/blog/categories/图像'>图像 (6)</a></li><li><a href='/blog/categories/计算机视觉'>计算机视觉 (6)</a></li><li><a href='/blog/categories/音乐'>音乐 (1)</a></li><li><a href='/blog/categories/马赛克'>马赛克 (1)</a></li><li><a href='/blog/categories/高度相似图片检测'>高度相似图片检测 (3)</a></li><li><a href='/blog/categories/高度相似性图片检测'>高度相似性图片检测 (1)</a></li></ul>
       </section>
 <section>
 最近读的书

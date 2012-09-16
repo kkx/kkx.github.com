@@ -131,7 +131,7 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 DCT 会生成8x8的系数表，那最左上方的表示最低频率的元素，也是最重要的，越往右下的表示相对频率稍高的元素(好多信号出来的东西啊，头好大)
 反正到最后能生成一个图片指纹，从别的作者的实验结果来看，效果是相对较好的。在这个网站上<a href="http://phash.org">phash.org</a>能下到开源的代码，在网站的demo上可以可以试试看计算图片的相似性，通过测试，只有DCT比较靠谱，另外两个的结果非常糟糕。相同的，这个算法的信息量为2^64，冲撞率应该不高，吧？</p>
 
-<p><a href="http://phash.org">phash.org</a>网站上是用c/c++写的代码，没有python的binding，在<a href="https://github.com/polachok/py-phash/">https://github.com/polachok/py-phash/</a>可以找到一个简陋的python bingding，里面有我们需要的DCT的计算方法，调用一个函数就能直接获得指纹数值。测试了几下，效果还不错。不过还是需要很大量的图片用语测试false positive的概率。
+<p><a href="http://phash.org">phash.org</a>网站上是用c/c++写的代码，没有python的binding，在<a href="https://github.com/polachok/py-phash/">https://github.com/polachok/py-phash/</a>可以找到一个简陋的python binding，里面有我们需要的DCT的计算方法，调用一个函数就能直接获得指纹数值。测试了几下，效果还不错。不过还是需要很大量的图片用语测试false positive的概率。
 在github上能看到作者写的使用方法说明，我这里具体的代码如下:</p>
 
 <pre><code>
@@ -172,7 +172,7 @@ if __name__ == "__main__":
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/图像/'>图像</a>, <a class='category' href='/blog/categories/相似性/'>相似性</a>, <a class='category' href='/blog/categories/计算机视觉/'>计算机视觉</a>
+    <a class='category' href='/blog/categories/图像/'>图像</a>, <a class='category' href='/blog/categories/计算机视觉/'>计算机视觉</a>, <a class='category' href='/blog/categories/高度相似性图片检测/'>高度相似性图片检测</a>
   
 </span>
 
@@ -196,6 +196,8 @@ if __name__ == "__main__":
       
         <a class="basic-alignment left" href="/blog/2012/09/09/gao-du-xiang-si-tu-pian-jian-ce-2tu-pian-suo-xiao-zhi-wen/" title="Previous Post: 高度相似图片检测: 2图片缩小指纹">&laquo; 高度相似图片检测: 2图片缩小指纹</a>
       
+      
+        <a class="basic-alignment right" href="/blog/2012/09/16/ma-sai-ke-tu-pian-pin-jie/" title="Next Post: 马赛克图片拼接">马赛克图片拼接 &raquo;</a>
       
     </p>
   </footer>
@@ -224,6 +226,10 @@ if __name__ == "__main__":
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2012/09/16/ma-sai-ke-tu-pian-pin-jie/">马赛克图片拼接</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2012/09/10/gao-du-xiang-si-tu-pian-jian-ce-3perceptual-hash-phash-tu-pian-zhi-wen/">高度相似图片检测: 3 Perceptual Hash(phash) 图片指纹</a>
       </li>
     
@@ -239,16 +245,12 @@ if __name__ == "__main__":
         <a href="/blog/2012/09/08/gao-du-xiang-si-tu-pian-jian-ce-introduction/">高度相似图片检测: Introduction</a>
       </li>
     
-      <li class="post">
-        <a href="/blog/2012/07/08/tesseract-ocr-zhong-wen-zi-fu-shi-bie-su-du-man-de-wen-ti/">tesseract-ocr 中文字符识别速度慢的问题</a>
-      </li>
-    
   </ul>
 </section>
 
 <section>
   <h1>Categories</h1>
-      <ul id="category-list"><li><a href='/blog/categories/gabor-filters'>Gabor filters (1)</a></li><li><a href='/blog/categories/google'>Google (1)</a></li><li><a href='/blog/categories/grammatical-evolution'>Grammatical evolution (1)</a></li><li><a href='/blog/categories/latex'>Latex (1)</a></li><li><a href='/blog/categories/numpy'>Numpy (1)</a></li><li><a href='/blog/categories/ocr'>Ocr (3)</a></li><li><a href='/blog/categories/octopress'>Octopress (1)</a></li><li><a href='/blog/categories/python'>Python (2)</a></li><li><a href='/blog/categories/scipy'>Scipy (1)</a></li><li><a href='/blog/categories/svm'>Svm (1)</a></li><li><a href='/blog/categories/weka'>Weka (1)</a></li><li><a href='/blog/categories/不平衡数据集'>不平衡数据集 (1)</a></li><li><a href='/blog/categories/中文字图片生成'>中文字图片生成 (1)</a></li><li><a href='/blog/categories/中文字特征提取'>中文字特征提取 (1)</a></li><li><a href='/blog/categories/中文字符识别'>中文字符识别 (1)</a></li><li><a href='/blog/categories/分类'>分类 (3)</a></li><li><a href='/blog/categories/图像'>图像 (5)</a></li><li><a href='/blog/categories/相似性'>相似性 (4)</a></li><li><a href='/blog/categories/计算机视觉'>计算机视觉 (6)</a></li><li><a href='/blog/categories/音乐'>音乐 (1)</a></li></ul>
+      <ul id="category-list"><li><a href='/blog/categories/gabor-filters'>Gabor filters (1)</a></li><li><a href='/blog/categories/google'>Google (1)</a></li><li><a href='/blog/categories/grammatical-evolution'>Grammatical evolution (1)</a></li><li><a href='/blog/categories/latex'>Latex (1)</a></li><li><a href='/blog/categories/numpy'>Numpy (1)</a></li><li><a href='/blog/categories/ocr'>Ocr (3)</a></li><li><a href='/blog/categories/octopress'>Octopress (1)</a></li><li><a href='/blog/categories/python'>Python (2)</a></li><li><a href='/blog/categories/scipy'>Scipy (1)</a></li><li><a href='/blog/categories/svm'>Svm (1)</a></li><li><a href='/blog/categories/weka'>Weka (1)</a></li><li><a href='/blog/categories/不平衡数据集'>不平衡数据集 (1)</a></li><li><a href='/blog/categories/中文字图片生成'>中文字图片生成 (1)</a></li><li><a href='/blog/categories/中文字特征提取'>中文字特征提取 (1)</a></li><li><a href='/blog/categories/中文字符识别'>中文字符识别 (1)</a></li><li><a href='/blog/categories/分类'>分类 (3)</a></li><li><a href='/blog/categories/图像'>图像 (6)</a></li><li><a href='/blog/categories/计算机视觉'>计算机视觉 (6)</a></li><li><a href='/blog/categories/音乐'>音乐 (1)</a></li><li><a href='/blog/categories/马赛克'>马赛克 (1)</a></li><li><a href='/blog/categories/高度相似图片检测'>高度相似图片检测 (3)</a></li><li><a href='/blog/categories/高度相似性图片检测'>高度相似性图片检测 (1)</a></li></ul>
       </section>
 <section>
 最近读的书

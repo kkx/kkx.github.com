@@ -9,7 +9,8 @@
   <meta name="author" content="小逸">
 
   
-  <meta name="description" content="最后一个要介绍的不基于语义的图片指纹生成方法: pHash, 这里是pHash算法简要: 图片指纹灰值化 图片缩放到32x32 计算机视觉每个图片的Discrete Cosine Transform (DCT, type II)。 只保留最左上部的8x8的DCT系数(有32x32大)， &hellip;">
+  <meta name="description" content="以前就想做一个马赛克合成的图片了，最近不务正业，就写了一个
+方法很简单: 抓取一组图片的并缩放到统一大小 计算每张图片的rgb值的中值 所有的图片中值生成kd-tree 加载目标图片，并缩放到想要的结果图片的大小，然后创建结果图片(np.zeros) 每一小格结果图片的大小和抓取的小图大小一样, &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -94,6 +95,128 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
       
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2012/09/16/ma-sai-ke-tu-pian-pin-jie/">马赛克图片拼接</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-09-16T13:21:00-07:00" pubdate data-updated="true">Sep 16<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/09/16/ma-sai-ke-tu-pian-pin-jie/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>以前就想做一个马赛克合成的图片了，最近不务正业，就写了一个
+方法很简单:</p>
+
+<ul>
+  <li>抓取一组图片的并缩放到统一大小</li>
+  <li>计算每张图片的rgb值的中值</li>
+  <li>所有的图片中值生成kd-tree</li>
+  <li>加载目标图片，并缩放到想要的结果图片的大小，然后创建结果图片(np.zeros)</li>
+  <li>每一小格结果图片的大小和抓取的小图大小一样,计算目标图片每小格的rgb 中值</li>
+  <li>查找最想进的小图，并用小图的rgb值填充到结果图片里</li>
+  <li>生成结果图片</li>
+</ul>
+
+<p>马赛克图片生成代码:</p>
+
+<pre><code>import Image
+import os
+import numpy as np
+from scipy.spatial import KDTree
+from scipy import spatial
+
+#calculate a mean rgb of an image
+def meanRGB(img):
+    rgb = np.array(img.getdata())
+        mean_r = np.mean(rgb[:,0])
+        mean_g = np.mean(rgb[:,1]) 
+        mean_b = np.mean(rgb[:,2])
+        return [mean_r, mean_g, mean_b]
+
+if __name__ == "__main__":
+    #grid size
+    mosaic_img_size = (20, 20)
+    #size of target image to generated
+    target_img_size = (1000, 1000)
+    target_img = Image.open("./VanGogh-starry_night_ballance1.jpg")
+    target_img = target_img.resize(target_img_size)
+    #grid images directory
+    directory = "./icons/"
+    listing = os.listdir(directory)
+    img_list = []
+    color_list = []
+    #load images and calculate mean rgb
+    for infile in listing:
+        if infile.endswith("jpg"):
+            img = Image.open(directory+infile)
+            img = img.resize(mosaic_img_size, Image.ANTIALIAS)
+            img_list.append(img)
+            color_list.append(meanRGB(img))
+
+    #create kdt for future pnn query
+    data = np.array(color_list)
+    tree = spatial.KDTree(data, leafsize=5)
+
+    count_x = 0
+    count_y = 0
+    new_image = np.zeros((target_img_size[0],target_img_size[1],3), dtype=np.uint8)
+    target_img_data = np.reshape(np.array(target_img.getdata()), (target_img_size[0],target_img_size[1],3))
+    length = mosaic_img_size[0]*mosaic_img_size[1]
+
+    #calculate mean rgb of each grid in the target image, search a nearest neighbor and fill the new image with
+    #the rgb values of the grid image
+    while count_x+mosaic_img_size[0] &lt; target_img_size[0]:
+        count_y = 0
+        while count_y+mosaic_img_size[1] &lt; target_img_size[1]:
+            mean_r = np.mean(target_img_data[count_x:count_x+mosaic_img_size[0],count_y:count_y+mosaic_img_size[1],0])
+            mean_g = np.mean(target_img_data[count_x:count_x+mosaic_img_size[0],count_y:count_y+mosaic_img_size[1],1])
+            mean_b = np.mean(target_img_data[count_x:count_x+mosaic_img_size[0],count_y:count_y+mosaic_img_size[1],2])
+            img_index = tree.query(np.array([mean_r,mean_g,mean_b]))[1]
+            new_image[count_x:count_x+mosaic_img_size[0],count_y:count_y+mosaic_img_size[1],:] = np.reshape(np.array(img_list[img_index].getdata()), (mosaic_img_size[0],mosaic_img_size[1],3))
+
+            count_y += mosaic_img_size[1]
+        count_x += mosaic_img_size[0]
+    
+    #image created
+    im = Image.fromarray(new_image)
+    im.show()
+    im.save("./1VanGogh-starry_night_ballance1.jpg")
+</code></pre>
+
+<p>里面有些小bug，但不影响使用，譬如最右最下有一圈黑色的，是代码中某个逻辑没写好，没有填充进去，但是不管它了- -</p>
+
+<p>结果:
+<img class="center" src="http://kkx.github.com/images/1VanGogh-starry_night_ballance1.jpg" width="300" height="300" title="原图" />
+<img class="center" src="http://kkx.github.com/images/VanGogh-starry_night_ballance1.jpg" width="300" height="300" title="原图" />
+768的向量空间，图片量一定要大一些，要不然的结果会是，颜色很单一，拼出来的马赛克效果不好。自己的友邻太少了，可能结果会不理想，所以这里我抓了豆瓣活动上的豆友,570多位。。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2012/09/10/gao-du-xiang-si-tu-pian-jian-ce-3perceptual-hash-phash-tu-pian-zhi-wen/">高度相似图片检测: 3 Perceptual Hash(phash) 图片指纹</a></h1>
     
     
@@ -134,7 +257,7 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 DCT 会生成8x8的系数表，那最左上方的表示最低频率的元素，也是最重要的，越往右下的表示相对频率稍高的元素(好多信号出来的东西啊，头好大)
 反正到最后能生成一个图片指纹，从别的作者的实验结果来看，效果是相对较好的。在这个网站上<a href="http://phash.org">phash.org</a>能下到开源的代码，在网站的demo上可以可以试试看计算图片的相似性，通过测试，只有DCT比较靠谱，另外两个的结果非常糟糕。相同的，这个算法的信息量为2^64，冲撞率应该不高，吧？</p>
 
-<p><a href="http://phash.org">phash.org</a>网站上是用c/c++写的代码，没有python的binding，在<a href="https://github.com/polachok/py-phash/">https://github.com/polachok/py-phash/</a>可以找到一个简陋的python bingding，里面有我们需要的DCT的计算方法，调用一个函数就能直接获得指纹数值。测试了几下，效果还不错。不过还是需要很大量的图片用语测试false positive的概率。
+<p><a href="http://phash.org">phash.org</a>网站上是用c/c++写的代码，没有python的binding，在<a href="https://github.com/polachok/py-phash/">https://github.com/polachok/py-phash/</a>可以找到一个简陋的python binding，里面有我们需要的DCT的计算方法，调用一个函数就能直接获得指纹数值。测试了几下，效果还不错。不过还是需要很大量的图片用语测试false positive的概率。
 在github上能看到作者写的使用方法说明，我这里具体的代码如下:</p>
 
 <pre><code>
@@ -1035,51 +1158,6 @@ gb=gabor_fn(64,64,1.2,theta,5,0,1)
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/05/12/grammatical-evolution-wen-fa-suan-fa/">Grammatical Evolution 文法算法</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-05-12T16:37:00-07:00" pubdate data-updated="true">May 12<span>th</span>, 2012</time>
-        
-         | <a href="/blog/2012/05/12/grammatical-evolution-wen-fa-suan-fa/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Grammatical evolution 算法是一个遗传算法的分支，主要是通过遗传算法中的operators:crossover(杂交), mutation(变异)来查找最有解，而在grammatical evolution里最优解是以个方程或者一系列的代码块(executable program)。优秀的代码块往往能对目标解有很好的靠近。这个学术界的代表人物就要算是<a href="http://en.wikipedia.org/wiki/John_Koza">John Koza</a>, 他的<a href="http://www.genetic-programming.com/jkpdf/tr1314.pdf">Genetic Programming: A Paradigm for Genetically Breeding Populations of Computer Programs to Solve Problems</a>也是一本很好的reference。</p>
-
-<p>GE算法主要通过<a href="http://en.wikipedia.org/wiki/Backus-Naur_form">BNF语法</a>对一个search space进行限制，这样的话能很好的对那些破坏语法规则的代码块进行剔除，大大减少了搜索空间的范围。在实际运用中，有两个主要概念: “genotype”和”phenotype。也就是基因和外貌，一个很好的例子就是你的外貌(眼睛颜色)取决语你的基因(DNA)，而通常基因和外貌是两层不一样的东西。 在GE算法里，phenotype就是我们所要的程序，而genotype是一串整数。通过这串整数的数值和他们所在的环境(也就是所有的语法规则)产生出来一系列的rules(代码)，最终这一连串的代码的就结果就是我们所在找的代码块。通过检验代码块的fitness(通常在找一个方程的时候会先行计算要找方程对于某些特定数值的预计结果，然后通过代码块和预定数值的数值结果差的大小来判断相似度, 变相的监督学习？)来决定他的’繁殖’能力，这样我们又回到了GA算法里的crossover和mutation。也就是说，在GE算法里，每个代码块是一个人口，通过不断的对一大群人口不停的结合和转变找到最优质的答案。</p>
-
-<p>有必要讲一下genotype转化到phenotype这一过程，在这篇Neill的文章<a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.45.3336&amp;rep=rep1&amp;type=pdf">Grammatical evolution</a>中有很好的解释。</p>
-
-<p>同个这个idea很多GE算法的变种也相继出来了，<a href="http://arantxa.ii.uam.es/~alfonsec/docs/confint/iwinac05.pdf">Attribute Grammar Evolution</a>和<a href="http://www.cs.bham.ac.uk/~wbl/biblio/cache/http___arantxa.ii.uam.es__alfonsec_artint_ieeetec.pdf">Christiansen Grammar Evolution: grammatical evolution with semantics</a>(我老师写的¬¬) 都是对GE的改进，通过对语法上下文和语义的限制和检查加快了搜索的速度和搜索的结果。不过太多的限制也会是算法的效能下降哦。</p>
-
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -1103,6 +1181,10 @@ gb=gabor_fn(64,64,1.2,theta,5,0,1)
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2012/09/16/ma-sai-ke-tu-pian-pin-jie/">马赛克图片拼接</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2012/09/10/gao-du-xiang-si-tu-pian-jian-ce-3perceptual-hash-phash-tu-pian-zhi-wen/">高度相似图片检测: 3 Perceptual Hash(phash) 图片指纹</a>
       </li>
     
@@ -1118,16 +1200,12 @@ gb=gabor_fn(64,64,1.2,theta,5,0,1)
         <a href="/blog/2012/09/08/gao-du-xiang-si-tu-pian-jian-ce-introduction/">高度相似图片检测: Introduction</a>
       </li>
     
-      <li class="post">
-        <a href="/blog/2012/07/08/tesseract-ocr-zhong-wen-zi-fu-shi-bie-su-du-man-de-wen-ti/">tesseract-ocr 中文字符识别速度慢的问题</a>
-      </li>
-    
   </ul>
 </section>
 
 <section>
   <h1>Categories</h1>
-      <ul id="category-list"><li><a href='/blog/categories/gabor-filters'>Gabor filters (1)</a></li><li><a href='/blog/categories/google'>Google (1)</a></li><li><a href='/blog/categories/grammatical-evolution'>Grammatical evolution (1)</a></li><li><a href='/blog/categories/latex'>Latex (1)</a></li><li><a href='/blog/categories/numpy'>Numpy (1)</a></li><li><a href='/blog/categories/ocr'>Ocr (3)</a></li><li><a href='/blog/categories/octopress'>Octopress (1)</a></li><li><a href='/blog/categories/python'>Python (2)</a></li><li><a href='/blog/categories/scipy'>Scipy (1)</a></li><li><a href='/blog/categories/svm'>Svm (1)</a></li><li><a href='/blog/categories/weka'>Weka (1)</a></li><li><a href='/blog/categories/不平衡数据集'>不平衡数据集 (1)</a></li><li><a href='/blog/categories/中文字图片生成'>中文字图片生成 (1)</a></li><li><a href='/blog/categories/中文字特征提取'>中文字特征提取 (1)</a></li><li><a href='/blog/categories/中文字符识别'>中文字符识别 (1)</a></li><li><a href='/blog/categories/分类'>分类 (3)</a></li><li><a href='/blog/categories/图像'>图像 (5)</a></li><li><a href='/blog/categories/相似性'>相似性 (4)</a></li><li><a href='/blog/categories/计算机视觉'>计算机视觉 (6)</a></li><li><a href='/blog/categories/音乐'>音乐 (1)</a></li></ul>
+      <ul id="category-list"><li><a href='/blog/categories/gabor-filters'>Gabor filters (1)</a></li><li><a href='/blog/categories/google'>Google (1)</a></li><li><a href='/blog/categories/grammatical-evolution'>Grammatical evolution (1)</a></li><li><a href='/blog/categories/latex'>Latex (1)</a></li><li><a href='/blog/categories/numpy'>Numpy (1)</a></li><li><a href='/blog/categories/ocr'>Ocr (3)</a></li><li><a href='/blog/categories/octopress'>Octopress (1)</a></li><li><a href='/blog/categories/python'>Python (2)</a></li><li><a href='/blog/categories/scipy'>Scipy (1)</a></li><li><a href='/blog/categories/svm'>Svm (1)</a></li><li><a href='/blog/categories/weka'>Weka (1)</a></li><li><a href='/blog/categories/不平衡数据集'>不平衡数据集 (1)</a></li><li><a href='/blog/categories/中文字图片生成'>中文字图片生成 (1)</a></li><li><a href='/blog/categories/中文字特征提取'>中文字特征提取 (1)</a></li><li><a href='/blog/categories/中文字符识别'>中文字符识别 (1)</a></li><li><a href='/blog/categories/分类'>分类 (3)</a></li><li><a href='/blog/categories/图像'>图像 (6)</a></li><li><a href='/blog/categories/计算机视觉'>计算机视觉 (6)</a></li><li><a href='/blog/categories/音乐'>音乐 (1)</a></li><li><a href='/blog/categories/马赛克'>马赛克 (1)</a></li><li><a href='/blog/categories/高度相似图片检测'>高度相似图片检测 (3)</a></li><li><a href='/blog/categories/高度相似性图片检测'>高度相似性图片检测 (1)</a></li></ul>
       </section>
 <section>
 最近读的书

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 计算机视觉 | 名字]]></title>
   <link href="http://kkx.github.com/blog/categories/计算机视觉/atom.xml" rel="self"/>
   <link href="http://kkx.github.com/"/>
-  <updated>2012-09-10T20:15:44-07:00</updated>
+  <updated>2012-09-16T13:45:06-07:00</updated>
   <id>http://kkx.github.com/</id>
   <author>
     <name><![CDATA[小逸]]></name>
@@ -33,7 +33,7 @@
 DCT 会生成8x8的系数表，那最左上方的表示最低频率的元素，也是最重要的，越往右下的表示相对频率稍高的元素(好多信号出来的东西啊，头好大)
 反正到最后能生成一个图片指纹，从别的作者的实验结果来看，效果是相对较好的。在这个网站上<a href="http://phash.org">phash.org</a>能下到开源的代码，在网站的demo上可以可以试试看计算图片的相似性，通过测试，只有DCT比较靠谱，另外两个的结果非常糟糕。相同的，这个算法的信息量为2^64，冲撞率应该不高，吧？</p>
 
-<p><a href="http://phash.org">phash.org</a>网站上是用c/c++写的代码，没有python的binding，在<a href="https://github.com/polachok/py-phash/">https://github.com/polachok/py-phash/</a>可以找到一个简陋的python bingding，里面有我们需要的DCT的计算方法，调用一个函数就能直接获得指纹数值。测试了几下，效果还不错。不过还是需要很大量的图片用语测试false positive的概率。
+<p><a href="http://phash.org">phash.org</a>网站上是用c/c++写的代码，没有python的binding，在<a href="https://github.com/polachok/py-phash/">https://github.com/polachok/py-phash/</a>可以找到一个简陋的python binding，里面有我们需要的DCT的计算方法，调用一个函数就能直接获得指纹数值。测试了几下，效果还不错。不过还是需要很大量的图片用语测试false positive的概率。
 在github上能看到作者写的使用方法说明，我这里具体的代码如下:</p>
 
 <pre><code>
