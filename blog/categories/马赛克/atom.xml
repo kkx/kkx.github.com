@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 马赛克 | 名字]]></title>
   <link href="http://kkx.github.com/blog/categories/马赛克/atom.xml" rel="self"/>
   <link href="http://kkx.github.com/"/>
-  <updated>2012-09-16T13:45:06-07:00</updated>
+  <updated>2012-09-16T13:49:10-07:00</updated>
   <id>http://kkx.github.com/</id>
   <author>
     <name><![CDATA[小逸]]></name>
@@ -100,8 +100,8 @@ if __name__ == "__main__":
 <p>里面有些小bug，但不影响使用，譬如最右最下有一圈黑色的，是代码中某个逻辑没写好，没有填充进去，但是不管它了- -</p>
 
 <p>结果:
-<img class="center" src="http://kkx.github.com/images/1VanGogh-starry_night_ballance1.jpg" width="300" height="300" title="原图" >
-<img class="center" src="http://kkx.github.com/images/VanGogh-starry_night_ballance1.jpg" width="300" height="300" title="原图" >
+<img class="center" src="http://kkx.github.com/images/1VanGogh-starry_night_ballance1.jpg" width="600" height="600" title="原图" >
+<img class="center" src="http://kkx.github.com/images/VanGogh-starry_night_ballance1.jpg" width="600" height="600" title="原图" >
 768的向量空间，图片量一定要大一些，要不然的结果会是，颜色很单一，拼出来的马赛克效果不好。自己的友邻太少了，可能结果会不理想，所以这里我抓了豆瓣活动上的豆友,570多位。。</p>
 ]]></content>
   </entry>
