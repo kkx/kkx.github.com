@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>About me - 名字</title>
+  <title>FAST APPROXIMATE NEAREST NEIGHBORS(FLANN) - 名字</title>
   <meta name="author" content="小逸">
 
   
-  <meta name="description" content="About Me 2012的还要做的 ICA 歌-曲 分离 毕设，石蝇分类或中心点提取 Multi-channel Gradient I am not good enough for you Recent Posts FAST APPROXIMATE NEAREST NEIGHBORS( &hellip;">
+  <meta name="description" content="最近需要使用最近友邻对高纬度的数据进行查询。在实验的过程中发现相对于高纬度的数据，kd树的查找速度其实没有线性查找来的快的，但是在大数据面前，线性查找的开销是很大的。我在网上找了一些相关资料，最后发现有个叫flann的库很不错， &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://kkx.github.com/plan">
+  <link rel="canonical" href="http://kkx.github.com/blog/2012/09/24/fast-approximate-nearest-neighbors-flann">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -87,29 +87,125 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">About Me</h1>
+    
+      <h1 class="entry-title">FAST APPROXIMATE NEAREST NEIGHBORS(FLANN)</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-09-24T20:04:00-07:00" pubdate data-updated="true">Sep 24<span>th</span>, 2012</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
     
   </header>
-  
-  <h2 id="section">2012的还要做的</h2>
+
+
+<div class="entry-content"><p>最近需要使用最近友邻对高纬度的数据进行查询。在实验的过程中发现相对于高纬度的数据，kd树的查找速度其实没有线性查找来的快的，但是在大数据面前，线性查找的开销是很大的。我在网上找了一些相关资料，最后发现有个叫flann的库很不错，这个库可以让根据用户设置的查找准确性确定性和用户提供的数据自动生成一个合理高效的数据结构，让每次搜索的速度比线性查找快几个数量级，同时丢失一些准确度。程序上自动的对参数和数据结构的设置，让使用者不用担心该使用什么样的方法来解决问题。</p>
+
+<p>网上有各类优化的最近友邻查找方法的论文，很多时候针对每个问题，用的方法不一样能产生不同的优化。通过论文实验报告，有2个方法是在比较不错的:</p>
 
 <ul>
-  <li>ICA 歌-曲 分离</li>
-  <li>毕设，石蝇分类或中心点提取</li>
-  <li>Multi-channel Gradient</li>
+  <li>Randomized kd-tree algorithm: 不同于普通的kd-tree，这个方法是通过生成一组(大于等于1)的kd树来储存数据。该方法是通过在最之前的D次随机数据分割从而获得方差最大的分割(D=5)。当搜索的时候所有树会根据和数据的距离进行排列，距离近的树先被排查，只会查找固定数目的leaf。</li>
+  <li>Hierarchical k-means tree algorithm: 这个算法就是每次把数据进行k组分割(k-means) 每分割完的小组继续进行k组分割，直至每组数据小于K。这里随机部分是:首先查询数据会在树里过一遍，到达叶子的时候会生成一个优先队列，在队列里，查询数据到达最有叶子里的路径里的所有节点里没有访问过的branch, 队列的排列方式根据他们的中心位置和查询数据的距离从小到达排列。每次会从优先队列里提取一个节点从那里一直到树叶进行查找最近友邻，并同时在优先队列里插入新的未访问branch。查找的次数根据用户的提供的准确率百分比。</li>
 </ul>
 
+<p>最有参数的自动选择没有怎么整明白(刻意关系)，貌似是使用10%的数据做一个检测，参数的选择会在固定的几个之中进行选择。用户使用的时候往往需要提供一些使用场景的参数，比如: 查找速度，建表速度，内存使用速度，更具这几个参数，他会自动给你找到最优的方法和方法参数。只提供使用场景的这些参数更直观的让不是怎么了解算法本身的人能够用最合适的算法做最合适的事了。具体cost计算方程在论文的程式1中。</p>
+
+<p>使用的感脚良好，很简单，速度也靠谱。有python matlab 等的binding，opencv里还自带了这个库！在mac上安装matlab上安装的时候碰到几个小问题。安装步骤可以参考<a href="http://www.cs.uky.edu/~jacobs/tips/flann_matlab.html">http://www.cs.uky.edu/~jacobs/tips/flann_matlab.html</a>。当中需要装一个patch让matlab里的mex可以能编译。地址在<a href="http://www.mathworks.es/support/solutions/en/data/1-FR6LXJ/">这里</a>装完之后更新下配置文件就能在matlab上编译c++文件了！</p>
+
+<p>这个库的使用也是很容易的:    </p>
+
+<pre><code>[index, search_params, speedup] = flann_build_index(mat_train_data(:,:), struct('algorithm','autotuned', 'target_precision',0.95, 'build_weight',0.01, 'memory_weight',0))
+%这里表示无所谓内存开销，建立索引开销重视一般。
+%搜索        
+[result, ndists] = flann_search(index, mat_train_data(:,1), 5, search_params);
+%保存
+flann_save_index(index,'train.idx')
+</code></pre>
+
+<p>不过还是有很蛋疼的地方，比如，有时候你得save一下再重新load之后才能搜索, 还有就是里面数据和matlab的数据表现形式不一样啊，让我废了好久才弄明白，一般数据分析总是会把数据一行行保存，每个row是一条数据。但是这里他是反人类的反过来了！使用的时候要非常注意。</p>
+
+<p>参考:
+1 FAST APPROXIMATE NEAREST NEIGHBORS WITH AUTOMATIC ALGORITHM CONFIGURATION
+2 http://www.cs.uky.edu/~jacobs/tips/flann_matlab.html
+3 http://www.cs.ubc.ca/~mariusm/index.php/FLANN/FLANN</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">小逸</span></span>
+
+      
+
+
+
+
+
+
+
 
   
-    <footer>
+
+
+<time datetime="2012-09-24T20:04:00-07:00" pubdate data-updated="true">Sep 24<span>th</span>, 2012</time>
       
-      
-    </footer>
+
+<span class="categories">
   
+    <a class='category' href='/blog/categories/knn-/'>knn,</a>, <a class='category' href='/blog/categories/机器学习/'>机器学习</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://kkx.github.com/blog/2012/09/24/fast-approximate-nearest-neighbors-flann/" data-via="" data-counturl="http://kkx.github.com/blog/2012/09/24/fast-approximate-nearest-neighbors-flann/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/09/16/ma-sai-ke-tu-pian-pin-jie/" title="Previous Post: 马赛克图片拼接">&laquo; 马赛克图片拼接</a>
+      
+      
+    </p>
+  </footer>
 </article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
 
 </div>
 
@@ -183,6 +279,22 @@ my Last.fm
 
 </footer>
   
+
+<script type="text/javascript">
+      var disqus_shortname = 'kkx';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://kkx.github.com/blog/2012/09/24/fast-approximate-nearest-neighbors-flann/';
+        var disqus_url = 'http://kkx.github.com/blog/2012/09/24/fast-approximate-nearest-neighbors-flann/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
 
 
 
