@@ -9,7 +9,7 @@
   <meta name="author" content="小逸">
 
   
-  <meta name="description" content="最近需要使用最近友邻对高纬度的数据进行查询。在实验的过程中发现相对于高纬度的数据，kd树的查找速度其实没有线性查找来的快的，但是在大数据面前，线性查找的开销是很大的。我在网上找了一些相关资料，最后发现有个叫flann的库很不错， &hellip;">
+  <meta name="description" content="图片中的物体探测一直是比较热的课题，通过物体的检测可以对图片自动生成标签以及分类，可以很好的用在图片检索的领域。在做的毕业设计(也是论文)就涉及到这方面的。今天看一篇叫Class-Speciﬁc Hough Forests for Object Detection的state of the art &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -88,6 +88,201 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/10/09/yong-opencvjian-ce-wu-ti-zhong-xin-dian/">用opencv检测物体中心点</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-09T12:35:00-07:00" pubdate data-updated="true">Oct 9<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/10/09/yong-opencvjian-ce-wu-ti-zhong-xin-dian/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>图片中的物体探测一直是比较热的课题，通过物体的检测可以对图片自动生成标签以及分类，可以很好的用在图片检索的领域。在做的毕业设计(也是论文)就涉及到这方面的。今天看一篇叫<a href="http://www.robots.ox.ac.uk/~vilem/cvpr2009.pdf">Class-Speciﬁc Hough Forests for Object Detection</a>的state of the art，发现原来导师叫我用到的方法和这个差不多，只是增加了某些小trick用于对特定的数据集优化。</p>
+
+<p>Hough Forests。 其实就是一个random forests 也就是随机森林,每条数据是一小块图片的description(patch) 树的每个节点对数据的分割通过information gain，努力把相同类的patch和相似的patch分到同一个枝头上去。每次通过数据集,随机采集部分features用于分割，每个这些features的分割点生成一个pool。然后对每个feature的分割点做一个信息量的检测，就像一个标准的random forests一样， 这里信息量的计算通过一下程式(这么说比较台湾腔 夯):
+$$
+Entropy({c_i}) = -c\cdot \log c -(1-c)\cdot \log(1-c)
+$$
+这里c就是patch是属于物体c的概率，1-c就是negative cases。o
+简单吧，其实在原来的论文里还有一个东西，就是entropy只是衡量split的优差的其中一个feature，还有一个feature是offset也就是patch到中心点的距离，通过增加这个衡量点，相似距离的patch会在一起哦。测试的结果是，加上这个feature，precision会有很好的提高。
+怎么计算这个feature，其实很简单，用Root mean square(RMS)把split后的patch到中心点的距离计算下，split之后小的RMS更优。到达叶子的数据，每个patch会有一次投票的机会给出中心点的位置。 </p>
+
+<p>训练之后，每个测试图片会被分成不同的patch，通过hough forests 到达叶子的patch生成不同中心点的位置(根据在那叶子里的中心点patch). 最后，通过投票，某个物体的中心点的票数会很高，就这样我们就能找到一个物体的中心点了。 如果一个patch是不是物体的一部分，生成的中心点是错误的，但是中心点的位置其实是随机的，也就是说如果有很多很多非物体patch生成的map是没有一个明显的中心点的。而如果有很多物体中某部位的patch，生成出来的中心点是有一个很大的偏向性的，往往会往某一个中心聚拢。</p>
+
+<p>这里有一个问题就是怎么计算一个patch到中心点的位置。首先训练数据一定得是每张图片只有一个物体。每个patch计算自己中心到物体的中心并保存x轴和y轴的移动。</p>
+
+<p>道理很简单，给我的代码。
+opencv这个库让我又爱又恨啊，很好用，很多很复杂的算法只要一行代码就ok了，但是python binding里有很多bug。而且很多错误你不一行行代码拆下来是不会看到的。。。
+首先，不想使用论文里的hough forest，因为感觉上在opencv里你得自己hack下，不值得。第二貌似没找到patch的descriptor，所以在自己的实验里，只用到了特征点的descriptors，像sift和surf。使用这个的有点就是，可以做到orientation insensitive和scale insensitive。 其实，论文里的方法是没有能做到scale insensitive的，因为距离是个relative的东西，论文里，通过使用不同的scale进行测试，获得最优的结果作为最终结果。 而view insensitive更没有解决方法，按他们的方法，只有通过增加不同view的训练数据来弥补吧。</p>
+
+<p>但是！导师教给我的方法能避免这个问题。首先sift和surf本身是view insensitive的，而在计算距离的时候通过对特征点本身的大小对距离做个归一化，这样就能让系统获得对不同大小的物体的识别能力。 
+另外一个trick就是sift之类的特征点自己会带有gradient orientation,也就是梯度方向，这个信息是在计算距离的时候必须使用到的。因为相同descriptor的特征点可能会有不同的梯度方向，如果你只使用了图片原始的x和y轴保存距离的话，预测的中心点会偏离本来的实际位置。下面的图片就是个case: 
+<img class="center" src="http://kkx.github.com/images/circle.png" width="680" height="420" title="梯度方向" /></p>
+
+<p>我有一个圆圈，底部是白色的，如果是sift当特征点的检测的话，每个圆圈边上的点的特征值是一样的，而他们的梯度方向可能会不一样，如果不使用梯度方向的话，a作为训练的数据，而比作为测试数据，中心点预测的结果会在圆圈的外面(细线部分)。
+如果要避免以上问题，只有通过<a href="http://en.wikipedia.org/wiki/Rotation_matrix">rotation matrix</a> 让每个特征点更具自己的梯度方向生成自己的x和y轴。 并且每个特征点的相对于中心点的距离要在新的x和y轴上进行计算。</p>
+
+<ul>
+  <li>
+<script type="math/tex; mode=display"> x_{new} = x \cdot cos(angle) - y \cdot sin(angle) </script>
+  </li>
+  <li>
+<script type="math/tex; mode=display"> y_{new} = x \cdot sin(angle) + y \cdot cos(angle) </script>
+  </li>
+</ul>
+
+<p>如果需要从新轴返回到原始的x y轴只需要把angle乘以-1就可以了, 上面的angle是以radian为单位的。</p>
+
+<p><img class="center" src="http://kkx.github.com/images/circle2.png" width="680" height="420" title="rotation matrix" />
+假设上图是更具特征点的梯度方向做的x和y轴的转换，转换之后，可以发现点离圆圈的中心的距离不变，但是在x轴和y轴的移动发生了变化。</p>
+
+<p>下面是测试方法的代码，包括训练和测试。数据集的话是使用<a href="http://cogcomp.cs.illinois.edu/Data/Car/">ucic</a>里的汽车数据，训练集里有positive cases 和negative cases，这里我只用到了positive cases。也没有是用到hough forest做训练，只用到了最近友邻。 每次选择最相近的友邻做出投票。在训练数据里，所有的车子中心点都在图的当中，因为每张图片里的车子几乎撑满整张图，而所有图片的尺寸都是40x100，在训练数据里，有两部分，一部分是没有scale变化的车子数据库，而另外一部分里车子的大小会有变化，用于测试方法对于scale变化的鲁棒性。 </p>
+
+<p>下面是python代码</p>
+
+<pre><code>import cv2
+import math
+import sys
+import os
+import numpy as np
+kernel=np.array([[0,0,0,0,0,0,0,0.0002,0.0009,0.0014,0.0016,0.0014,0.0009,0.0002,0,0,0,0,0,0,0],[0,0,0,0,0,0.0005,0.0021,0.0031,0.0032,0.0032,0.0032,0.0032,0.0032,0.0031,0.0021,0.0005,0,0,0,0,0],[0,0,0,0.0000,0.0016,0.0031,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0031,0.0016,0.0000,0,0,0],[0,0,0.0000,0.0020,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0020,0.0000,0,0],[0,0,0.0016,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0016,0,0],[0,0.0005,0.0031,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0031,0.0005,0],[0,0.0021,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0021,0],[0.0002,0.0031,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0031,0.0002],[0.0009,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0009],[0.0014,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0014,],[0.0016,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0016],[0.0014,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0014],[0.0009,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0009],[0.0002,0.0031,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0031,0.0002],[0,0.0021,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0021,0],[0,0.0005,0.0031,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0031,0.0005,0,],[0,0,0.0016,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0016,0,0],[0,0,0.0000,0.0020,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0020,0.0000,0,0],[0,0,0,0.0000,0.0016,0.0031,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0032,0.0031,0.0016,0.0000,0,0,0],[0,0,0,0,0,0.0005,0.0021,0.0031,0.0032,0.0032,0.0032,0.0032,0.0032,0.0031,0.0021,0.0005,0,0,0,0,0],[0,0,0,0,0,0,0,0.0002,0.0009,0.0014,0.0016,0.0014,0.0009,0.0002,0,0,0,0,0,0,0]])
+
+FLANN_INDEX_KDTREE = 1  # bug: flann enums are missing
+AUTOTUNED = 255
+flann_params = dict(algorithm = FLANN_INDEX_KDTREE, trees = 4)
+
+
+def get_key_points_from_img(img):
+    if isinstance(img,str):
+        img = cv2.imread(img)
+    im = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+    surf = cv2.SURF(1000, 4, 2, True)
+    keypoints, descriptors = surf.detect(im, None, False)
+    l_blue = cv2.cv.RGB(200, 200, 250)
+    descriptors.shape = (-1, surf.descriptorSize())
+
+    # y x
+    center = (im.shape[0]/2,im.shape[1]/2)
+    attributes = []
+
+    for i in range(len(keypoints)):
+        kp = keypoints[i]
+        # (x y)
+        scale = kp.size
+        #cv2.circle(im, (int(kp.pt[0]), int(kp.pt[1])), int(kp.size/2), l_blue, 2, cv2.CV_AA)
+        gradient = math.radians(kp.angle)
+
+        #calculate the distances x and y in the new axis(rotated by the gradient)
+        d_x = center[1]-kp.pt[0]
+        d_y = center[0]-kp.pt[1]
+        tx = math.cos(gradient) * d_x - math.sin(gradient) * d_y
+        tx /= scale
+        ty = math.sin(gradient) * d_x + math.cos(gradient) * d_y
+        ty /= scale
+        # generate data for further experiments
+        attributes.append((kp.pt[0], kp.pt[1], scale, gradient, ty, tx, 0, 0, 0, 0, 1))
+    return (descriptors,attributes)
+
+
+
+if __name__ == "__main__":
+
+    dir_path = "./CarData/TrainImages/"
+    files = os.listdir(dir_path)
+
+    #build train dataset
+    train_descriptors = []
+    train_attributes = []
+    for f in files:
+        if f.startswith("pos"):
+            (descriptors, attributes) = get_key_points_from_img(dir_path+f)  
+            train_descriptors.extend(descriptors) 
+            train_attributes.extend(attributes)
+
+    print len(train_descriptors)
+    train_descriptors = np.array(train_descriptors)
+    #build pnn model
+    flann_index = cv2.flann_Index(train_descriptors, flann_params)
+
+    dir_path = "./CarData/TrainImages/"
+    dir_path = "./CarData/TestImages/"
+    dir_path = "./CarData/TestImages_Scale/"
+
+    files = os.listdir(dir_path)
+    count1 = 0
+    count2 = 0
+    for f in files:
+        img = cv2.imread(dir_path+f)
+        (descriptors, attributes) = get_key_points_from_img(img)  
+        im = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        mapa = np.zeros(im.shape, dtype=float)
+        indexes, dist = flann_index.knnSearch(descriptors, 15, params={})  
+        for i in range(len(descriptors)):
+            for j in range(len(indexes[i])):
+                scale = attributes[i][2]
+                gradient = attributes[i][3]
+                d_y = train_attributes[indexes[i][j]][4]*scale
+                d_x = train_attributes[indexes[i][j]][5]*scale
+                tx = math.cos(-gradient) * d_x - math.sin(-gradient) * d_y
+                ty = math.sin(-gradient) * d_x + math.cos(-gradient) * d_y
+                predicted_center_x = int(round(attributes[i][0]+tx))
+                predicted_center_y = int(round(attributes[i][1]+ty))
+                if (predicted_center_x&gt;=0) and (predicted_center_y&gt;=0) and (predicted_center_x&lt;mapa.shape[1]) and (predicted_center_y&lt;mapa.shape[0]):
+                    mapa[predicted_center_y][predicted_center_x] += 1
+                    count1 += 1
+                else:
+                    count2 += 1
+
+        #apply a matlab disk filter to the output map for visualization
+        mapa2 = cv2.filter2D(mapa,-1,kernel)*5
+        cv2.imshow("original",im)
+        cv2.imshow("image", mapa2)
+        cv2.waitKey()
+</code></pre>
+
+<p>一大坨kernel变量，其实就是matlab的disk filter: fspecial(‘disk’, 20) opencv里就没有合适的filter可以用来平滑图片的!。 这里使用到了flann用来做最近友邻的模型，由于数据不是特别大，所以这里也没什么优化。在训练的时候，会把每个特征点距离到中心点的距离计算一下，计算完会根据特征点的大小把距离缩放一下，而当在测试的时候也会根据每个特征点的大小把距离放大。这样就能达到scale insensitive的目的了。 每个特征点会根据友邻做投票，投票的结果会映射到一个和图片一样大小的map上面。 通过filter2d过滤之后，会出现一大坨模糊的东西，哪里最亮哪里的投票数就最多，是中心点的可能性也最大。</p>
+
+<p>下面就是一些实验图片的结果。
+<img class="center" src="http://kkx.github.com/images/oct_9_t_1.png" width="680" height="320" title="梯度方向" />
+<img class="center" src="http://kkx.github.com/images/oct_9_t_2.png" width="680" height="320" title="梯度方向" />
+<img class="center" src="http://kkx.github.com/images/oct_9_t_3.png" width="680" height="320" title="梯度方向" />
+<img class="center" src="http://kkx.github.com/images/oct_9_t_4.png" width="680" height="320" title="梯度方向" />
+<img class="center" src="http://kkx.github.com/images/oct_9_t_5.png" width="680" height="320" title="梯度方向" />
+<img class="center" src="http://kkx.github.com/images/oct_9_t_6.png" width="680" height="320" title="梯度方向" /></p>
+
+<p>貌似结果很好的，但是其实不是的，因为这里没用到false cases，会出现很多false positive，而且，由于是使用sift detector, 本身控制不了哪些特征点是需要的哪些是不需要的，在测试后的时候，如果测试图片的某个非物体部位的特征点很多的话(细节比较多)，会产生很多假票, 像最后一张图的两根柱子。在下次的试验力，一定得吧那些false cases包含到训练库里，当测试数据碰到的一个false case的票，直接把权值归0，这样的话应该能对结果有很大的改观。还有就是这里，每张投票的权值都是1，可以根据友邻的距离设置投票的权值，近的投票全职大，这样结果应该会好一些。 </p>
+
+<p>opencv用起来真的没有matlab舒服，就连一个类似matlab的imregionalmax函数都没有，这个函数可以计算local maximum，这样的话，选取峰值最高的几个点作为预测结果会有很理想的结果。所以这套代码在这里也不能用来获得和真实中心点做比较。</p>
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -812,74 +1007,6 @@ gb=gabor_fn(64,64,1.2,theta,5,0,1)
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/05/30/shu-ju-ji-bu-ping-heng-wen-ti/">数据集不平衡问题</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-05-30T18:06:00-07:00" pubdate data-updated="true">May 30<span>th</span>, 2012</time>
-        
-         | <a href="/blog/2012/05/30/shu-ju-ji-bu-ping-heng-wen-ti/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>期末的另外一个大作业是对一个数据进行分类和研究。数据集是和保险行业相关的。94%的negative cases和6%的positive cases。 如此不平衡的数据往往你能通过使用最简单的分类器<a href="http://chem-eng.utoronto.ca/~datamining/dmc/zeror.htm">zeroR</a>来获得较高的准确率(94%). 在实际应用中，这样是非常不靠谱的。因为往往那些positive cases的忽略产生的影响是比较大的([FRR]的惩罚)。</p>
-
-<p>同样，直接使用不平衡数据会带来另外一个影响是: 往往分类器模型追求的是高准确率，自然而然的将会给高概率的类影响，结果将会是一个和<a href="http://chem-eng.utoronto.ca/~datamining/dmc/zeror.htm">zeroR</a>一样的分类器。在不同的测试之后，发现这个现象非常明显。</p>
-
-<p>那怎么样可以让分类器”学会一点实在的东西”, 而不是只追求”富贵(高准确率)”，或者两者皆之呢。有一种方法就是通过resampling，人为的让训练数据集的分布更平衡一些，通过这样的方法，训练出来的模型会更靠谱一些。但是同样的，这个模型在实际环境中的预测结果不会是很好的，因为我们改变了分布，不同分布下的同一个模型会导致结果的不同。怎么解决这类问题呢? 通常需要一个calibration，让模型试用于实际环境中的数据分布。在这篇<a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.58.3311&amp;rep=rep1&amp;type=pdf">Dealing with Unknown Priors in Supervised Classification</a>作者解释了怎么通过贝叶斯概率来做这个校准。在试验中，这样的校准对我的实验结果没有什么影响，主要的原因是像下面所谈到的，我的模型的结果是一个概率值，我需要选出概率最高的那些，而这个校准是<a href="http://en.wikipedia.org/wiki/Monotonic_function">Monotonic</a>的，对概率排序不产生影响。如果是组合不同的分类器的话，这个办法应该还是有用的。另外我还觉得，就算有组合不同的分类器，如果实际环境中数据分布差值在这么大结果也会一样不理想。</p>
-
-<p>期末的这个作业其实是让我们训练出某个模型，并让模型的结果是一个positive cases的概率值，我们需要在测试数据中，选出10%的数据，而这些数据中的positive cases的比重要尽可能的多。这里我介绍两个办法。</p>
-
-<h2 id="random-forest">Random Forest</h2>
-<p>比较正规，完全是跟着老师说的也就是上面说的那些办法来做。 碰到这样的数据集，往往分类器倒不是最重要的部分。很多preprocessing将会是一样的重要。数据拿来首先要自己分析一下哪些attributes是不需要的，一般会用information gain来看一些，某些gain特别高的也不一定是好feature，也许这些feature是些”事后”feature，对预测没有任何帮助。然后呢，会用一些<a href="http://en.wikipedia.org/wiki/Dimension_reduction">dimension reduction</a>的方法比如PCA，LDA，mRMR(这里我用的)对数据进行降维。</p>
-
-<p>降为之后，使用了upsampling 对训练数据集的分布进行更改，upsampling是把少的那部分复制起来，听说结果要比downsampling好。 然后呢，就是不同的测每个模型。最后我的模型是一个cost-sensitive + random forest. </p>
-
-<p>这里是我使用WEKA做分析的流程图:
-<img class="center" src="http://kkx.github.com/images/weka.png" width="650" height="850" /></p>
-
-<p>我的最终结果是在10%的数据里，有12.56%的positive cases。下面是precision-recall的结果:
-<img class="center" src="http://kkx.github.com/images/precision-recall.png" width="650" height="850" /></p>
-
-<h2 id="svm">SVM</h2>
-<p>在做这个作业的事后在resys发过帖子问过，幸运的是有个浙江大学的牛人和我专门讨论了这个问题，当时他给了我一个方法就是通过SVM来做模型，这里的变化就是，通过soft margin，对每个类的给出不同的惩罚值C，这样的话，多数的那类的C会很小，而烧的那类C值会很大。当时一说就觉得非常靠谱，但是项目已经快deadline 也就没事间测试了。</p>
-
-<p>C的方程: </p>
-
-<blockquote>
-<script type="math/tex; mode=display">C\sum_{i=1}^l\epsilon_i = C_+\sum_{i\in I_+}\xi_i + C_-\sum_{i\in I_-}\xi_i</script>
-</blockquote>
-
-<p>巧的是，班上有个专门研究SVM牛人用这个方法做了，貌似用的是libsvm，也许libsvm能够对每个c值进行修改吧。结果是16%的positive cases！灰常之高，更证明了soft-margin 的svm对这类问题的好处。
-而且用SVM有个好处就是你不用使用什么resampling了，反正对svm的影响不大，因为svm 是基于support vectors做判断的。</p>
-
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -903,6 +1030,10 @@ gb=gabor_fn(64,64,1.2,theta,5,0,1)
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2012/10/09/yong-opencvjian-ce-wu-ti-zhong-xin-dian/">用opencv检测物体中心点</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2012/09/24/fast-approximate-nearest-neighbors-flann/">FAST APPROXIMATE NEAREST NEIGHBORS(FLANN)</a>
       </li>
     
@@ -918,16 +1049,12 @@ gb=gabor_fn(64,64,1.2,theta,5,0,1)
         <a href="/blog/2012/09/09/gao-du-xiang-si-tu-pian-jian-ce-2tu-pian-suo-xiao-zhi-wen/">高度相似图片检测: 2图片缩小指纹</a>
       </li>
     
-      <li class="post">
-        <a href="/blog/2012/09/08/gao-du-xiang-si-tu-pian-jian-ce-1yan-se-zhi-fang-tu-chai/">高度相似图片检测: 1颜色直方图差</a>
-      </li>
-    
   </ul>
 </section>
 
 <section>
   <h1>Categories</h1>
-      <ul id="category-list"><li><a href='/blog/categories/gabor-filters'>Gabor filters (1)</a></li><li><a href='/blog/categories/google'>Google (1)</a></li><li><a href='/blog/categories/grammatical-evolution'>Grammatical evolution (1)</a></li><li><a href='/blog/categories/knn-'>Knn, (1)</a></li><li><a href='/blog/categories/latex'>Latex (1)</a></li><li><a href='/blog/categories/numpy'>Numpy (1)</a></li><li><a href='/blog/categories/ocr'>Ocr (3)</a></li><li><a href='/blog/categories/octopress'>Octopress (1)</a></li><li><a href='/blog/categories/python'>Python (3)</a></li><li><a href='/blog/categories/scipy'>Scipy (1)</a></li><li><a href='/blog/categories/svm'>Svm (1)</a></li><li><a href='/blog/categories/weka'>Weka (1)</a></li><li><a href='/blog/categories/不平衡数据集'>不平衡数据集 (1)</a></li><li><a href='/blog/categories/中文字图片生成'>中文字图片生成 (1)</a></li><li><a href='/blog/categories/中文字特征提取'>中文字特征提取 (1)</a></li><li><a href='/blog/categories/中文字符识别'>中文字符识别 (1)</a></li><li><a href='/blog/categories/分类'>分类 (3)</a></li><li><a href='/blog/categories/图像'>图像 (6)</a></li><li><a href='/blog/categories/机器学习'>机器学习 (1)</a></li><li><a href='/blog/categories/计算机视觉'>计算机视觉 (6)</a></li><li><a href='/blog/categories/音乐'>音乐 (1)</a></li><li><a href='/blog/categories/马赛克'>马赛克 (1)</a></li><li><a href='/blog/categories/高度相似图片检测'>高度相似图片检测 (3)</a></li><li><a href='/blog/categories/高度相似性图片检测'>高度相似性图片检测 (1)</a></li></ul>
+      <ul id="category-list"><li><a href='/blog/categories/gabor-filters'>Gabor filters (1)</a></li><li><a href='/blog/categories/google'>Google (1)</a></li><li><a href='/blog/categories/grammatical-evolution'>Grammatical evolution (1)</a></li><li><a href='/blog/categories/knn-'>Knn, (1)</a></li><li><a href='/blog/categories/latex'>Latex (1)</a></li><li><a href='/blog/categories/numpy'>Numpy (1)</a></li><li><a href='/blog/categories/ocr'>Ocr (3)</a></li><li><a href='/blog/categories/octopress'>Octopress (1)</a></li><li><a href='/blog/categories/opencv'>Opencv (1)</a></li><li><a href='/blog/categories/python'>Python (4)</a></li><li><a href='/blog/categories/scipy'>Scipy (1)</a></li><li><a href='/blog/categories/svm'>Svm (1)</a></li><li><a href='/blog/categories/weka'>Weka (1)</a></li><li><a href='/blog/categories/不平衡数据集'>不平衡数据集 (1)</a></li><li><a href='/blog/categories/中文字图片生成'>中文字图片生成 (1)</a></li><li><a href='/blog/categories/中文字特征提取'>中文字特征提取 (1)</a></li><li><a href='/blog/categories/中文字符识别'>中文字符识别 (1)</a></li><li><a href='/blog/categories/分类'>分类 (3)</a></li><li><a href='/blog/categories/图像'>图像 (6)</a></li><li><a href='/blog/categories/机器学习'>机器学习 (1)</a></li><li><a href='/blog/categories/物体检测'>物体检测 (1)</a></li><li><a href='/blog/categories/计算机视觉'>计算机视觉 (7)</a></li><li><a href='/blog/categories/音乐'>音乐 (1)</a></li><li><a href='/blog/categories/马赛克'>马赛克 (1)</a></li><li><a href='/blog/categories/高度相似图片检测'>高度相似图片检测 (3)</a></li><li><a href='/blog/categories/高度相似性图片检测'>高度相似性图片检测 (1)</a></li></ul>
       </section>
 <section>
 最近读的书
