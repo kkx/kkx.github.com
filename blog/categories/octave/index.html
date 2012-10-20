@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>高度相似图片检测: 3 Perceptual Hash(phash) 图片指纹 - 名字</title>
+  <title>Category: octave - 名字</title>
   <meta name="author" content="小逸">
 
   
-  <meta name="description" content="最后一个要介绍的不基于语义的图片指纹生成方法: pHash, 这里是pHash算法简要: 图片指纹灰值化 图片缩放到32x32 计算机视觉每个图片的Discrete Cosine Transform (DCT, type II)。 只保留最左上部的8x8的DCT系数(有32x32大)， &hellip;">
+  <meta name="description" content="Category: octave">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://kkx.github.com/blog/2012/09/10/gao-du-xiang-si-tu-pian-jian-ce-3perceptual-hash-phash-tu-pian-zhi-wen">
+  <link rel="canonical" href="http://kkx.github.comblog/categories/octave">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -87,127 +87,36 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
   <div id="main">
     <div id="content">
       <div>
-<article class="hentry" role="article">
+<article role="article">
   
   <header>
-    
-      <h1 class="entry-title">高度相似图片检测: 3 Perceptual Hash(phash) 图片指纹</h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-09-10T17:03:00-07:00" pubdate data-updated="true">Sep 10<span>th</span>, 2012</time>
-        
-         | <a href="#disqus_thread">Comments</a>
-        
-      </p>
+    <h1 class="entry-title">Category: Octave</h1>
     
   </header>
-
-
-<div class="entry-content"><p>最后一个要介绍的不基于语义的图片指纹生成方法: pHash, 这里是pHash算法简要:</p>
-
-<ul>
-  <li>图片指纹灰值化</li>
-  <li>图片缩放到32x32</li>
-  <li>计算机视觉每个图片的Discrete Cosine Transform (DCT, type II)。</li>
-  <li>只保留最左上部的8x8的DCT系数(有32x32大)，这样保存了频率最低的那部分(图片信息的大部分)</li>
-  <li>计算中值</li>
-  <li>生成64维2维码，0表示系数小于中值，反之为1.</li>
-</ul>
-
-<p>说到DCT，其实就想傅里叶转换一样的，把信号转换成很多不同频率和振幅的正玄曲线相加的结果。但是DCT只是用cosine函数。这样的话图片高频率部分会给擦去，只保留低频率部分。因为在给图片操作的时候，往往低频率的DCT系数会给保留，而且大部分图片的信息会给保留在这些低频率DCT系数里。(JPEG压缩也用这个方法来对图片进行压缩)。
-DCT 会生成8x8的系数表，那最左上方的表示最低频率的元素，也是最重要的，越往右下的表示相对频率稍高的元素(好多信号出来的东西啊，头好大)
-反正到最后能生成一个图片指纹，从别的作者的实验结果来看，效果是相对较好的。在这个网站上<a href="http://phash.org">phash.org</a>能下到开源的代码，在网站的demo上可以可以试试看计算图片的相似性，通过测试，只有DCT比较靠谱，另外两个的结果非常糟糕。相同的，这个算法的信息量为2^64，冲撞率应该不高，吧？</p>
-
-<p><a href="http://phash.org">phash.org</a>网站上是用c/c++写的代码，没有python的binding，在<a href="https://github.com/polachok/py-phash/">https://github.com/polachok/py-phash/</a>可以找到一个简陋的python binding，里面有我们需要的DCT的计算方法，调用一个函数就能直接获得指纹数值。测试了几下，效果还不错。不过还是需要很大量的图片用语测试false positive的概率。
-在github上能看到作者写的使用方法说明，我这里具体的代码如下:</p>
-
-<pre><code>
-import pHash
-import sys
-
-if __name__ == "__main__":
-    hash1 = pHash.imagehash(sys.argv[1])
-    hash2 = pHash.imagehash(sys.argv[2])
-    print 'Hamming distance: %d (%08x / %08x)' % ( pHash.hamming_distance( hash1, hash2 ), hash1, hash2 )
-
-</code></pre>
-
-</div>
-
-
-  <footer>
-    <p class="meta">
-      
   
-
-<span class="byline author vcard">Posted by <span class="fn">小逸</span></span>
-
-      
-
-
-
-
-
+  <div id="blog-archives" class="category">
 
 
 
   
+  <h2>2012</h2>
+
+<article>
+  
+<h1><a href="/blog/2012/10/19/c-plus-plus-li-shi-yong-octave/">c++里使用octave</a></h1>
+<time datetime="2012-10-19T22:17:00-07:00" pubdate><span class='month'>Oct</span> <span class='day'>19</span> <span class='year'>2012</span></time>
+
+<footer>
+  <span class="categories">posted in <a class='category' href='/blog/categories/c-/'>c++</a>, <a class='category' href='/blog/categories/octave/'>octave</a></span>
+</footer>
 
 
-<time datetime="2012-09-10T17:03:00-07:00" pubdate data-updated="true">Sep 10<span>th</span>, 2012</time>
-      
-
-<span class="categories">
-  
-    <a class='category' href='/blog/categories/图像/'>图像</a>, <a class='category' href='/blog/categories/计算机视觉/'>计算机视觉</a>, <a class='category' href='/blog/categories/高度相似性图片检测/'>高度相似性图片检测</a>
-  
-</span>
-
-
-    </p>
-    
-      <div class="sharing">
-  
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://kkx.github.com/blog/2012/09/10/gao-du-xiang-si-tu-pian-jian-ce-3perceptual-hash-phash-tu-pian-zhi-wen/" data-via="" data-counturl="http://kkx.github.com/blog/2012/09/10/gao-du-xiang-si-tu-pian-jian-ce-3perceptual-hash-phash-tu-pian-zhi-wen/" >Tweet</a>
-  
-  
-  <div class="g-plusone" data-size="medium"></div>
-  
-  
-    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
-  
-</div>
-
-    
-    <p class="meta">
-      
-        <a class="basic-alignment left" href="/blog/2012/09/09/gao-du-xiang-si-tu-pian-jian-ce-2tu-pian-suo-xiao-zhi-wen/" title="Previous Post: 高度相似图片检测: 2图片缩小指纹">&laquo; 高度相似图片检测: 2图片缩小指纹</a>
-      
-      
-        <a class="basic-alignment right" href="/blog/2012/09/16/ma-sai-ke-tu-pian-pin-jie/" title="Next Post: 马赛克图片拼接">马赛克图片拼接 &raquo;</a>
-      
-    </p>
-  </footer>
 </article>
 
-  <section>
-    <h1>Comments</h1>
-    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 </div>
-  </section>
+
+  
+</article>
 
 </div>
 
@@ -286,10 +195,7 @@ my Last.fm
       var disqus_shortname = 'kkx';
       
         
-        // var disqus_developer = 1;
-        var disqus_identifier = 'http://kkx.github.com/blog/2012/09/10/gao-du-xiang-si-tu-pian-jian-ce-3perceptual-hash-phash-tu-pian-zhi-wen/';
-        var disqus_url = 'http://kkx.github.com/blog/2012/09/10/gao-du-xiang-si-tu-pian-jian-ce-3perceptual-hash-phash-tu-pian-zhi-wen/';
-        var disqus_script = 'embed.js';
+        var disqus_script = 'count.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

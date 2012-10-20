@@ -5,11 +5,15 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>高度相似图片检测: 3 Perceptual Hash(phash) 图片指纹 - 名字</title>
+  <title>c++里使用octave - 名字</title>
   <meta name="author" content="小逸">
 
   
-  <meta name="description" content="最后一个要介绍的不基于语义的图片指纹生成方法: pHash, 这里是pHash算法简要: 图片指纹灰值化 图片缩放到32x32 计算机视觉每个图片的Discrete Cosine Transform (DCT, type II)。 只保留最左上部的8x8的DCT系数(有32x32大)， &hellip;">
+  <meta name="description" content="蛋疼无极限，想在c++ 里跑octave代码，找到了两个帖子，拼拼凑凑终于可以跑了！
+帖子1 还是邮件列表里的私藏。
+照着上面的代码跑一下会发现没有装octave的头文件
+~~~~~~~~
+Hi, I tried to find information on how to call an &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +22,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://kkx.github.com/blog/2012/09/10/gao-du-xiang-si-tu-pian-jian-ce-3perceptual-hash-phash-tu-pian-zhi-wen">
+  <link rel="canonical" href="http://kkx.github.com/blog/2012/10/19/c-plus-plus-li-shi-yong-octave">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -91,7 +95,7 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
   
   <header>
     
-      <h1 class="entry-title">高度相似图片检测: 3 Perceptual Hash(phash) 图片指纹</h1>
+      <h1 class="entry-title">C++里使用octave</h1>
     
     
       <p class="meta">
@@ -107,7 +111,7 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
   
 
 
-<time datetime="2012-09-10T17:03:00-07:00" pubdate data-updated="true">Sep 10<span>th</span>, 2012</time>
+<time datetime="2012-10-19T22:17:00-07:00" pubdate data-updated="true">Oct 19<span>th</span>, 2012</time>
         
          | <a href="#disqus_thread">Comments</a>
         
@@ -116,35 +120,133 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
   </header>
 
 
-<div class="entry-content"><p>最后一个要介绍的不基于语义的图片指纹生成方法: pHash, 这里是pHash算法简要:</p>
+<div class="entry-content"><p>蛋疼无极限，想在c++ 里跑octave代码，找到了两个帖子，拼拼凑凑终于可以跑了！
+<a href="https://mailman.cae.wisc.edu/pipermail/help-octave/2009-April/034429.html">帖子1</a> 还是邮件列表里的私藏。
+照着上面的代码跑一下会发现没有装octave的头文件
+~~~~~~~~
+Hi,</p>
 
-<ul>
-  <li>图片指纹灰值化</li>
-  <li>图片缩放到32x32</li>
-  <li>计算机视觉每个图片的Discrete Cosine Transform (DCT, type II)。</li>
-  <li>只保留最左上部的8x8的DCT系数(有32x32大)，这样保存了频率最低的那部分(图片信息的大部分)</li>
-  <li>计算中值</li>
-  <li>生成64维2维码，0表示系数小于中值，反之为1.</li>
-</ul>
+<pre><code>I tried to find information on how to call an octave .m file from a  
+C++ program. There is some information around, but most of it is no  
+longer up-to-date, it was not trivial to get it working. In this post  
+I want to explain how to do it, maybe it is useful to somebody.
 
-<p>说到DCT，其实就想傅里叶转换一样的，把信号转换成很多不同频率和振幅的正玄曲线相加的结果。但是DCT只是用cosine函数。这样的话图片高频率部分会给擦去，只保留低频率部分。因为在给图片操作的时候，往往低频率的DCT系数会给保留，而且大部分图片的信息会给保留在这些低频率DCT系数里。(JPEG压缩也用这个方法来对图片进行压缩)。
-DCT 会生成8x8的系数表，那最左上方的表示最低频率的元素，也是最重要的，越往右下的表示相对频率稍高的元素(好多信号出来的东西啊，头好大)
-反正到最后能生成一个图片指纹，从别的作者的实验结果来看，效果是相对较好的。在这个网站上<a href="http://phash.org">phash.org</a>能下到开源的代码，在网站的demo上可以可以试试看计算图片的相似性，通过测试，只有DCT比较靠谱，另外两个的结果非常糟糕。相同的，这个算法的信息量为2^64，冲撞率应该不高，吧？</p>
+I have a file called exampleOctaveFunction.m which looks like this:
 
-<p><a href="http://phash.org">phash.org</a>网站上是用c/c++写的代码，没有python的binding，在<a href="https://github.com/polachok/py-phash/">https://github.com/polachok/py-phash/</a>可以找到一个简陋的python binding，里面有我们需要的DCT的计算方法，调用一个函数就能直接获得指纹数值。测试了几下，效果还不错。不过还是需要很大量的图片用语测试false positive的概率。
-在github上能看到作者写的使用方法说明，我这里具体的代码如下:</p>
+-------------------------------------
+function [resultScalar, resultString, resultMatrix] =  
+exampleOctaveFunction (inScalar, inString, inMatrix)
 
-<pre><code>
-import pHash
-import sys
+resultScalar = (inScalar * pi);
+resultString = strcat ('Good morning Mr. ', inString);
+resultMatrix = (inMatrix + 1);
 
-if __name__ == "__main__":
-    hash1 = pHash.imagehash(sys.argv[1])
-    hash2 = pHash.imagehash(sys.argv[2])
-    print 'Hamming distance: %d (%08x / %08x)' % ( pHash.hamming_distance( hash1, hash2 ), hash1, hash2 )
+endfunction
+-------------------------------------
+
+I have a file called how-to-call-octave.cpp which is this:
+
+-------------------------------------
+#include &lt;octave/oct.h&gt;
+#include &lt;octave/octave.h&gt;
+#include &lt;octave/parse.h&gt;
+#include &lt;octave/toplev.h&gt; /* do_octave_atexit */
+
+int main (const int argc, char ** argv)
+{
+const char * argvv [] = {"" /* name of program, not relevant */,  "--silent"};
+
+    octave_main (2, (char **) argvv, true /* embedded */);
+
+    octave_value_list functionArguments;
+
+    functionArguments (0) = 2;
+    functionArguments (1) = "D. Humble";
+
+    Matrix inMatrix (2, 3);
+
+    inMatrix (0, 0) = 10;
+    inMatrix (0, 1) = 9;
+    inMatrix (0, 2) = 8;
+    inMatrix (1, 0) = 7;
+    inMatrix (1, 1) = 6;
+    functionArguments (2) = inMatrix;
+
+    const octave_value_list result = feval ("exampleOctaveFunction",  
+    functionArguments, 1);
+
+    std::cout &lt;&lt; "resultScalar is " &lt;&lt; result (0).scalar_value () &lt;&lt; std::endl;
+    std::cout &lt;&lt; "resultString is " &lt;&lt; result (1).string_value () &lt;&lt; std::endl;
+    std::cout &lt;&lt; "resultMatrix is\n" &lt;&lt; result (2).matrix_value ();
+
+    do_octave_atexit ();
+    }
+-------------------------------------
+
+And a little readme file, called readme.sh, that explains how to  
+compile and run this simple example:
+
+-------------------------------------
+#! /bin/bash
+
+#
+# Make sure you have octave installed. On my system, Ubuntu 8.10, I installed
+# the packages octave3.0 and octave3.0-headers.
+#
+# To compile, type
+#
+make how-to-call-octave.o
+#
+# which, on my system, is equivalent to
+#
+#   g++ -c -o how-to-call-octave.o how-to-call-octave.cpp
+#
+# To link, type
+#
+g++ -L /usr/lib/octave-3.0.1/ -l octinterp -o how-to-call-octave  
+how-to-call-octave.o
+#
+# Adjust the directory in the -L directive according to the configuration of
+# your machine.
+#
+# To run, type
+#
+./how-to-call-octave
+#
+# It should output something like
+#
+#   resultScalar is 6.28319
+#   resultString is Good morning Mr. D. Humble
+#   resultMatrix is
+#    11 10 9
+#    8 7 1
+#
+# Hope this is of help to somebody.
+#
+-------------------------------------
+
+You can also execute the readme.sh file and it will compile and run for you.
+
+Good luck, Arjan.
+</code></pre>
+
+<pre><code>apt-get 之后发现还是跑不起来, 在[帖子2](http://octave.1599824.n4.nabble.com/call-octave-from-C-linker-error-td3987581.html)里找到了解决方法
 
 </code></pre>
 
+<p>I started out trying to run the octave example as a c++ file(i.e. no Qt) and received the same errors. The problem is you have to tell the linker where the libs are located. As root, run “ldconfig /path/to/octave/libs”. This is not permanent because the next time ldconfig is run it will not find the octave libs. </p>
+
+<p>To make sure the cache gets updated every time ldconfig is run (Ubuntu is a Debian derivative so I’m assuming the procedure is the same) do this:</p>
+
+<p>sudo -i
+cd /etc/ld.so.conf.d
+touch octave.conf
+vi (your fav. editor) octave.conf 
+add a line: /path/to/octavelibs
+save file
+run ldconfig</p>
+
+<p>~~~~~~~~~</p>
 </div>
 
 
@@ -167,12 +269,12 @@ if __name__ == "__main__":
   
 
 
-<time datetime="2012-09-10T17:03:00-07:00" pubdate data-updated="true">Sep 10<span>th</span>, 2012</time>
+<time datetime="2012-10-19T22:17:00-07:00" pubdate data-updated="true">Oct 19<span>th</span>, 2012</time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/图像/'>图像</a>, <a class='category' href='/blog/categories/计算机视觉/'>计算机视觉</a>, <a class='category' href='/blog/categories/高度相似性图片检测/'>高度相似性图片检测</a>
+    <a class='category' href='/blog/categories/c-/'>c++</a>, <a class='category' href='/blog/categories/octave/'>octave</a>
   
 </span>
 
@@ -181,7 +283,7 @@ if __name__ == "__main__":
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://kkx.github.com/blog/2012/09/10/gao-du-xiang-si-tu-pian-jian-ce-3perceptual-hash-phash-tu-pian-zhi-wen/" data-via="" data-counturl="http://kkx.github.com/blog/2012/09/10/gao-du-xiang-si-tu-pian-jian-ce-3perceptual-hash-phash-tu-pian-zhi-wen/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://kkx.github.com/blog/2012/10/19/c-plus-plus-li-shi-yong-octave/" data-via="" data-counturl="http://kkx.github.com/blog/2012/10/19/c-plus-plus-li-shi-yong-octave/" >Tweet</a>
   
   
   <div class="g-plusone" data-size="medium"></div>
@@ -194,10 +296,8 @@ if __name__ == "__main__":
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2012/09/09/gao-du-xiang-si-tu-pian-jian-ce-2tu-pian-suo-xiao-zhi-wen/" title="Previous Post: 高度相似图片检测: 2图片缩小指纹">&laquo; 高度相似图片检测: 2图片缩小指纹</a>
+        <a class="basic-alignment left" href="/blog/2012/10/09/yong-opencvjian-ce-wu-ti-zhong-xin-dian/" title="Previous Post: 用opencv检测物体中心点">&laquo; 用opencv检测物体中心点</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2012/09/16/ma-sai-ke-tu-pian-pin-jie/" title="Next Post: 马赛克图片拼接">马赛克图片拼接 &raquo;</a>
       
     </p>
   </footer>
@@ -287,8 +387,8 @@ my Last.fm
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://kkx.github.com/blog/2012/09/10/gao-du-xiang-si-tu-pian-jian-ce-3perceptual-hash-phash-tu-pian-zhi-wen/';
-        var disqus_url = 'http://kkx.github.com/blog/2012/09/10/gao-du-xiang-si-tu-pian-jian-ce-3perceptual-hash-phash-tu-pian-zhi-wen/';
+        var disqus_identifier = 'http://kkx.github.com/blog/2012/10/19/c-plus-plus-li-shi-yong-octave/';
+        var disqus_url = 'http://kkx.github.com/blog/2012/10/19/c-plus-plus-li-shi-yong-octave/';
         var disqus_script = 'embed.js';
       
     (function () {
