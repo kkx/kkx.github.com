@@ -4,7 +4,7 @@
   <title><![CDATA[名字]]></title>
   <link href="http://kkx.github.com/atom.xml" rel="self"/>
   <link href="http://kkx.github.com/"/>
-  <updated>2012-10-19T22:34:16-07:00</updated>
+  <updated>2012-10-19T22:39:42-07:00</updated>
   <id>http://kkx.github.com/</id>
   <author>
     <name><![CDATA[小逸]]></name>
@@ -20,131 +20,131 @@
     <id>http://kkx.github.com/blog/2012/10/19/c-plus-plus-li-shi-yong-octave</id>
     <content type="html"><![CDATA[<p>蛋疼无极限，想在c++ 里跑octave代码，找到了两个帖子，拼拼凑凑终于可以跑了！
 <a href="https://mailman.cae.wisc.edu/pipermail/help-octave/2009-April/034429.html">帖子1</a> 还是邮件列表里的私藏。
-照着上面的代码跑一下会发现没有装octave的头文件
-~~~~~~~~
-Hi,</p>
+照着上面的代码跑一下会发现没有装octave的头文件</p>
 
-<pre><code>I tried to find information on how to call an octave .m file from a  
-C++ program. There is some information around, but most of it is no  
-longer up-to-date, it was not trivial to get it working. In this post  
-I want to explain how to do it, maybe it is useful to somebody.
+<pre><code>    Hi,
 
-I have a file called exampleOctaveFunction.m which looks like this:
+    I tried to find information on how to call an octave .m file from a  
+    C++ program. There is some information around, but most of it is no  
+    longer up-to-date, it was not trivial to get it working. In this post  
+    I want to explain how to do it, maybe it is useful to somebody.
 
--------------------------------------
-function [resultScalar, resultString, resultMatrix] =  
-exampleOctaveFunction (inScalar, inString, inMatrix)
+    I have a file called exampleOctaveFunction.m which looks like this:
 
-resultScalar = (inScalar * pi);
-resultString = strcat ('Good morning Mr. ', inString);
-resultMatrix = (inMatrix + 1);
+    -------------------------------------
+    function [resultScalar, resultString, resultMatrix] =  
+    exampleOctaveFunction (inScalar, inString, inMatrix)
 
-endfunction
--------------------------------------
+    resultScalar = (inScalar * pi);
+    resultString = strcat ('Good morning Mr. ', inString);
+    resultMatrix = (inMatrix + 1);
 
-I have a file called how-to-call-octave.cpp which is this:
+    endfunction
+    -------------------------------------
 
--------------------------------------
-#include &lt;octave/oct.h&gt;
-#include &lt;octave/octave.h&gt;
-#include &lt;octave/parse.h&gt;
-#include &lt;octave/toplev.h&gt; /* do_octave_atexit */
+    I have a file called how-to-call-octave.cpp which is this:
 
-int main (const int argc, char ** argv)
-{
-const char * argvv [] = {"" /* name of program, not relevant */,  "--silent"};
+    -------------------------------------
+    #include &lt;octave/oct.h&gt;
+    #include &lt;octave/octave.h&gt;
+    #include &lt;octave/parse.h&gt;
+    #include &lt;octave/toplev.h&gt; /* do_octave_atexit */
 
-    octave_main (2, (char **) argvv, true /* embedded */);
+    int main (const int argc, char ** argv)
+    {
+    const char * argvv [] = {"" /* name of program, not relevant */,  "--silent"};
 
-    octave_value_list functionArguments;
+        octave_main (2, (char **) argvv, true /* embedded */);
 
-    functionArguments (0) = 2;
-    functionArguments (1) = "D. Humble";
+        octave_value_list functionArguments;
 
-    Matrix inMatrix (2, 3);
+        functionArguments (0) = 2;
+        functionArguments (1) = "D. Humble";
 
-    inMatrix (0, 0) = 10;
-    inMatrix (0, 1) = 9;
-    inMatrix (0, 2) = 8;
-    inMatrix (1, 0) = 7;
-    inMatrix (1, 1) = 6;
-    functionArguments (2) = inMatrix;
+        Matrix inMatrix (2, 3);
 
-    const octave_value_list result = feval ("exampleOctaveFunction",  
-    functionArguments, 1);
+        inMatrix (0, 0) = 10;
+        inMatrix (0, 1) = 9;
+        inMatrix (0, 2) = 8;
+        inMatrix (1, 0) = 7;
+        inMatrix (1, 1) = 6;
+        functionArguments (2) = inMatrix;
 
-    std::cout &lt;&lt; "resultScalar is " &lt;&lt; result (0).scalar_value () &lt;&lt; std::endl;
-    std::cout &lt;&lt; "resultString is " &lt;&lt; result (1).string_value () &lt;&lt; std::endl;
-    std::cout &lt;&lt; "resultMatrix is\n" &lt;&lt; result (2).matrix_value ();
+        const octave_value_list result = feval ("exampleOctaveFunction",  
+        functionArguments, 1);
 
-    do_octave_atexit ();
-    }
--------------------------------------
+        std::cout &lt;&lt; "resultScalar is " &lt;&lt; result (0).scalar_value () &lt;&lt; std::endl;
+        std::cout &lt;&lt; "resultString is " &lt;&lt; result (1).string_value () &lt;&lt; std::endl;
+        std::cout &lt;&lt; "resultMatrix is\n" &lt;&lt; result (2).matrix_value ();
 
-And a little readme file, called readme.sh, that explains how to  
-compile and run this simple example:
+        do_octave_atexit ();
+        }
+    -------------------------------------
 
--------------------------------------
-#! /bin/bash
+    And a little readme file, called readme.sh, that explains how to  
+    compile and run this simple example:
 
-#
-# Make sure you have octave installed. On my system, Ubuntu 8.10, I installed
-# the packages octave3.0 and octave3.0-headers.
-#
-# To compile, type
-#
-make how-to-call-octave.o
-#
-# which, on my system, is equivalent to
-#
-#   g++ -c -o how-to-call-octave.o how-to-call-octave.cpp
-#
-# To link, type
-#
-g++ -L /usr/lib/octave-3.0.1/ -l octinterp -o how-to-call-octave  
-how-to-call-octave.o
-#
-# Adjust the directory in the -L directive according to the configuration of
-# your machine.
-#
-# To run, type
-#
-./how-to-call-octave
-#
-# It should output something like
-#
-#   resultScalar is 6.28319
-#   resultString is Good morning Mr. D. Humble
-#   resultMatrix is
-#    11 10 9
-#    8 7 1
-#
-# Hope this is of help to somebody.
-#
--------------------------------------
+    -------------------------------------
+    #! /bin/bash
 
-You can also execute the readme.sh file and it will compile and run for you.
+    #
+    # Make sure you have octave installed. On my system, Ubuntu 8.10, I installed
+    # the packages octave3.0 and octave3.0-headers.
+    #
+    # To compile, type
+    #
+    make how-to-call-octave.o
+    #
+    # which, on my system, is equivalent to
+    #
+    #   g++ -c -o how-to-call-octave.o how-to-call-octave.cpp
+    #
+    # To link, type
+    #
+    g++ -L /usr/lib/octave-3.0.1/ -l octinterp -o how-to-call-octave  
+    how-to-call-octave.o
+    #
+    # Adjust the directory in the -L directive according to the configuration of
+    # your machine.
+    #
+    # To run, type
+    #
+    ./how-to-call-octave
+    #
+    # It should output something like
+    #
+    #   resultScalar is 6.28319
+    #   resultString is Good morning Mr. D. Humble
+    #   resultMatrix is
+    #    11 10 9
+    #    8 7 1
+    #
+    # Hope this is of help to somebody.
+    #
+    -------------------------------------
 
-Good luck, Arjan.
-</code></pre>
-
-<pre><code>apt-get 之后发现还是跑不起来, 在[帖子2](http://octave.1599824.n4.nabble.com/call-octave-from-C-linker-error-td3987581.html)里找到了解决方法
+    You can also execute the readme.sh file and it will compile and run for you.
+    Good luck, Arjan.
 
 </code></pre>
 
-<p>I started out trying to run the octave example as a c++ file(i.e. no Qt) and received the same errors. The problem is you have to tell the linker where the libs are located. As root, run “ldconfig /path/to/octave/libs”. This is not permanent because the next time ldconfig is run it will not find the octave libs. </p>
+<p>apt-get 之后发现还是跑不起来, 在<a href="http://octave.1599824.n4.nabble.com/call-octave-from-C-linker-error-td3987581.html">帖子2</a>里找到了解决方法</p>
 
-<p>To make sure the cache gets updated every time ldconfig is run (Ubuntu is a Debian derivative so I’m assuming the procedure is the same) do this:</p>
+<pre><code>I started out trying to run the octave example as a c++ file(i.e. no Qt) and received the same errors. The problem is you have to tell the linker where the libs are located. As root, run "ldconfig /path/to/octave/libs". This is not permanent because the next time ldconfig is run it will not find the octave libs. 
 
-<p>sudo -i
+To make sure the cache gets updated every time ldconfig is run (Ubuntu is a Debian derivative so I'm assuming the procedure is the same) do this:
+
+
+sudo -i
 cd /etc/ld.so.conf.d
 touch octave.conf
 vi (your fav. editor) octave.conf 
 add a line: /path/to/octavelibs
 save file
-run ldconfig</p>
+run ldconfig
+</code></pre>
 
-<p>~~~~~~~~~</p>
+<p>设置后就能跑啦。最近的博客越来越水了。我又要烂掉了。</p>
 ]]></content>
   </entry>
   
