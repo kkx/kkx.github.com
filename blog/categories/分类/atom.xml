@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 分类 | 名字]]></title>
   <link href="http://kkx.github.com/blog/categories/分类/atom.xml" rel="self"/>
   <link href="http://kkx.github.com/"/>
-  <updated>2012-11-25T14:29:20-08:00</updated>
+  <updated>2012-12-03T13:44:15-08:00</updated>
   <id>http://kkx.github.com/</id>
   <author>
     <name><![CDATA[小逸]]></name>
@@ -12,6 +12,24 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[关于Knn和Random Forests的感觉]]></title>
+    <link href="http://kkx.github.com/blog/2012/12/02/guan-yu-knnhe-random-forestsde-gan-jue/"/>
+    <updated>2012-12-02T21:25:00-08:00</updated>
+    <id>http://kkx.github.com/blog/2012/12/02/guan-yu-knnhe-random-forestsde-gan-jue</id>
+    <content type="html"><![CDATA[<p>家里没网，只好扯扯淡了。</p>
+
+<p>虽然一个是无监督学习，一个是监督学习，但是我感觉两个算法是近亲。 knn的就是找最近友邻，通过数据点和数据点之间的位置关系，而随机森林的话，是通过信息熵把类似的数据都放在一个叶子上。 其实这个感觉以前看到在集智俱乐部(其实就去过一次)有一面之缘的大牛的豆瓣<a href="http://www.douban.com/note/212245564/">博客</a>上写到的，但是当时没有领悟到里面的缘由。毕业论文用到的分类算法就这两个，现在就觉着他们是近亲。</p>
+
+<p>两个算法各有优缺点，先说knn吧，不需要训练，只要有个好点的数据结构储存数据让查询的效率高一些就好(以前的博客有写)，找到的总是相似度最高的友邻。这样的好处就是不”吃亏”啦，没有loss。唯一要确定的的参数也就是取多少友邻介一个，这种naive算法给像我这种初学机器学习吐阳图性破的人用再好不过了。不过在测试的时候的速度是knn的软肋。</p>
+
+<p>那随机森林呢，你要随个鸡鸡森林的话，设置起来就难啦，首先森林是基于树木的，你要学会ID3, C5(不是炸弹)决策树什么的，信息熵，gini啊什么的,各种数据分割的criteria，麻烦的很，要设置参数也多，什么多少层熟，一个森林多少树等等。不过参数多也有好处，就是可适性高。随机森林的话，有点在于速度超级快，从root到leaf的这段过程就是一个knn最近友邻的查找过程。一般在每个节点就是一个很简单的比较，所以速度超级快。结果会有loss，不一定是最相似的友邻。</p>
+
+<p>介绍完两个算法的脾气后，得说说我最近几天和他们相处的感觉。knn适用于数据少的时候。RF用于数据多的时候。首先速度上来说knn就是这样的，另外就是，数据少的时候，友邻质量对你来说特别重要，你都没几个朋友了还都是帮土匪的话那你也就完了。RF作为一种boosting方法，本身就是个statistic概念很强的东西，通过对每个树加随机因子(数据上的或者特征上的随机，也有别的随机方式，譬如增加噪音什么的)让每棵看着差不多，用起来不一样:decorrelation。 这样通过增加variance的方法让结果更好点。但是如果数据少的话，就会适得其反啦。类似的，数据多的时候，knn拿到的优质友邻都很类似，那其实结果就是拿到了更少的友邻，换个角度看的话，你在射交网络天天关注的就几个人，这几个人还都是吃喝拉撒在一个地方的近亲，那他们给的信息大部分都差不多的，这时候你需要weak tie的友邻啦(好吧，我又扯到射交网络了，sorry)。而这个knn的问题rf就能弥补。这里你要说了，你不是说友邻质量很重要么？对，那是在数据少的时候，因为少，从概率上讲友邻的他们之间相似程度不会很高。</p>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[数据集不平衡问题]]></title>

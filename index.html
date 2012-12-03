@@ -9,9 +9,7 @@
   <meta name="author" content="小逸">
 
   
-  <meta name="description" content="蛋疼无极限，想在c++ 里跑octave代码，找到了两个帖子，拼拼凑凑终于可以跑了！
-帖子1 还是邮件列表里的私藏。
-照着上面的代码跑一下会发现没有装octave的头文件 Hi, I tried to find information on how to call an octave .m &hellip;">
+  <meta name="description" content="家里没网，只好扯扯淡了。 虽然一个是无监督学习，一个是监督学习，但是我感觉两个算法是近亲。 knn的就是找最近友邻，通过数据点和数据点之间的位置关系，而随机森林的话，是通过信息熵把类似的数据都放在一个叶子上。 其实这个感觉以前看到在集智俱乐部(其实就去过一次)有一面之缘的大牛的豆瓣博客上写到的， &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -90,6 +88,53 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/12/02/guan-yu-knnhe-random-forestsde-gan-jue/">关于Knn和Random Forests的感觉</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-12-02T21:25:00-08:00" pubdate data-updated="true">Dec 2<span>nd</span>, 2012</time>
+        
+         | <a href="/blog/2012/12/02/guan-yu-knnhe-random-forestsde-gan-jue/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>家里没网，只好扯扯淡了。</p>
+
+<p>虽然一个是无监督学习，一个是监督学习，但是我感觉两个算法是近亲。 knn的就是找最近友邻，通过数据点和数据点之间的位置关系，而随机森林的话，是通过信息熵把类似的数据都放在一个叶子上。 其实这个感觉以前看到在集智俱乐部(其实就去过一次)有一面之缘的大牛的豆瓣<a href="http://www.douban.com/note/212245564/">博客</a>上写到的，但是当时没有领悟到里面的缘由。毕业论文用到的分类算法就这两个，现在就觉着他们是近亲。</p>
+
+<p>两个算法各有优缺点，先说knn吧，不需要训练，只要有个好点的数据结构储存数据让查询的效率高一些就好(以前的博客有写)，找到的总是相似度最高的友邻。这样的好处就是不”吃亏”啦，没有loss。唯一要确定的的参数也就是取多少友邻介一个，这种naive算法给像我这种初学机器学习吐阳图性破的人用再好不过了。不过在测试的时候的速度是knn的软肋。</p>
+
+<p>那随机森林呢，你要随个鸡鸡森林的话，设置起来就难啦，首先森林是基于树木的，你要学会ID3, C5(不是炸弹)决策树什么的，信息熵，gini啊什么的,各种数据分割的criteria，麻烦的很，要设置参数也多，什么多少层熟，一个森林多少树等等。不过参数多也有好处，就是可适性高。随机森林的话，有点在于速度超级快，从root到leaf的这段过程就是一个knn最近友邻的查找过程。一般在每个节点就是一个很简单的比较，所以速度超级快。结果会有loss，不一定是最相似的友邻。</p>
+
+<p>介绍完两个算法的脾气后，得说说我最近几天和他们相处的感觉。knn适用于数据少的时候。RF用于数据多的时候。首先速度上来说knn就是这样的，另外就是，数据少的时候，友邻质量对你来说特别重要，你都没几个朋友了还都是帮土匪的话那你也就完了。RF作为一种boosting方法，本身就是个statistic概念很强的东西，通过对每个树加随机因子(数据上的或者特征上的随机，也有别的随机方式，譬如增加噪音什么的)让每棵看着差不多，用起来不一样:decorrelation。 这样通过增加variance的方法让结果更好点。但是如果数据少的话，就会适得其反啦。类似的，数据多的时候，knn拿到的优质友邻都很类似，那其实结果就是拿到了更少的友邻，换个角度看的话，你在射交网络天天关注的就几个人，这几个人还都是吃喝拉撒在一个地方的近亲，那他们给的信息大部分都差不多的，这时候你需要weak tie的友邻啦(好吧，我又扯到射交网络了，sorry)。而这个knn的问题rf就能弥补。这里你要说了，你不是说友邻质量很重要么？对，那是在数据少的时候，因为少，从概率上讲友邻的他们之间相似程度不会很高。</p>
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1000,91 +1045,6 @@ if __name__ == "__main__":
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/06/28/sheng-cheng-zhong-wen-zi-tu-pian/">生成中文字图片</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-06-28T17:17:00-07:00" pubdate data-updated="true">Jun 28<span>th</span>, 2012</time>
-        
-         | <a href="/blog/2012/06/28/sheng-cheng-zhong-wen-zi-tu-pian/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>最近在做一个中文ocr，感觉是个不可完成任务。不管怎么样还是得试试。
-首先要做的就是获得训练数据。中文的数据不比英文，量大而且没有地方下载，唯一能做的就是自己生成，在网上找了写函数自己改改就成了下面的脚本了</p>
-
-<p>首先是一个中文字符集编码的生成函数:</p>
-
-<pre><code>
-    def generate_ch():
-
-        #Function which generate all chinese gb2312 characters 
-        
-        body = random.randint(0xA, 0xA)
-        tail = random.randint(0, 0xF)
-        chars = []
-        
-        heads = range(0xB0, 0xF8)
-        bodys = range(0xA, 0xF+1)
-        tails = range(0, 0xF+1)
-        for head in heads:
-            for body in bodys:
-                for tail in tails:
-                    val = ( head &lt;&lt; 0x8 ) | (body &lt;&lt; 0x4 ) | tail
-                    #print "%x"%head,"%x"%body,"%x"%tail,"%x"%val
-                    str = "%x" % val
-                    if str.endswith("ff") or str.endswith("a0"):
-                        continue
-                    #special cases no characters with these codecs
-                    if str == "d7fa" or str == "d7fb" or str == "d7fc" or str == "d7fd" or str == "d7fe" or str == "d7ff" :
-                        continue
-                    chars.append(str.decode('hex').decode('gb2312'))
-        return chars
-
-</code></pre>
-
-<p>如果要生成中文字符图片，有很多办法，这里我用pygame打印每个字符</p>
-
-<pre><code>    # -*- coding: utf-8 -*-
-    import pygame
-     pygame.init()
-    font = pygame.font.Font(os.path.join("fonts", "simfang.ttf"), 64)
-    rtext = font.render("".join("b1a1".decode('hex').decode('gb2312')), True, (0, 0, 0), (255, 255, 255))
-    pygame.image.save(rtext,"t.jpg" )
-</code></pre>
-
-<p>然后中文字符图片就出来了
-<img class="center" src="http://kkx.github.com/images/character.jpg" width="300" height="300" title="原图" /></p>
-
-<p>要打印字符，需要至少一个ttf,也就是字体的文件。这里是用的simfang.ttf</p>
-
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -1108,6 +1068,10 @@ if __name__ == "__main__":
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2012/12/02/guan-yu-knnhe-random-forestsde-gan-jue/">关于Knn和Random Forests的感觉</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2012/10/19/c-plus-plus-li-shi-yong-octave/">c++里使用octave</a>
       </li>
     
@@ -1123,16 +1087,12 @@ if __name__ == "__main__":
         <a href="/blog/2012/09/16/ma-sai-ke-tu-pian-pin-jie/">马赛克图片拼接</a>
       </li>
     
-      <li class="post">
-        <a href="/blog/2012/09/10/gao-du-xiang-si-tu-pian-jian-ce-3perceptual-hash-phash-tu-pian-zhi-wen/">高度相似图片检测: 3 Perceptual Hash(phash) 图片指纹</a>
-      </li>
-    
   </ul>
 </section>
 
 <section>
   <h1>Categories</h1>
-      <ul id="category-list"><li><a href='/blog/categories/c-'>C++ (1)</a></li><li><a href='/blog/categories/gabor-filters'>Gabor filters (1)</a></li><li><a href='/blog/categories/google'>Google (1)</a></li><li><a href='/blog/categories/grammatical-evolution'>Grammatical evolution (1)</a></li><li><a href='/blog/categories/knn-'>Knn, (1)</a></li><li><a href='/blog/categories/latex'>Latex (1)</a></li><li><a href='/blog/categories/numpy'>Numpy (1)</a></li><li><a href='/blog/categories/ocr'>Ocr (3)</a></li><li><a href='/blog/categories/octave'>Octave (1)</a></li><li><a href='/blog/categories/octopress'>Octopress (1)</a></li><li><a href='/blog/categories/opencv'>Opencv (1)</a></li><li><a href='/blog/categories/python'>Python (4)</a></li><li><a href='/blog/categories/scipy'>Scipy (1)</a></li><li><a href='/blog/categories/svm'>Svm (1)</a></li><li><a href='/blog/categories/weka'>Weka (1)</a></li><li><a href='/blog/categories/不平衡数据集'>不平衡数据集 (1)</a></li><li><a href='/blog/categories/中文字图片生成'>中文字图片生成 (1)</a></li><li><a href='/blog/categories/中文字特征提取'>中文字特征提取 (1)</a></li><li><a href='/blog/categories/中文字符识别'>中文字符识别 (1)</a></li><li><a href='/blog/categories/分类'>分类 (3)</a></li><li><a href='/blog/categories/图像'>图像 (6)</a></li><li><a href='/blog/categories/机器学习'>机器学习 (1)</a></li><li><a href='/blog/categories/物体检测'>物体检测 (1)</a></li><li><a href='/blog/categories/计算机视觉'>计算机视觉 (7)</a></li><li><a href='/blog/categories/音乐'>音乐 (1)</a></li><li><a href='/blog/categories/马赛克'>马赛克 (1)</a></li><li><a href='/blog/categories/高度相似图片检测'>高度相似图片检测 (3)</a></li><li><a href='/blog/categories/高度相似性图片检测'>高度相似性图片检测 (1)</a></li></ul>
+      <ul id="category-list"><li><a href='/blog/categories/c-'>C++ (1)</a></li><li><a href='/blog/categories/gabor-filters'>Gabor filters (1)</a></li><li><a href='/blog/categories/google'>Google (1)</a></li><li><a href='/blog/categories/grammatical-evolution'>Grammatical evolution (1)</a></li><li><a href='/blog/categories/knn'>Knn (1)</a></li><li><a href='/blog/categories/knn-'>Knn, (1)</a></li><li><a href='/blog/categories/latex'>Latex (1)</a></li><li><a href='/blog/categories/numpy'>Numpy (1)</a></li><li><a href='/blog/categories/ocr'>Ocr (3)</a></li><li><a href='/blog/categories/octave'>Octave (1)</a></li><li><a href='/blog/categories/octopress'>Octopress (1)</a></li><li><a href='/blog/categories/opencv'>Opencv (1)</a></li><li><a href='/blog/categories/python'>Python (4)</a></li><li><a href='/blog/categories/scipy'>Scipy (1)</a></li><li><a href='/blog/categories/svm'>Svm (1)</a></li><li><a href='/blog/categories/weka'>Weka (1)</a></li><li><a href='/blog/categories/不平衡数据集'>不平衡数据集 (1)</a></li><li><a href='/blog/categories/中文字图片生成'>中文字图片生成 (1)</a></li><li><a href='/blog/categories/中文字特征提取'>中文字特征提取 (1)</a></li><li><a href='/blog/categories/中文字符识别'>中文字符识别 (1)</a></li><li><a href='/blog/categories/分类'>分类 (4)</a></li><li><a href='/blog/categories/图像'>图像 (6)</a></li><li><a href='/blog/categories/机器学习'>机器学习 (2)</a></li><li><a href='/blog/categories/物体检测'>物体检测 (1)</a></li><li><a href='/blog/categories/计算机视觉'>计算机视觉 (7)</a></li><li><a href='/blog/categories/随机森林'>随机森林 (1)</a></li><li><a href='/blog/categories/音乐'>音乐 (1)</a></li><li><a href='/blog/categories/马赛克'>马赛克 (1)</a></li><li><a href='/blog/categories/高度相似图片检测'>高度相似图片检测 (3)</a></li><li><a href='/blog/categories/高度相似性图片检测'>高度相似性图片检测 (1)</a></li></ul>
       </section>
 <section>
 最近读的书
