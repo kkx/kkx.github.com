@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 高度相似图片检测 | 名字]]></title>
   <link href="http://kkx.github.com/blog/categories/高度相似图片检测/atom.xml" rel="self"/>
   <link href="http://kkx.github.com/"/>
-  <updated>2012-12-27T15:10:22-08:00</updated>
+  <updated>2012-12-27T15:12:45-08:00</updated>
   <id>http://kkx.github.com/</id>
   <author>
     <name><![CDATA[小逸]]></name>
@@ -40,7 +40,7 @@ Lowe的方法是Scale-invariant feature transform 简称SIFT，从名字上来�
 特征点的位置，大小。一般检测特征点，会在不同的scale space上，每个scale space出来的特征点大小会不一样。SIFT特征向量是一个维度128的向量，再加上一个
 特征区域的角度。 如下图所示，中心点周围的有4个16<em>16的格子，每个格子里有16个4</em>4的格子，会计算每个小格子的方向，划分成8个方向，每个4x4的小个子会成成一个长度为8
 的向量，那总共有16个这样4*4大小的格子，所以最后会合成一个维度为128的向量。
-<img class="center" src="http://localhost:4000/images/keypointdescriptor1.JPG" width="600" height="600" title="SIFT" ></p>
+<img class="center" src="http://kkx.github.com/images/keypointdescriptor1.JPG" width="600" height="600" title="SIFT" ></p>
 
 <p>通过获得sift向量。一张图片能很好的给压缩成几k的向量矩阵。在检测相似图片的时候，对两张图片的sift向量逐一比对，如果距离在特定阀值之下，就能确定是相似的图片。
 但是这样的话计算量是很大的， 因为通常一张1200*960的图片会有700-2000的sift特征点。那如果我的数据库里有1000张图片要比对的话，那就是很大个开销，
