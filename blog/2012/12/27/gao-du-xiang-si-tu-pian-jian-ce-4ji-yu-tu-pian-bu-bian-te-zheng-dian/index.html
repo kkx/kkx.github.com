@@ -5,11 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Category: knn - 名字</title>
+  <title>高度相似图片检测: 4基于图片不变特征点 - 名字</title>
   <meta name="author" content="小逸">
 
   
-  <meta name="description" content="Category: knn">
+  <meta name="description" content="上面三篇高度相似图片检测没有讲到的一个方法就是基于图片特征点这个feature做图片相似检测。 图片特征点源于1999年Lowe 那篇”Object recognition from local scale-invariant features”
+该文可以说是在图像识别形成了一前一后的格局， &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +19,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://kkx.github.comblog/categories/knn">
+  <link rel="canonical" href="http://kkx.github.com/blog/2012/12/27/gao-du-xiang-si-tu-pian-jian-ce-4ji-yu-tu-pian-bu-bian-te-zheng-dian">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -87,36 +88,129 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">Category: Knn</h1>
+    
+      <h1 class="entry-title">高度相似图片检测: 4基于图片不变特征点</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-12-27T13:44:00-08:00" pubdate data-updated="true">Dec 27<span>th</span>, 2012</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
     
   </header>
-  
-  <div id="blog-archives" class="category">
 
 
+<div class="entry-content"><p>上面三篇高度相似图片检测没有讲到的一个方法就是基于图片特征点这个feature做图片相似检测。 图片特征点源于1999年Lowe 那篇”Object recognition from local scale-invariant features”
+该文可以说是在图像识别形成了一前一后的格局，几年之后各个基于Lowe特征点的方法出来了，而原来基于颜色或者texture的方法就相对于naive了。以后的几年各种优化方法都出来了。
+Lowe的方法是Scale-invariant feature transform 简称SIFT，从名字上来看这个方法对于图片的大小变化能起到很好忽略。这里有一点就是，这些特征点的主要目的就是
+两张类似图片上的类似物体的特征点值是类似的，而不相似物体区域的特征点值是不一样的。在检测特征点优劣的时候主要就是检测一个repeatability。 Repeatability 就是只类似的物体特征点，
+在经历不同的transformation之后的取回率，当然取回率高不一定好，还要看false positive，就类似信息检索。 transformation有很多种: 大小，旋转，颜色亮度，affine转变，occlusion什么的。
+各种方法在针对不同的变换有不同的优化。</p>
 
-  
-  <h2>2012</h2>
+<p>市面上有很多图片特征检测器和变种，下面是我用过的一些。
+<img class="right" src="http://upload.wikimedia.org/wikipedia/commons/5/5f/Corner.png" width="300" height="300" title="角" /></p>
 
-<article>
-  
-<h1><a href="/blog/2012/12/02/guan-yu-knnhe-random-forestsde-gan-jue/">关于Knn和Random Forests的感觉</a></h1>
-<time datetime="2012-12-02T21:25:00-08:00" pubdate><span class='month'>Dec</span> <span class='day'>02</span> <span class='year'>2012</span></time>
+<ul>
+  <li>Canny: 1986年出来的边检测器。现在还一直用，但不属于特征点范畴，更多用于基于boundary的方法。</li>
+  <li>Harris corner detector: 边角检测器</li>
+  <li>SIFT: 虽然这么叫，其实是通过高斯差获取scale space的最大最小值的位置。</li>
+  <li>SURF: 类似SIFT，速度更快点。</li>
+  <li>Harris-Affine 和 Hessian Affine: Mikolajczyk 04年的state of the art 方法。</li>
+</ul>
 
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/knn/'>knn</a>, <a class='category' href='/blog/categories/分类/'>分类</a>, <a class='category' href='/blog/categories/机器学习/'>机器学习</a>, <a class='category' href='/blog/categories/随机森林/'>随机森林</a></span>
-</footer>
+<p>检测器检测出来的特征点要去’形容’它，把他转变成特征向量。最长用的就是SIFT descriptor，不局限于sift检测器，上述方法都可以用它，只要知道
+特征点的位置，大小。一般检测特征点，会在不同的scale space上，每个scale space出来的特征点大小会不一样。SIFT特征向量是一个维度128的向量，再加上一个
+特征区域的角度。 如下图所示，中心点周围的有4个16<em>16的格子，每个格子里有16个4</em>4的格子，会计算每个小格子的方向，划分成8个方向，每个4x4的小个子会成成一个长度为8
+的向量，那总共有16个这样4*4大小的格子，所以最后会合成一个维度为128的向量。
+<img class="center" src="http://localhost:4000/images/keypointdescriptor1.JPG" width="600" height="600" title="SIFT" /></p>
 
+<p>通过获得sift向量。一张图片能很好的给压缩成几k的向量矩阵。在检测相似图片的时候，对两张图片的sift向量逐一比对，如果距离在特定阀值之下，就能确定是相似的图片。
+但是这样的话计算量是很大的， 因为通常一张1200*960的图片会有700-2000的sift特征点。那如果我的数据库里有1000张图片要比对的话，那就是很大个开销，
+而且，sift向量逐一比对的时候，需要计算每对之间的距离。所以很多时候，会通过bag of words 把sift向量分类成x个cluster (x小于sift向量数), 然后把一张图片通过
+它在每个cluster所拥有的sift向量数目来形容。这样一张图片就变成了一个长度为x的直方图。这样比对起来就会快了。虽然这样也会有很多信息丢失。但在实践中，这招非常有用。</p>
 
-</article>
+<p>基于特征点的方法的有点是对于旋转，affine上的变换会比前几个方法容忍度更高，在尺寸，亮度上的容忍也非常棒, 而且如果出现物体的遮盖occlusion，有时候也能检测出来。就是可能速度上没有前者的快。
+这个特征点的方法不错，不过有一个致命的缺点就是所谓的semantic gap，往往你有很多你有很多sift的cluster，但是他们的空间信息都是丢失掉的。并且，一个sift和另一个sift之间的相对
+距离也不会给利用到。会出现false positive，就是图片和另外一个外形上外向不相似的图片的相似度很高。</p>
 
 </div>
 
+
+  <footer>
+    <p class="meta">
+      
   
+
+<span class="byline author vcard">Posted by <span class="fn">小逸</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-12-27T13:44:00-08:00" pubdate data-updated="true">Dec 27<span>th</span>, 2012</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/图像/'>图像</a>, <a class='category' href='/blog/categories/计算机视觉/'>计算机视觉</a>, <a class='category' href='/blog/categories/高度相似图片检测/'>高度相似图片检测</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://kkx.github.com/blog/2012/12/27/gao-du-xiang-si-tu-pian-jian-ce-4ji-yu-tu-pian-bu-bian-te-zheng-dian/" data-via="" data-counturl="http://kkx.github.com/blog/2012/12/27/gao-du-xiang-si-tu-pian-jian-ce-4ji-yu-tu-pian-bu-bian-te-zheng-dian/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/12/02/guan-yu-knnhe-random-forestsde-gan-jue/" title="Previous Post: 关于Knn和Random Forests的感觉">&laquo; 关于Knn和Random Forests的感觉</a>
+      
+      
+    </p>
+  </footer>
 </article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
 
 </div>
 
@@ -195,7 +289,10 @@ my Last.fm
       var disqus_shortname = 'kkx';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://kkx.github.com/blog/2012/12/27/gao-du-xiang-si-tu-pian-jian-ce-4ji-yu-tu-pian-bu-bian-te-zheng-dian/';
+        var disqus_url = 'http://kkx.github.com/blog/2012/12/27/gao-du-xiang-si-tu-pian-jian-ce-4ji-yu-tu-pian-bu-bian-te-zheng-dian/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

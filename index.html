@@ -9,7 +9,8 @@
   <meta name="author" content="小逸">
 
   
-  <meta name="description" content="家里没网，只好扯扯淡了。 虽然一个是无监督学习，一个是监督学习，但是我感觉两个算法是近亲。 knn的就是找最近友邻，通过数据点和数据点之间的位置关系，而随机森林的话，是通过信息熵把类似的数据都放在一个叶子上。 其实这个感觉以前看到在集智俱乐部(其实就去过一次)有一面之缘的大牛的豆瓣博客上写到的， &hellip;">
+  <meta name="description" content="上面三篇高度相似图片检测没有讲到的一个方法就是基于图片特征点这个feature做图片相似检测。 图片特征点源于1999年Lowe 那篇”Object recognition from local scale-invariant features”
+该文可以说是在图像识别形成了一前一后的格局， &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -88,6 +89,76 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/12/27/gao-du-xiang-si-tu-pian-jian-ce-4ji-yu-tu-pian-bu-bian-te-zheng-dian/">高度相似图片检测: 4基于图片不变特征点</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-12-27T13:44:00-08:00" pubdate data-updated="true">Dec 27<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/12/27/gao-du-xiang-si-tu-pian-jian-ce-4ji-yu-tu-pian-bu-bian-te-zheng-dian/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>上面三篇高度相似图片检测没有讲到的一个方法就是基于图片特征点这个feature做图片相似检测。 图片特征点源于1999年Lowe 那篇”Object recognition from local scale-invariant features”
+该文可以说是在图像识别形成了一前一后的格局，几年之后各个基于Lowe特征点的方法出来了，而原来基于颜色或者texture的方法就相对于naive了。以后的几年各种优化方法都出来了。
+Lowe的方法是Scale-invariant feature transform 简称SIFT，从名字上来看这个方法对于图片的大小变化能起到很好忽略。这里有一点就是，这些特征点的主要目的就是
+两张类似图片上的类似物体的特征点值是类似的，而不相似物体区域的特征点值是不一样的。在检测特征点优劣的时候主要就是检测一个repeatability。 Repeatability 就是只类似的物体特征点，
+在经历不同的transformation之后的取回率，当然取回率高不一定好，还要看false positive，就类似信息检索。 transformation有很多种: 大小，旋转，颜色亮度，affine转变，occlusion什么的。
+各种方法在针对不同的变换有不同的优化。</p>
+
+<p>市面上有很多图片特征检测器和变种，下面是我用过的一些。
+<img class="right" src="http://upload.wikimedia.org/wikipedia/commons/5/5f/Corner.png" width="300" height="300" title="角" /></p>
+
+<ul>
+  <li>Canny: 1986年出来的边检测器。现在还一直用，但不属于特征点范畴，更多用于基于boundary的方法。</li>
+  <li>Harris corner detector: 边角检测器</li>
+  <li>SIFT: 虽然这么叫，其实是通过高斯差获取scale space的最大最小值的位置。</li>
+  <li>SURF: 类似SIFT，速度更快点。</li>
+  <li>Harris-Affine 和 Hessian Affine: Mikolajczyk 04年的state of the art 方法。</li>
+</ul>
+
+<p>检测器检测出来的特征点要去’形容’它，把他转变成特征向量。最长用的就是SIFT descriptor，不局限于sift检测器，上述方法都可以用它，只要知道
+特征点的位置，大小。一般检测特征点，会在不同的scale space上，每个scale space出来的特征点大小会不一样。SIFT特征向量是一个维度128的向量，再加上一个
+特征区域的角度。 如下图所示，中心点周围的有4个16<em>16的格子，每个格子里有16个4</em>4的格子，会计算每个小格子的方向，划分成8个方向，每个4x4的小个子会成成一个长度为8
+的向量，那总共有16个这样4*4大小的格子，所以最后会合成一个维度为128的向量。
+<img class="center" src="http://localhost:4000/images/keypointdescriptor1.JPG" width="600" height="600" title="SIFT" /></p>
+
+<p>通过获得sift向量。一张图片能很好的给压缩成几k的向量矩阵。在检测相似图片的时候，对两张图片的sift向量逐一比对，如果距离在特定阀值之下，就能确定是相似的图片。
+但是这样的话计算量是很大的， 因为通常一张1200*960的图片会有700-2000的sift特征点。那如果我的数据库里有1000张图片要比对的话，那就是很大个开销，
+而且，sift向量逐一比对的时候，需要计算每对之间的距离。所以很多时候，会通过bag of words 把sift向量分类成x个cluster (x小于sift向量数), 然后把一张图片通过
+它在每个cluster所拥有的sift向量数目来形容。这样一张图片就变成了一个长度为x的直方图。这样比对起来就会快了。虽然这样也会有很多信息丢失。但在实践中，这招非常有用。</p>
+
+<p>基于特征点的方法的有点是对于旋转，affine上的变换会比前几个方法容忍度更高，在尺寸，亮度上的容忍也非常棒, 而且如果出现物体的遮盖occlusion，有时候也能检测出来。就是可能速度上没有前者的快。
+这个特征点的方法不错，不过有一个致命的缺点就是所谓的semantic gap，往往你有很多你有很多sift的cluster，但是他们的空间信息都是丢失掉的。并且，一个sift和另一个sift之间的相对
+距离也不会给利用到。会出现false positive，就是图片和另外一个外形上外向不相似的图片的相似度很高。</p>
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -521,7 +592,7 @@ if __name__ == "__main__":
   </header>
 
 
-  <div class="entry-content"><p>最后一个要介绍的不基于语义的图片指纹生成方法: pHash, 这里是pHash算法简要:</p>
+  <div class="entry-content"><p>最后一个要介绍的图片指纹生成方法: pHash, 这里是pHash算法简要:</p>
 
 <ul>
   <li>图片指纹灰值化</li>
@@ -850,91 +921,6 @@ if __name__ == "__main__":
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/06/28/sheng-cheng-zhong-wen-zi-tu-pian/">生成中文字图片</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-06-28T17:17:00-07:00" pubdate data-updated="true">Jun 28<span>th</span>, 2012</time>
-        
-         | <a href="/blog/2012/06/28/sheng-cheng-zhong-wen-zi-tu-pian/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>最近在做一个中文ocr，感觉是个不可完成任务。不管怎么样还是得试试。
-首先要做的就是获得训练数据。中文的数据不比英文，量大而且没有地方下载，唯一能做的就是自己生成，在网上找了写函数自己改改就成了下面的脚本了</p>
-
-<p>首先是一个中文字符集编码的生成函数:</p>
-
-<pre><code>
-    def generate_ch():
-
-        #Function which generate all chinese gb2312 characters 
-        
-        body = random.randint(0xA, 0xA)
-        tail = random.randint(0, 0xF)
-        chars = []
-        
-        heads = range(0xB0, 0xF8)
-        bodys = range(0xA, 0xF+1)
-        tails = range(0, 0xF+1)
-        for head in heads:
-            for body in bodys:
-                for tail in tails:
-                    val = ( head &lt;&lt; 0x8 ) | (body &lt;&lt; 0x4 ) | tail
-                    #print "%x"%head,"%x"%body,"%x"%tail,"%x"%val
-                    str = "%x" % val
-                    if str.endswith("ff") or str.endswith("a0"):
-                        continue
-                    #special cases no characters with these codecs
-                    if str == "d7fa" or str == "d7fb" or str == "d7fc" or str == "d7fd" or str == "d7fe" or str == "d7ff" :
-                        continue
-                    chars.append(str.decode('hex').decode('gb2312'))
-        return chars
-
-</code></pre>
-
-<p>如果要生成中文字符图片，有很多办法，这里我用pygame打印每个字符</p>
-
-<pre><code>    # -*- coding: utf-8 -*-
-    import pygame
-     pygame.init()
-    font = pygame.font.Font(os.path.join("fonts", "simfang.ttf"), 64)
-    rtext = font.render("".join("b1a1".decode('hex').decode('gb2312')), True, (0, 0, 0), (255, 255, 255))
-    pygame.image.save(rtext,"t.jpg" )
-</code></pre>
-
-<p>然后中文字符图片就出来了
-<img class="center" src="http://kkx.github.com/images/character.jpg" width="300" height="300" title="原图" /></p>
-
-<p>要打印字符，需要至少一个ttf,也就是字体的文件。这里是用的simfang.ttf</p>
-
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -958,6 +944,10 @@ if __name__ == "__main__":
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2012/12/27/gao-du-xiang-si-tu-pian-jian-ce-4ji-yu-tu-pian-bu-bian-te-zheng-dian/">高度相似图片检测: 4基于图片不变特征点</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2012/12/02/guan-yu-knnhe-random-forestsde-gan-jue/">关于Knn和Random Forests的感觉</a>
       </li>
     
@@ -973,16 +963,12 @@ if __name__ == "__main__":
         <a href="/blog/2012/09/16/ma-sai-ke-tu-pian-pin-jie/">马赛克图片拼接</a>
       </li>
     
-      <li class="post">
-        <a href="/blog/2012/09/10/gao-du-xiang-si-tu-pian-jian-ce-3perceptual-hash-phash-tu-pian-zhi-wen/">高度相似图片检测: 3 Perceptual Hash(phash) 图片指纹</a>
-      </li>
-    
   </ul>
 </section>
 
 <section>
   <h1>Categories</h1>
-      <ul id="category-list"><li><a href='/blog/categories/c-'>C++ (1)</a></li><li><a href='/blog/categories/gabor-filters'>Gabor filters (1)</a></li><li><a href='/blog/categories/google'>Google (1)</a></li><li><a href='/blog/categories/grammatical-evolution'>Grammatical evolution (1)</a></li><li><a href='/blog/categories/knn'>Knn (1)</a></li><li><a href='/blog/categories/knn-'>Knn, (1)</a></li><li><a href='/blog/categories/latex'>Latex (1)</a></li><li><a href='/blog/categories/numpy'>Numpy (1)</a></li><li><a href='/blog/categories/ocr'>Ocr (3)</a></li><li><a href='/blog/categories/octave'>Octave (1)</a></li><li><a href='/blog/categories/octopress'>Octopress (1)</a></li><li><a href='/blog/categories/python'>Python (3)</a></li><li><a href='/blog/categories/scipy'>Scipy (1)</a></li><li><a href='/blog/categories/svm'>Svm (1)</a></li><li><a href='/blog/categories/weka'>Weka (1)</a></li><li><a href='/blog/categories/不平衡数据集'>不平衡数据集 (1)</a></li><li><a href='/blog/categories/中文字图片生成'>中文字图片生成 (1)</a></li><li><a href='/blog/categories/中文字特征提取'>中文字特征提取 (1)</a></li><li><a href='/blog/categories/中文字符识别'>中文字符识别 (1)</a></li><li><a href='/blog/categories/分类'>分类 (4)</a></li><li><a href='/blog/categories/图像'>图像 (6)</a></li><li><a href='/blog/categories/机器学习'>机器学习 (2)</a></li><li><a href='/blog/categories/计算机视觉'>计算机视觉 (6)</a></li><li><a href='/blog/categories/随机森林'>随机森林 (1)</a></li><li><a href='/blog/categories/音乐'>音乐 (1)</a></li><li><a href='/blog/categories/马赛克'>马赛克 (1)</a></li><li><a href='/blog/categories/高度相似图片检测'>高度相似图片检测 (3)</a></li><li><a href='/blog/categories/高度相似性图片检测'>高度相似性图片检测 (1)</a></li></ul>
+      <ul id="category-list"><li><a href='/blog/categories/c-'>C++ (1)</a></li><li><a href='/blog/categories/gabor-filters'>Gabor filters (1)</a></li><li><a href='/blog/categories/google'>Google (1)</a></li><li><a href='/blog/categories/grammatical-evolution'>Grammatical evolution (1)</a></li><li><a href='/blog/categories/knn'>Knn (1)</a></li><li><a href='/blog/categories/knn-'>Knn, (1)</a></li><li><a href='/blog/categories/latex'>Latex (1)</a></li><li><a href='/blog/categories/numpy'>Numpy (1)</a></li><li><a href='/blog/categories/ocr'>Ocr (3)</a></li><li><a href='/blog/categories/octave'>Octave (1)</a></li><li><a href='/blog/categories/octopress'>Octopress (1)</a></li><li><a href='/blog/categories/python'>Python (3)</a></li><li><a href='/blog/categories/scipy'>Scipy (1)</a></li><li><a href='/blog/categories/svm'>Svm (1)</a></li><li><a href='/blog/categories/weka'>Weka (1)</a></li><li><a href='/blog/categories/不平衡数据集'>不平衡数据集 (1)</a></li><li><a href='/blog/categories/中文字图片生成'>中文字图片生成 (1)</a></li><li><a href='/blog/categories/中文字特征提取'>中文字特征提取 (1)</a></li><li><a href='/blog/categories/中文字符识别'>中文字符识别 (1)</a></li><li><a href='/blog/categories/分类'>分类 (4)</a></li><li><a href='/blog/categories/图像'>图像 (7)</a></li><li><a href='/blog/categories/机器学习'>机器学习 (2)</a></li><li><a href='/blog/categories/计算机视觉'>计算机视觉 (7)</a></li><li><a href='/blog/categories/随机森林'>随机森林 (1)</a></li><li><a href='/blog/categories/音乐'>音乐 (1)</a></li><li><a href='/blog/categories/马赛克'>马赛克 (1)</a></li><li><a href='/blog/categories/高度相似图片检测'>高度相似图片检测 (5)</a></li></ul>
       </section>
 <section>
 最近读的书
