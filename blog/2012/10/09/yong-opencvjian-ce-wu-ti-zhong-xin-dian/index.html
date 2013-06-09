@@ -1,24 +1,122 @@
-<?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: python | 名字]]></title>
-  <link href="http://kkx.github.com/blog/categories/python/atom.xml" rel="self"/>
-  <link href="http://kkx.github.com/"/>
-  <updated>2013-06-09T02:23:30-07:00</updated>
-  <id>http://kkx.github.com/</id>
-  <author>
-    <name><![CDATA[小逸]]></name>
-    
-  </author>
-  <generator uri="http://octopress.org/">Octopress</generator>
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>用opencv检测物体中心点 - 名字</title>
+  <meta name="author" content="小逸">
 
   
-  <entry>
-    <title type="html"><![CDATA[用opencv检测物体中心点]]></title>
-    <link href="http://kkx.github.com/blog/2012/10/09/yong-opencvjian-ce-wu-ti-zhong-xin-dian/"/>
-    <updated>2012-10-09T12:35:00-07:00</updated>
-    <id>http://kkx.github.com/blog/2012/10/09/yong-opencvjian-ce-wu-ti-zhong-xin-dian</id>
-    <content type="html"><![CDATA[<p>图片中的物体探测一直是比较热的课题，通过物体的检测可以对图片自动生成标签以及分类，可以很好的用在图片检索的领域。在做的毕业设计(也是论文)就涉及到这方面的。今天看一篇叫<a href="http://www.robots.ox.ac.uk/~vilem/cvpr2009.pdf">Class-Speciﬁc Hough Forests for Object Detection</a>的state of the art，发现原来导师叫我用到的方法和这个差不多，只是增加了某些小trick用于对特定的数据集优化。</p>
+  <meta name="description" content="图片中的物体探测一直是比较热的课题，通过物体的检测可以对图片自动生成标签以及分类，可以很好的用在图片检索的领域。在做的毕业设计(也是论文)就涉及到这方面的。今天看一篇叫Class-Speciﬁc Hough Forests for Object Detection的state of the art &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://kkx.github.com/blog/2012/10/09/yong-opencvjian-ce-wu-ti-zhong-xin-dian">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="名字" type="application/atom+xml">
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-31462157-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<script type="text/javascript"
+        src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
+      MathJax.InputJax.TeX.prefilterHooks.Add(function (data) {
+    data.math = data.math.replace(/^\s*<!\[CDATA\[\s*((?:\n|.)*)\s*\]\]>\s*$/m,"$1");
+});
+});
+</script>
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">名字</a></h1>
+  
+    <h2>没想好</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:kkx.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about/">About me</a></li>
+  <li><a href="/plan/">Plans</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">用opencv检测物体中心点</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-09T12:35:00-07:00" pubdate data-updated="true">Oct 9<span>th</span>, 2012</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>图片中的物体探测一直是比较热的课题，通过物体的检测可以对图片自动生成标签以及分类，可以很好的用在图片检索的领域。在做的毕业设计(也是论文)就涉及到这方面的。今天看一篇叫<a href="http://www.robots.ox.ac.uk/~vilem/cvpr2009.pdf">Class-Speciﬁc Hough Forests for Object Detection</a>的state of the art，发现原来导师叫我用到的方法和这个差不多，只是增加了某些小trick用于对特定的数据集优化。</p>
 
 <p>Hough Forests。 其实就是一个random forests 也就是随机森林,每条数据是一小块图片的description(patch) 树的每个节点对数据的分割通过information gain，努力把相同类的patch和相似的patch分到同一个枝头上去。每次通过数据集,随机采集部分features用于分割，每个这些features的分割点生成一个pool。然后对每个feature的分割点做一个信息量的检测，就像一个标准的random forests一样， 这里信息量的计算通过一下程式(这么说比较台湾腔 夯):
 $$
@@ -38,7 +136,7 @@ opencv这个库让我又爱又恨啊，很好用，很多很复杂的算法只�
 
 <p>但是！导师教给我的方法能避免这个问题。首先sift和surf本身是view insensitive的，而在计算距离的时候通过对特征点本身的大小对距离做个归一化，这样就能让系统获得对不同大小的物体的识别能力。 
 另外一个trick就是sift之类的特征点自己会带有gradient orientation,也就是梯度方向，这个信息是在计算距离的时候必须使用到的。因为相同descriptor的特征点可能会有不同的梯度方向，如果你只使用了图片原始的x和y轴保存距离的话，预测的中心点会偏离本来的实际位置。下面的图片就是个case: 
-<img class="center" src="http://kkx.github.com/images/circle.png" width="680" height="420" title="梯度方向" ></p>
+<img class="center" src="http://kkx.github.com/images/circle.png" width="680" height="420" title="梯度方向" /></p>
 
 <p>我有一个圆圈，底部是白色的，如果是sift当特征点的检测的话，每个圆圈边上的点的特征值是一样的，而他们的梯度方向可能会不一样，如果不使用梯度方向的话，a作为训练的数据，而比作为测试数据，中心点预测的结果会在圆圈的外面(细线部分)。
 如果要避免以上问题，只有通过<a href="http://en.wikipedia.org/wiki/Rotation_matrix">rotation matrix</a> 让每个特征点更具自己的梯度方向生成自己的x和y轴。 并且每个特征点的相对于中心点的距离要在新的x和y轴上进行计算。</p>
@@ -54,7 +152,7 @@ opencv这个库让我又爱又恨啊，很好用，很多很复杂的算法只�
 
 <p>如果需要从新轴返回到原始的x y轴只需要把angle乘以-1就可以了, 上面的angle是以radian为单位的。</p>
 
-<p><img class="center" src="http://kkx.github.com/images/circle2.png" width="680" height="420" title="rotation matrix" >
+<p><img class="center" src="http://kkx.github.com/images/circle2.png" width="680" height="420" title="rotation matrix" />
 假设上图是更具特征点的梯度方向做的x和y轴的转换，转换之后，可以发现点离圆圈的中心的距离不变，但是在x轴和y轴的移动发生了变化。</p>
 
 <p>下面是测试方法的代码，包括训练和测试。数据集的话是使用<a href="http://cogcomp.cs.illinois.edu/Data/Car/">ucic</a>里的汽车数据，训练集里有positive cases 和negative cases，这里我只用到了positive cases。也没有是用到hough forest做训练，只用到了最近友邻。 每次选择最相近的友邻做出投票。在训练数据里，所有的车子中心点都在图的当中，因为每张图片里的车子几乎撑满整张图，而所有图片的尺寸都是40x100，在训练数据里，有两部分，一部分是没有scale变化的车子数据库，而另外一部分里车子的大小会有变化，用于测试方法对于scale变化的鲁棒性。 </p>
@@ -165,195 +263,206 @@ if __name__ == "__main__":
 <p>一大坨kernel变量，其实就是matlab的disk filter: fspecial(‘disk’, 20) opencv里就没有合适的filter可以用来平滑图片的!。 这里使用到了flann用来做最近友邻的模型，由于数据不是特别大，所以这里也没什么优化。在训练的时候，会把每个特征点距离到中心点的距离计算一下，计算完会根据特征点的大小把距离缩放一下，而当在测试的时候也会根据每个特征点的大小把距离放大。这样就能达到scale insensitive的目的了。 每个特征点会根据友邻做投票，投票的结果会映射到一个和图片一样大小的map上面。 通过filter2d过滤之后，会出现一大坨模糊的东西，哪里最亮哪里的投票数就最多，是中心点的可能性也最大。</p>
 
 <p>下面就是一些实验图片的结果。
-<img class="center" src="http://kkx.github.com/images/oct<em>9_t</em>1.png" width="680" height="320" title="梯度方向" >
-<img class="center" src="http://kkx.github.com/images/oct<em>9_t</em>2.png" width="680" height="320" title="梯度方向" >
-<img class="center" src="http://kkx.github.com/images/oct<em>9_t</em>3.png" width="680" height="320" title="梯度方向" >
-<img class="center" src="http://kkx.github.com/images/oct<em>9_t</em>4.png" width="680" height="320" title="梯度方向" >
-<img class="center" src="http://kkx.github.com/images/oct<em>9_t</em>5.png" width="680" height="320" title="梯度方向" >
-<img class="center" src="http://kkx.github.com/images/oct<em>9_t</em>6.png" width="680" height="320" title="梯度方向" ></p>
+<img class="center" src="http://kkx.github.com/images/oct_9_t_1.png" width="680" height="320" title="梯度方向" />
+<img class="center" src="http://kkx.github.com/images/oct_9_t_2.png" width="680" height="320" title="梯度方向" />
+<img class="center" src="http://kkx.github.com/images/oct_9_t_3.png" width="680" height="320" title="梯度方向" />
+<img class="center" src="http://kkx.github.com/images/oct_9_t_4.png" width="680" height="320" title="梯度方向" />
+<img class="center" src="http://kkx.github.com/images/oct_9_t_5.png" width="680" height="320" title="梯度方向" />
+<img class="center" src="http://kkx.github.com/images/oct_9_t_6.png" width="680" height="320" title="梯度方向" /></p>
 
 <p>貌似结果很好的，但是其实不是的，因为这里没用到false cases，会出现很多false positive，而且，由于是使用sift detector, 本身控制不了哪些特征点是需要的哪些是不需要的，在测试后的时候，如果测试图片的某个非物体部位的特征点很多的话(细节比较多)，会产生很多假票, 像最后一张图的两根柱子。在下次的试验力，一定得吧那些false cases包含到训练库里，当测试数据碰到的一个false case的票，直接把权值归0，这样的话应该能对结果有很大的改观。还有就是这里，每张投票的权值都是1，可以根据友邻的距离设置投票的权值，近的投票全职大，这样结果应该会好一些。 </p>
 
 <p>opencv用起来真的没有matlab舒服，就连一个类似matlab的imregionalmax函数都没有，这个函数可以计算local maximum，这样的话，选取峰值最高的几个点作为预测结果会有很理想的结果。所以这套代码在这里也不能用来获得和真实中心点做比较。</p>
 
-]]></content>
-  </entry>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
   
-  <entry>
-    <title type="html"><![CDATA[马赛克图片拼接]]></title>
-    <link href="http://kkx.github.com/blog/2012/09/16/ma-sai-ke-tu-pian-pin-jie/"/>
-    <updated>2012-09-16T13:21:00-07:00</updated>
-    <id>http://kkx.github.com/blog/2012/09/16/ma-sai-ke-tu-pian-pin-jie</id>
-    <content type="html"><![CDATA[<p>以前就想做一个马赛克合成的图片了，最近不务正业，就写了一个
-方法很简单:</p>
 
-<ul>
-  <li>抓取一组图片的并缩放到统一大小</li>
-  <li>计算每张图片的rgb值的中值</li>
-  <li>所有的图片中值生成kd-tree</li>
-  <li>加载目标图片，并缩放到想要的结果图片的大小，然后创建结果图片(np.zeros)</li>
-  <li>每一小格结果图片的大小和抓取的小图大小一样,计算目标图片每小格的rgb 中值</li>
-  <li>查找最想进的小图，并用小图的rgb值填充到结果图片里</li>
-  <li>生成结果图片</li>
-</ul>
+<span class="byline author vcard">Posted by <span class="fn">小逸</span></span>
 
-<p>马赛克图片生成代码:</p>
+      
 
-<pre><code>import Image
-import os
-import numpy as np
-from scipy import spatial
 
-#calculate a mean rgb of an image
-def meanRGB(img):
-    rgb = np.array(img.getdata())
-        mean_r = np.mean(rgb[:,0])
-        mean_g = np.mean(rgb[:,1]) 
-        mean_b = np.mean(rgb[:,2])
-        return [mean_r, mean_g, mean_b]
 
-if __name__ == "__main__":
-    #grid size
-    mosaic_img_size = (20, 20)
-    #size of target image to generated
-    target_img_size = (1000, 1000)
-    target_img = Image.open("./VanGogh-starry_night_ballance1.jpg")
-    target_img = target_img.resize(target_img_size)
-    #grid images directory
-    directory = "./icons/"
-    listing = os.listdir(directory)
-    img_list = []
-    color_list = []
-    #load images and calculate mean rgb
-    for infile in listing:
-        if infile.endswith("jpg"):
-            img = Image.open(directory+infile)
-            img = img.resize(mosaic_img_size, Image.ANTIALIAS)
-            img_list.append(img)
-            color_list.append(meanRGB(img))
 
-    #create kdt for future pnn query
-    data = np.array(color_list)
-    tree = spatial.KDTree(data, leafsize=5)
 
-    count_x = 0
-    count_y = 0
-    new_image = np.zeros((target_img_size[0],target_img_size[1],3), dtype=np.uint8)
-    target_img_data = np.reshape(np.array(target_img.getdata()), (target_img_size[0],target_img_size[1],3))
-    length = mosaic_img_size[0]*mosaic_img_size[1]
 
-    #calculate mean rgb of each grid in the target image, search a nearest neighbor and fill the new image with
-    #the rgb values of the grid image
-    while count_x+mosaic_img_size[0] &lt; target_img_size[0]:
-        count_y = 0
-        while count_y+mosaic_img_size[1] &lt; target_img_size[1]:
-            mean_r = np.mean(target_img_data[count_x:count_x+mosaic_img_size[0],count_y:count_y+mosaic_img_size[1],0])
-            mean_g = np.mean(target_img_data[count_x:count_x+mosaic_img_size[0],count_y:count_y+mosaic_img_size[1],1])
-            mean_b = np.mean(target_img_data[count_x:count_x+mosaic_img_size[0],count_y:count_y+mosaic_img_size[1],2])
-            img_index = tree.query(np.array([mean_r,mean_g,mean_b]))[1]
-            new_image[count_x:count_x+mosaic_img_size[0],count_y:count_y+mosaic_img_size[1],:] = np.reshape(np.array(img_list[img_index].getdata()), (mosaic_img_size[0],mosaic_img_size[1],3))
 
-            count_y += mosaic_img_size[1]
-        count_x += mosaic_img_size[0]
+
+  
+
+
+<time datetime="2012-10-09T12:35:00-07:00" pubdate data-updated="true">Oct 9<span>th</span>, 2012</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/opencv/'>opencv</a>, <a class='category' href='/blog/categories/python/'>python</a>, <a class='category' href='/blog/categories/物体检测/'>物体检测</a>, <a class='category' href='/blog/categories/计算机视觉/'>计算机视觉</a>
+  
+</span>
+
+
+    </p>
     
-    #image created
-    im = Image.fromarray(new_image)
-    im.show()
-    im.save("./1VanGogh-starry_night_ballance1.jpg")
-</code></pre>
-
-<p>里面有些小bug，但不影响使用，譬如最右最下有一圈黑色的，是代码中某个逻辑没写好，没有填充进去，但是不管它了- -(貌似把小于号改成小于等于就可以了)</p>
-
-<p>原图:
-<img class="center" src="http://kkx.github.com/images/VanGogh-starry_night_ballance1.jpg" width="600" height="600" title="原图" >
-效果:
-<img class="center" src="http://kkx.github.com/images/1VanGogh-starry_night_ballance1.jpg" width="600" height="600" title="效果" >
-768的向量空间长度，图片量一定要大一些，要不然的结果会是，颜色很单一，拼出来的马赛克效果不好。自己的友邻太少了，可能结果会不理想，所以这里我抓了豆瓣活动上的豆友，570多位。。</p>
-]]></content>
-  </entry>
+      <div class="sharing">
   
-  <entry>
-    <title type="html"><![CDATA[numpy和matlab之间的数据交互]]></title>
-    <link href="http://kkx.github.com/blog/2012/05/04/numpyhe-matlabzhi-jian-de-shu-ju-jiao-hu/"/>
-    <updated>2012-05-04T18:03:00-07:00</updated>
-    <id>http://kkx.github.com/blog/2012/05/04/numpyhe-matlabzhi-jian-de-shu-ju-jiao-hu</id>
-    <content type="html"><![CDATA[<p>要让matlab把数据倒入倒python里很简单, 我试过直接保存倒2进制的文件里，但是通过用scipy.io.loadmat 这个方法读取的时候会报错。结果职能用粗糙的办法了，把文件存放在一个可读文件里:</p>
-
-<pre><code>save -ascii "your.txt" yourMatrix 
-</code></pre>
-
-<p>在python里读取的时候用genfromtxt:</p>
-
-<pre><code>from numpy import genfromtxt
-m = genfromtxt('your.txt') 
-</code></pre>
-
-<p>想通过python把array寸在一个matlab能读取的文件里的方法也很简单:</p>
-
-<pre><code>from numpy import savetxt
-savetxt("your.txt", yourArray)
-</code></pre>
-
-<p>在matlab里直接load就行了:</p>
-
-<pre><code>load -ascii your.txt newMatrixName
-</code></pre>
-
-]]></content>
-  </entry>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://kkx.github.com/blog/2012/10/09/yong-opencvjian-ce-wu-ti-zhong-xin-dian/" data-via="" data-counturl="http://kkx.github.com/blog/2012/10/09/yong-opencvjian-ce-wu-ti-zhong-xin-dian/" >Tweet</a>
   
-  <entry>
-    <title type="html"><![CDATA[用nohup后台运行,用python 发提醒邮件]]></title>
-    <link href="http://kkx.github.com/blog/2012/04/29/yong-python-fa-ti-xing-you-jian/"/>
-    <updated>2012-04-29T01:09:00-07:00</updated>
-    <id>http://kkx.github.com/blog/2012/04/29/yong-python-fa-ti-xing-you-jian</id>
-    <content type="html"><![CDATA[<p>最近在学校的n电脑上跑数据，很多时候一个run要耗费好几个小时，ssh不知道为什么连一会后会自动断开，跑到一半程序就悲剧了。
-在网上找了一会 发现一个神器:nohup, 用法超级简单: nohup comand
-这样你的程序会后台运行，并且就算你ssh断开后都能继续跑着。nohup还提供给你一个nohup.log 你程序所有的output都会放在那个log里。</p>
-
-<p>另外一个碰到的问题是，很多时候离开ssh后我都不知道程序跑完没，这里我用python搞了一个小程序:基于smtp发电子邮件。首先我用python的subprocess去跑数据程序，然后当数据程序跑完后发送一个邮件到我的邮箱里，这样我就能差不多“实时”的知道程序运行的情况了。</p>
-
-<p>这是我发送邮件的小函数：</p>
-
-<pre><code>#!/usr/bin/env python
-# -*- coding: utf8 -*-
-import smtplib
-from email.mime.text import MIMEText
-
-server = "smtp.gmail.com:587"
-user_account="pythonsmtpalert@gmail.com"
-password="密码"
-mailto_list=["我的目标邮箱.com"]
-def send_mail(to_list,sub,content):
-        me="python stmp alert " +"&lt;pythonsmtpalert@gmail.com&gt;"
-        msg = MIMEText(content)
-        msg['Subject'] = sub
-        msg['From'] = me
-        msg['To'] = ";".join(mailto_list)
-        try:
-            s = smtplib.SMTP(server)
-            s.starttls()  
-            s.login(user_account,password)
-            s.sendmail(me, to_list, msg.as_string())
-            s.close()
-            return True
-        except Exception, e:
-            print str(e)
-            return False
-
-if __name__ == '__main__':
-    if send_mail(mailto_list,"Process accomplished","t你好ake a look the results!"):
-        print "发送成功"
-    else:
-        print "发送失败"
-</code></pre>
-
-<p>server: 服务器地址
-user_account:你的邮箱帐号
-password:邮箱密码
-mailto_list:目标邮箱
-这里你的邮箱要和你服务器地址是一个牌子的，我这里用的是gmail，换别的邮箱的话得用别得邮箱得smtp服务器 </p>
-]]></content>
-  </entry>
   
-</feed>
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/09/24/fast-approximate-nearest-neighbors-flann/" title="Previous Post: FAST APPROXIMATE NEAREST NEIGHBORS(FLANN)">&laquo; FAST APPROXIMATE NEAREST NEIGHBORS(FLANN)</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2012/10/19/c-plus-plus-li-shi-yong-octave/" title="Next Post: c++里使用octave">c++里使用octave &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    
+<section>
+  <img src="http://gravatar.com/avatar/e67de7fa62d9665c4022a6a065353549" alt="Gravatar image" title="Gravatar Image" />
+  <DIV ALIGN=left>I am not good enough for you</DIV>
+
+  <p />
+  </section>
+  
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/12/27/gao-du-xiang-si-tu-pian-jian-ce-4ji-yu-tu-pian-bu-bian-te-zheng-dian/">高度相似图片检测: 4基于图片不变特征点</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/12/02/guan-yu-knnhe-random-forestsde-gan-jue/">关于Knn和Random Forests的感觉</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/19/c-plus-plus-li-shi-yong-octave/">c++里使用octave</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/09/yong-opencvjian-ce-wu-ti-zhong-xin-dian/">用opencv检测物体中心点</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/09/24/fast-approximate-nearest-neighbors-flann/">FAST APPROXIMATE NEAREST NEIGHBORS(FLANN)</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>Categories</h1>
+      <ul id="category-list"><li><a href='/blog/categories/c-'>C++ (1)</a></li><li><a href='/blog/categories/gabor-filters'>Gabor filters (1)</a></li><li><a href='/blog/categories/google'>Google (1)</a></li><li><a href='/blog/categories/grammatical-evolution'>Grammatical evolution (1)</a></li><li><a href='/blog/categories/knn'>Knn (1)</a></li><li><a href='/blog/categories/knn-'>Knn, (1)</a></li><li><a href='/blog/categories/latex'>Latex (1)</a></li><li><a href='/blog/categories/numpy'>Numpy (1)</a></li><li><a href='/blog/categories/ocr'>Ocr (3)</a></li><li><a href='/blog/categories/octave'>Octave (1)</a></li><li><a href='/blog/categories/octopress'>Octopress (1)</a></li><li><a href='/blog/categories/opencv'>Opencv (1)</a></li><li><a href='/blog/categories/python'>Python (4)</a></li><li><a href='/blog/categories/scipy'>Scipy (1)</a></li><li><a href='/blog/categories/svm'>Svm (1)</a></li><li><a href='/blog/categories/weka'>Weka (1)</a></li><li><a href='/blog/categories/不平衡数据集'>不平衡数据集 (1)</a></li><li><a href='/blog/categories/中文字图片生成'>中文字图片生成 (1)</a></li><li><a href='/blog/categories/中文字特征提取'>中文字特征提取 (1)</a></li><li><a href='/blog/categories/中文字符识别'>中文字符识别 (1)</a></li><li><a href='/blog/categories/分类'>分类 (4)</a></li><li><a href='/blog/categories/图像'>图像 (7)</a></li><li><a href='/blog/categories/机器学习'>机器学习 (2)</a></li><li><a href='/blog/categories/物体检测'>物体检测 (1)</a></li><li><a href='/blog/categories/计算机视觉'>计算机视觉 (8)</a></li><li><a href='/blog/categories/随机森林'>随机森林 (1)</a></li><li><a href='/blog/categories/音乐'>音乐 (1)</a></li><li><a href='/blog/categories/马赛克'>马赛克 (1)</a></li><li><a href='/blog/categories/高度相似图片检测'>高度相似图片检测 (5)</a></li></ul>
+      </section>
+<section>
+最近读的书
+<script type="text/javascript" src="http://www.douban.com/service/badge/Rabbby/?show=collection&amp;n=16&amp;columns=4&amp;hidelogo=yes&amp;cat=book|site" ></script>
+</section>
+
+
+<section>
+my Last.fm
+<a href="http://www.last.fm/user/kkx123456/?chartstyle=basic10"><img src="http://imagegen.last.fm/basic10/otracks/kkx123456.gif" border="0" /></a>
+</section>
+
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - 小逸 -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'kkx';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://kkx.github.com/blog/2012/10/09/yong-opencvjian-ce-wu-ti-zhong-xin-dian/';
+        var disqus_url = 'http://kkx.github.com/blog/2012/10/09/yong-opencvjian-ce-wu-ti-zhong-xin-dian/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
